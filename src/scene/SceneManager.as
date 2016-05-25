@@ -1,6 +1,7 @@
 package scene
 {
 	import flash.utils.Dictionary;
+	
 	import scene.gameScene.GameScene;
 	import scene.titleScene.TitleScene;
 	
@@ -12,21 +13,6 @@ package scene
 		public function SceneManager()
 		{
 	
-		}
-		
-		public static function initialize():void
-		{
-			_scenes = new Dictionary();
-			_currentSceneName = null;
-			
-			var title:TitleScene = new TitleScene(SceneName.TITLE);
-			_scenes[SceneName.TITLE] = title;
-			
-			switchScene(SceneName.TITLE);
-			
-			var game:GameScene = new GameScene(SceneName.GAME);
-			game.visible = false;
-			_scenes[SceneName.GAME] = game;
 		}
 		
 		public static function dispose():void
@@ -45,6 +31,21 @@ package scene
 			_scenes = null;
 			
 			_currentSceneName = null;
+		}
+		
+		public static function initialize():void
+		{
+			_scenes = new Dictionary();
+			_currentSceneName = null;
+			
+			var title:TitleScene = new TitleScene(SceneName.TITLE);
+			_scenes[SceneName.TITLE] = title;
+			
+			switchScene(SceneName.TITLE);
+			
+			var game:GameScene = new GameScene(SceneName.GAME);
+			game.visible = false;
+			_scenes[SceneName.GAME] = game;
 		}
 		
 		public static function switchScene(nextSceneName:String):void

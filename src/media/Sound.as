@@ -25,15 +25,6 @@ package media
 			_channelIndex = -1;
 		}
 		
-		public function dispose():void
-		{
-			_volume = 1;
-			_panning = 0;
-			_startTime = 0;
-			_loops = NO_LOOP;
-			_channelIndex = -1;
-		}
-		
 		/**
 		 * Sound의 음량으로 0부터 1 사이의 값입니다.
 		 * @return 

@@ -2,8 +2,6 @@ package
 {
 	import flash.display.Sprite;
 	
-	import scene.SceneManager;
-	
 	import starling.core.Starling;
 	
 	[SWF(width="720", height="960", frameRate="60")]
@@ -16,7 +14,7 @@ package
 		{
 			super();
 		
-			_starling = new Starling(SceneManager, stage);
+			_starling = new Starling(Main, stage);
 			_starling.start();
 			
 			_starling.showStats = true; // debug

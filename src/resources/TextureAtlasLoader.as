@@ -80,7 +80,7 @@ package resources
 			loader.removeEventListener(Event.COMPLETE, onLoadedXML);
 			loader.removeEventListener(IOErrorEvent.IO_ERROR, onFailedLoadingXML);
 			
-			var xml:XML = new XML(loader.data);
+			_xml = new XML(loader.data);
 			
 			if (_onCompleteLoad)
 			{

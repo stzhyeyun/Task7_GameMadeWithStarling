@@ -2,24 +2,24 @@ package scene.gameScene
 {
 	import block.Block;
 	import block.Table;
-	import block.Tile;
 	
 	import data.DataManager;
 	import data.PlayData;
 	
 	import scene.Scene;
 	
-	import starling.display.Button;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	
 	public class GameScene extends Scene
 	{
+		public static const SET_BLOCK:String = "setBlock";
+		
 		private const NONE:int = -1;
 		
 		private var _table:Table;
-		private var _blocks:Vector.<Block>;
+		private var _blocks:Vector.<Block>; // 3 Blocks
 		private var _selectedBlockIndex:int;
 
 		private var _leftBlockX:Number;
@@ -36,6 +36,14 @@ package scene.gameScene
 			_table = null;
 			_blocks = null;
 			_selectedBlockIndex = NONE;
+		}
+		
+		public override function dispose():void
+		{
+			// to do
+			
+			
+			super.dispose();
 		}
 		
 		public override function initialize():void
@@ -62,31 +70,21 @@ package scene.gameScene
 			addChild(ui);
 			addChild(_table);
 			
-			generateBlocks();
-			addEventListener(TouchEvent.TOUCH, onTouch);
-			
+			refreshBlocks();
 		}
 		
-		public override function dispose():void
-		{
-			removeEventListener(TouchEvent.TOUCH, onTouch);
-			// to do
-			
-			
-			super.dispose();
-		}
-		
-		private function generateBlocks():void
+		private function refreshBlocks():void
 		{
 			// to do
-			
+			//addEventListener(TouchEvent.TOUCH, onTouchBlock);
 		}
 		
-		private function onTouch(event:TouchEvent):void
+		private function onTouchBlock(event:TouchEvent):void
 		{
 			var touch:Touch = event.getTouch(this);
+			var target:Block = event.currentTarget as Block;
 			
-			if (!touch)
+			if (!touch || !target)
 			{
 				return;
 			}
@@ -95,7 +93,8 @@ package scene.gameScene
 			{
 				case TouchPhase.BEGAN:
 				{
-					// define which block pointed
+					// place block avoid finger
+					
 					
 				}
 					break;
@@ -110,25 +109,28 @@ package scene.gameScene
 				case TouchPhase.ENDED:
 				{
 					// set block into table
-//					if (!_table.setBlock())
+//					if (_table.setBlock())
 //					{
-//						// locate block in original position
+//						//removeEventListener(TouchEvent.TOUCH, onTouchBlock);
+//						//block.visible = false;
+						//update score
+//					}
+//					else
+//					{
+//						//locate block in original position
 //					}
 					
-					// remain one block
+					// check remained blocks are settable
 //					if (!_table.isSettable())
 //					{
 //						// Game over
 //					}
 					
 					// used blocks all
-					generateBlocks();
+					refreshBlocks();
 				}
 					break;
-								
-				default:
-					break;
-			}
-		}
+			} // switch (touch.phase)
+		} // private function onTouchBlock(event:TouchEvent):void
 	}
 }

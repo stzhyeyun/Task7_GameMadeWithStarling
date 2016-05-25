@@ -1,4 +1,4 @@
 *.settings
-bin/*.swc
+bin-debug/
 *.actionScriptProperties
 *.project

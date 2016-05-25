@@ -19,14 +19,13 @@ package resources
 		
 		private static var _path:File;
 		private static var _pngList:Array;
-		private static var _xmlList:Array;
 		private static var _mp3List:Array;
 		private static var _totalResourcesCount:int;
 		private static var _loadedResourcesCount:int;
 		
 		private static var _onReadyToUseResources:Function;
 		
-		public function set onReadyToUseResources(value:Function):void
+		public static function set onReadyToUseResources(value:Function):void
 		{
 			_onReadyToUseResources = value;
 		}
@@ -88,21 +87,18 @@ package resources
 			{
 				url = resourcesList[i].url;
 				
-				if (url.match(/\.png$/i)) // /\.(jpe?g|png)$/i
+				if (url.match(/\.png$/i))
 				{
 					if (!_pngList)
 					{
 						_pngList = new Array();
 					}
 					_pngList.push(url);
+					_totalResourcesCount++;
 				}
 				else if (url.match(/\.xml$/i))
 				{
-					if (!_xmlList)
-					{
-						_xmlList = new Array();
-					}
-					_xmlList.push(url);
+					_totalResourcesCount++;
 				}
 				else if (url.match(/\.mp3$/i))
 				{
@@ -111,6 +107,7 @@ package resources
 						_mp3List = new Array();
 					}
 					_mp3List.push(url);
+					_totalResourcesCount++;
 				}
 			}
 
@@ -120,7 +117,7 @@ package resources
 				var fileName:String;
 				for (i = 0; i < _pngList.length; i++)
 				{
-					url = _pngList[i].url;
+					url = _pngList[i];
 					fileName = url.replace(_path.url + "/", "").replace(/\.png$/i, "");
 					
 					loader = new TextureAtlasLoader(onLoadedTextureAtlas);
@@ -141,7 +138,7 @@ package resources
 					sound = new Sound();
 					sound.addEventListener(Event.COMPLETE, onLoadedSound);
 					sound.addEventListener(IOErrorEvent.IO_ERROR, onFailedLoadingSound);
-					sound.load(new URLRequest(_mp3List[i].url));
+					sound.load(new URLRequest(_mp3List[i]));
 				}
 				_mp3List.splice(0, _mp3List.length);
 				_mp3List = null;

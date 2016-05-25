@@ -8,6 +8,9 @@ package data
 	
 	import block.Table;
 	import block.Tile;
+	
+	import resources.Resources;
+	import resources.ResourcesName;
 
 	public class PlayData extends Data
 	{
@@ -88,19 +91,21 @@ package data
 			
 			if (_table && _table.tiles)
 			{
-				for (var i:int = 0; i < _table.tiles.length; i++)
+				var tiles:Vector.<Vector.<Tile>> = _table.tiles;
+				for (var i:int = 0; i < tiles.length; i++)
 				{
-					if (i < _table.tiles.length - 1)
+					for (var j:int = 0; j < tiles[i].length; j++)
 					{
-						plainText += _table.tiles[i].index + ", " +
-									 _table.tiles[i].blockId + ", " +
-									 _table.tiles[i].isFilled + ", ";
-					}
-					else
-					{
-						plainText += _table.tiles[i].index + ", " +
-									 _table.tiles[i].blockId + ", " +
-									 _table.tiles[i].isFilled + "]\n}";
+						if (i < tiles.length - 1)
+						{
+							plainText += tiles[i][j].blockType + ", " +
+										 tiles[i][j].isFilled + ", ";
+						}
+						else
+						{
+							plainText += tiles[i][j].blockType + ", " +
+										 tiles[i][j].isFilled + "]\n}";
+						}
 					}
 				}
 			}
@@ -141,29 +146,40 @@ package data
 			{
 				_table = new Table();
 				
-				var index:int;
-				var blockId:int;
-				var isFilled:Boolean;
+				var tiles:Vector.<Vector.<Tile>> = new Vector.<Vector.<Tile>>();
 				var tile:Tile;
-				for (var i:int = 0; i < plainText.table.length; i += 3)
+				var blockType:String;
+				var isFilled:Boolean;
+				var indexI:int = 0;
+				
+				for (var i:int = 0; i < plainText.table.length; i += 2)
 				{
-					index = plainText.table[i];
-					blockId = plainText.table[i + 1];
-					isFilled = plainText.table[i + 2];
+					blockType = plainText.table[i];
+					isFilled = plainText.table[i + 1];
 					
-					if (blockId >= 0 && isFilled)
+					if (blockType && isFilled)
 					{
-						// create tile with specific texture
+						tile = new Tile(Resources.getTexture(ResourcesName.ATLAS, blockType));
 					}
 					else
 					{
-						// create tile with default texture
+						tile = new Tile(Resources.getTexture(ResourcesName.ATLAS, ResourcesName.TILE_EMPTY));
 					}
-					tile.blockId = blockId;
+					tile.blockType = blockType;
 					tile.isFilled = isFilled;
-						
-					_table.addTile(tile);
+					
+					if (!tiles[indexI])
+					{
+						tiles[indexI] = new Vector.<Tile>();
+					}
+					tiles[indexI].push(tile);
+					
+					if (i != 0 && i % 20 == 0)
+					{
+						indexI++;
+					}
 				}
+				_table.tiles = tiles;
 			}
 		}
 	}

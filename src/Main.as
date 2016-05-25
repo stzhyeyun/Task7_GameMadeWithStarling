@@ -1,6 +1,10 @@
 package
 {
+	import flash.filesystem.File;
+	
 	import data.DataManager;
+	
+	import resources.Resources;
 	
 	import scene.SceneManager;
 	
@@ -20,10 +24,8 @@ package
 		{
 			_current = this;
 			
-			// load resources
-			// when completed loading resources,
-			DataManager.initialize();
-			SceneManager.initialize();
+			Resources.onReadyToUseResources = onCompleteLoad;
+			Resources.load(File.applicationDirectory.resolvePath("resources/res"));
 		}
 		
 		public override function dispose():void
@@ -32,6 +34,12 @@ package
 			SceneManager.dispose();
 			
 			super.dispose();
+		}
+		
+		private function onCompleteLoad():void
+		{
+			DataManager.initialize();
+			SceneManager.initialize();
 		}
 	}
 }

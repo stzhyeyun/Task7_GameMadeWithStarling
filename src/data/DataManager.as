@@ -25,18 +25,6 @@ package data
 		{
 			
 		}
-
-		public static function initialize():void
-		{
-			_path = File.applicationStorageDirectory.resolvePath("data");
-			
-			_playData = new PlayData("playData", _path);
-			_playData.read();
-			
-			_settingData = new SettingData("settingData", _path);
-			_settingData.onReadyToPreset = preset;
-			_settingData.read();
-		}
 		
 		public static function dispose():void
 		{
@@ -53,6 +41,18 @@ package data
 				_settingData.dispose();
 			}
 			_settingData = null;
+		}
+
+		public static function initialize():void
+		{
+			_path = File.applicationStorageDirectory.resolvePath("data");
+			
+			_playData = new PlayData("playData", _path);
+			_playData.read();
+			
+			_settingData = new SettingData("settingData", _path);
+			_settingData.onReadyToPreset = preset;
+			_settingData.read();
 		}
 		
 		private static function preset():void

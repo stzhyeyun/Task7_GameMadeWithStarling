@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TextureAtlas imagePath="atlas.png">
+   <SubTexture name="background_game" x="544" y="359" width="200" height="355" />
+   <SubTexture name="background_title" x="342" y="419" width="200" height="356" />
+   <SubTexture name="i_horizontal" x="0" y="747" width="55" height="55" />
+   <SubTexture name="i_vertical" x="57" y="747" width="55" height="55" />
+   <SubTexture name="l_three" x="480" y="359" width="55" height="55" />
+   <SubTexture name="l_two" x="284" y="563" width="55" height="55" />
+   <SubTexture name="o" x="142" y="709" width="55" height="55" />
+   <SubTexture name="tile_empty" x="284" y="620" width="55" height="55" />
+   <SubTexture name="alert" x="480" y="179" width="358" height="178" />
+   <SubTexture name="bgm" x="110" y="490" width="69" height="71" />
+   <SubTexture name="cancel" x="0" y="601" width="69" height="71" />
+   <SubTexture name="confirm" x="181" y="490" width="69" height="71" />
+   <SubTexture name="facebook" x="71" y="601" width="69" height="71" />
+   <SubTexture name="menu" x="0" y="674" width="69" height="71" />
+   <SubTexture name="pause" x="252" y="490" width="69" height="71" />
+   <SubTexture name="play" x="0" y="490" width="108" height="109" />
+   <SubTexture name="popup" x="0" y="0" width="478" height="417" />
+   <SubTexture name="popup_mini" x="480" y="0" width="391" height="177" />
+   <SubTexture name="rank" x="142" y="563" width="69" height="71" />
+   <SubTexture name="replay" x="71" y="674" width="69" height="71" />
+   <SubTexture name="resume" x="213" y="563" width="69" height="71" />
+   <SubTexture name="setting_btn" x="142" y="636" width="69" height="71" />
+   <SubTexture name="share" x="0" y="419" width="340" height="69" />
+   <SubTexture name="sound" x="213" y="636" width="69" height="71" />
+</TextureAtlas>

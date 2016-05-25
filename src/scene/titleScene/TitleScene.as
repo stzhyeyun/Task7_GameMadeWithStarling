@@ -15,19 +15,19 @@ package scene.titleScene
 			super(name);
 		}
 		
+		public override function dispose():void
+		{
+			removeEventListener(TouchEvent.TOUCH, onTouch);
+			
+			super.dispose();
+		}
+		
 		public override function initialize():void
 		{
 			var ui:TitleSceneUI = new TitleSceneUI();
 			addChild(ui);
 			
 			addEventListener(TouchEvent.TOUCH, onTouch);
-		}
-		
-		public override function dispose():void
-		{
-			removeEventListener(TouchEvent.TOUCH, onTouch);
-			
-			super.dispose();
 		}
 		
 		private function onTouch(event:TouchEvent):void
