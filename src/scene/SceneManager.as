@@ -38,14 +38,18 @@ package scene
 			_scenes = new Dictionary();
 			_currentSceneName = null;
 			
-			var title:TitleScene = new TitleScene(SceneName.TITLE);
-			_scenes[SceneName.TITLE] = title;
-			
-			switchScene(SceneName.TITLE);
+//			var title:TitleScene = new TitleScene(SceneName.TITLE);
+//			title.initialize();
+//			_scenes[title.name] = title;
+//			
+//			switchScene(title.name);
 			
 			var game:GameScene = new GameScene(SceneName.GAME);
-			game.visible = false;
-			_scenes[SceneName.GAME] = game;
+			game.initialize(); // test
+			//game.visible = false;
+			_scenes[game.name] = game;
+			
+			switchScene(game.name);
 		}
 		
 		public static function switchScene(nextSceneName:String):void

@@ -2,7 +2,7 @@ package
 {
 	import flash.filesystem.File;
 	
-	import data.DataManager;
+	import gamedata.DataManager;
 	
 	import resources.Resources;
 	

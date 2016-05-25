@@ -1,4 +1,4 @@
-package data
+package gamedata
 {
 	import flash.events.Event;
 	import flash.filesystem.File;
@@ -6,11 +6,8 @@ package data
 	import flash.filesystem.FileStream;
 	import flash.net.URLLoader;
 	
-	import block.Table;
-	import block.Tile;
-	
-	import resources.Resources;
-	import resources.ResourcesName;
+	import core.TableData;
+	import core.TileData;
 
 	public class PlayData extends Data
 	{
@@ -18,7 +15,7 @@ package data
 		
 		private var _bestScore:int;
 		private var _currentScore:int;
-		private var _table:Table;
+		private var _tableData:TableData;
 
 		public function get bestScore():int
 		{
@@ -40,14 +37,14 @@ package data
 			_currentScore = value;
 		}
 		
-		public function get table():Table
+		public function get tableData():TableData
 		{
-			return _table;
+			return _tableData;
 		}
 		
-		public function set table(value:Table):void
+		public function set tableData(value:TableData):void
 		{
-			_table = value;
+			_tableData = value;
 		}
 		
 		
@@ -57,18 +54,7 @@ package data
 			
 			_bestScore = 0;
 			_currentScore = 0;
-			_table = null;
-		}
-
-		public override function dispose():void
-		{
-			if (_table)
-			{
-				_table.dispose();
-			}
-			_table = null;
-			
-			super.dispose();
+			_tableData = null;
 		}
 		
 		/**
@@ -86,33 +72,13 @@ package data
 			}
 			
 			var plainText:String = "{\n\t\"bestScore\" : "	+	_bestScore.toString()		+	",\n"	+
-									"\t\"currentScore\" : "	+	_currentScore.toString()	+	",\n" +
-									"\t\"table\" : [";
-			
-			if (_table && _table.tiles)
+									"\t\"currentScore\" : "	+	_currentScore.toString();
+
+			if (_tableData)
 			{
-				var tiles:Vector.<Vector.<Tile>> = _table.tiles;
-				for (var i:int = 0; i < tiles.length; i++)
-				{
-					for (var j:int = 0; j < tiles[i].length; j++)
-					{
-						if (i < tiles.length - 1)
-						{
-							plainText += tiles[i][j].blockType + ", " +
-										 tiles[i][j].isFilled + ", ";
-						}
-						else
-						{
-							plainText += tiles[i][j].blockType + ", " +
-										 tiles[i][j].isFilled + "]\n}";
-						}
-					}
-				}
+				plainText += _tableData.export();
 			}
-			else
-			{
-				plainText += "]\n}";
-			}
+			plainText += "\n}";
 			
 			plainText = AesCrypto.encrypt(plainText, "ahundrendblocksbybamkie");
 			
@@ -142,44 +108,28 @@ package data
 			_bestScore = plainText.bestScore;
 			_currentScore = plainText.currentScore;
 			
-			if (plainText.table.length > 0)
+			if (plainText.tableSize)
 			{
-				_table = new Table();
+				_tableData = new TableData();
+				_tableData.size = plainText.tableSize;
 				
-				var tiles:Vector.<Vector.<Tile>> = new Vector.<Vector.<Tile>>();
-				var tile:Tile;
-				var blockType:String;
-				var isFilled:Boolean;
-				var indexI:int = 0;
-				
-				for (var i:int = 0; i < plainText.table.length; i += 2)
+				var data:Vector.<Vector.<TileData>> = new Vector.<Vector.<TileData>>();
+				var plainTextIndex:int = 0;
+				for (var i:int = 0; i < _tableData.size; i++)
 				{
-					blockType = plainText.table[i];
-					isFilled = plainText.table[i + 1];
+					data[i] = new Vector.<TileData>();
 					
-					if (blockType && isFilled)
+					for (var j:int = 0; j < _tableData.size; j++)
 					{
-						tile = new Tile(Resources.getTexture(ResourcesName.ATLAS, blockType));
-					}
-					else
-					{
-						tile = new Tile(Resources.getTexture(ResourcesName.ATLAS, ResourcesName.TILE_EMPTY));
-					}
-					tile.blockType = blockType;
-					tile.isFilled = isFilled;
-					
-					if (!tiles[indexI])
-					{
-						tiles[indexI] = new Vector.<Tile>();
-					}
-					tiles[indexI].push(tile);
-					
-					if (i != 0 && i % 20 == 0)
-					{
-						indexI++;
+						data[i].push(new TileData(
+							plainText.tableData[plainTextIndex++],
+							plainText.tableData[plainTextIndex++],
+							plainText.tableData[plainTextIndex++]));
+						
+						//plainTextIndex += 3;
 					}
 				}
-				_table.tiles = tiles;
+				_tableData.data = data;
 			}
 		}
 	}

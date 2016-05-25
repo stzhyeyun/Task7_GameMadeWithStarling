@@ -2,12 +2,12 @@
 <TextureAtlas imagePath="atlas.png">
    <SubTexture name="background_game" x="544" y="359" width="200" height="355" />
    <SubTexture name="background_title" x="342" y="419" width="200" height="356" />
-   <SubTexture name="i_horizontal" x="0" y="747" width="55" height="55" />
-   <SubTexture name="i_vertical" x="57" y="747" width="55" height="55" />
-   <SubTexture name="l_three" x="480" y="359" width="55" height="55" />
-   <SubTexture name="l_two" x="284" y="563" width="55" height="55" />
-   <SubTexture name="o" x="142" y="709" width="55" height="55" />
-   <SubTexture name="tile_empty" x="284" y="620" width="55" height="55" />
+   <SubTexture name="blue" x="0" y="747" width="55" height="55" />
+   <SubTexture name="green" x="57" y="747" width="55" height="55" />
+   <SubTexture name="orange" x="480" y="359" width="55" height="55" />
+   <SubTexture name="red" x="284" y="563" width="55" height="55" />
+   <SubTexture name="white" x="142" y="709" width="55" height="55" />
+   <SubTexture name="yellow" x="284" y="620" width="55" height="55" />
    <SubTexture name="alert" x="480" y="179" width="358" height="178" />
    <SubTexture name="bgm" x="110" y="490" width="69" height="71" />
    <SubTexture name="cancel" x="0" y="601" width="69" height="71" />

@@ -1,13 +1,11 @@
-package block
+package core
 {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
 	import resources.Resources;
-	import resources.ResourcesName;
 	
 	import starling.display.Image;
-	import starling.textures.Texture;
 
 	public class Tile extends Image
 	{
@@ -20,34 +18,23 @@ package block
 	
 		private const TAG:String = "[Tile]"; 
 		
-		private var _blockType:String;
-		private var _isFilled:Boolean;
+		private var _data:TileData;
 		
 		private var _top:Tile;
 		private var _bottom:Tile;
 		private var _left:Tile;
 		private var _right:Tile;
 		
-		public function get blockType():String
+		public function get data():TileData
 		{
-			return _blockType;
+			return _data;
 		}
 		
-		public function set blockType(value:String):void
+		public function set data(value:TileData):void
 		{
-			_blockType = value;
+			_data = value;
 		}
-		
-		public function get isFilled():Boolean
-		{
-			return _isFilled;
-		}
-		
-		public function set isFilled(value:Boolean):void
-		{
-			_isFilled = value;
-		}
-		
+
 		public function get top():Tile
 		{
 			return _top;
@@ -89,12 +76,11 @@ package block
 		}
 
 		
-		public function Tile(texture:Texture, blockType:String = null, isFilled:Boolean = false)
+		public function Tile(tileData:TileData)
 		{
-			super(texture);
-			
-			_blockType = blockType;
-			_isFilled = isFilled;
+			_data = tileData;
+
+			super(Resources.getTexture(_data.textureName));
 			
 			top = null;
 			bottom = null;
@@ -135,11 +121,11 @@ package block
 		
 		public function checkLineEmpty(direction:int, range:int):Boolean
 		{
-			if (_isFilled)
-			{
-				return false;
-			}
-			
+//			if (_isFilled)
+//			{
+//				return false;
+//			}
+//			
 			range--;
 			if (range == 0)
 			{
@@ -195,10 +181,10 @@ package block
 		
 		public function checkLineFilled(direction:int):Boolean
 		{
-			if (!_isFilled)
-			{
-				return false;	
-			}
+//			if (!_isFilled)
+//			{
+//				return false;	
+//			}
 			
 			switch (direction)
 			{
@@ -249,9 +235,9 @@ package block
 		
 		public function clear(direction:int):void
 		{
-			_blockType = null;
-			_isFilled = false;
-			this.texture = Resources.getTexture(ResourcesName.ATLAS, ResourcesName.TILE_EMPTY);
+//			_blockType = null;
+//			_isFilled = false;
+//			this.texture = Resources.getTexture(ResourcesName.ATLAS, ResourcesName.WHITE);
 			
 			switch (direction)
 			{

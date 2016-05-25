@@ -14,7 +14,7 @@ package resources
 	
 	public class Resources
 	{
-		private static var _textureAtlasDic:Dictionary;
+		private static var _textureAtlas:TextureAtlas;
 		private static var _soundDic:Dictionary;
 		
 		private static var _path:File;
@@ -38,24 +38,15 @@ package resources
 		
 		public static function dispose():void
 		{
-			if (_textureAtlasDic)
+			if (_textureAtlas)
 			{
-				for (var key:String in _textureAtlasDic)
-				{
-					var atlas:TextureAtlas = _textureAtlasDic[key];
-					if (atlas)
-					{
-						atlas.dispose();
-					}
-					_textureAtlasDic[key] = null;
-					delete _textureAtlasDic[key];
-				}
+				_textureAtlas.dispose();
 			}
-			_textureAtlasDic = null;
+			_textureAtlas = null;
 			
 			if (_soundDic)
 			{
-				for (key in _soundDic)
+				for (var key:Object in _soundDic)
 				{
 					_soundDic[key] = null;
 					delete _soundDic[key];
@@ -147,17 +138,15 @@ package resources
 			}
 		}
 		
-		public static function getTexture(textureAtlasName:String, textureName:String):Texture
+		public static function getTexture(textureName:String):Texture
 		{
-			if (!_textureAtlasDic || !_textureAtlasDic[textureAtlasName])
+			if (!_textureAtlas)
 			{
-				if (!_textureAtlasDic) trace("getTexture : No texture atlas.");
-				if (!_textureAtlasDic[textureAtlasName]) trace("getTexture : Not registered texture atlas name.");
+				if (!_textureAtlas) trace("getTexture : No texture atlas.");
 				return null;
 			}
 			
-			var atlas:TextureAtlas = _textureAtlasDic[textureAtlasName];
-			var texture:Texture = atlas.getTexture(textureName);
+			var texture:Texture = _textureAtlas.getTexture(textureName);
 			
 			if (!texture)
 			{
@@ -193,11 +182,7 @@ package resources
 		
 		private static function onLoadedTextureAtlas(name:String, bitmap:Bitmap, xml:XML, loader:TextureAtlasLoader):void
 		{
-			if (!_textureAtlasDic)
-			{
-				_textureAtlasDic = new Dictionary();
-			}
-			_textureAtlasDic[name] = new TextureAtlas(Texture.fromBitmap(bitmap), xml);
+			_textureAtlas = new TextureAtlas(Texture.fromBitmap(bitmap), xml);
 			
 			loader.dispose();
 			

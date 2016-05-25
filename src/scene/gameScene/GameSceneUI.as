@@ -6,11 +6,12 @@ package scene.gameScene
 	{
 		public function GameSceneUI()
 		{
+			
 		}
 		
 		public function initialize(bestScore:int = 0, currentScore:int = 0):void
 		{
-			
+
 		}
 	}
 }
