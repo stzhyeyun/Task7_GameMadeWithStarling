@@ -21,7 +21,7 @@
    <SubTexture name="rank" x="142" y="563" width="69" height="71" />
    <SubTexture name="replay" x="71" y="674" width="69" height="71" />
    <SubTexture name="resume" x="213" y="563" width="69" height="71" />
-   <SubTexture name="setting_btn" x="142" y="636" width="69" height="71" />
+   <SubTexture name="setting" x="142" y="636" width="69" height="71" />
    <SubTexture name="share" x="0" y="419" width="340" height="69" />
    <SubTexture name="sound" x="213" y="636" width="69" height="71" />
 </TextureAtlas>

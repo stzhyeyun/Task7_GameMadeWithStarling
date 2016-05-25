@@ -36,17 +36,24 @@ package resources
 		// UI
 		public static const POPUP:String = "popup";
 		public static const POPUP_MINI:String = "popup_mini";
-		public static const POPUP_EXIT:String = "popup_exit";
+		public static const ALERT:String = "alert";
 
-		public static const PLAY:String = "l_three";
-		public static const PAUSE:String = "l_three";
-		public static const SETTING:String = "l_three";
-		public static const RANK:String = "l_three";
-		public static const FACEBOOK:String = "l_three";
+		public static const FACEBOOK:String = "facebook";
+		public static const PLAY:String = "play";
+		public static const RANK:String = "rank";
+		public static const SETTING:String = "setting";
+		public static const PAUSE:String = "pause";
+		public static const SOUND:String = "sound";
+		public static const BGM:String = "bgm";
+		public static const REPLAY:String = "replay";
+		public static const RESUME:String = "resume";
+		public static const MENU:String = "menu";
+		public static const SHARE:String = "share";
+		public static const CANCEL:String = "cancel";
+		public static const CONFIRM:String = "confirm";
 		
 		// Background
 		public static const BACKGROUND_TITLE:String = "background_title";
 		public static const BACKGROUND_GAME:String = "background_game";
-		public static const BOTTOM:String = "bottom";
 	}
 }
