@@ -16,6 +16,7 @@ package scene.gameScene
 	import scene.Scene;
 	
 	import starling.display.Image;
+	import starling.events.Event;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
@@ -31,6 +32,12 @@ package scene.gameScene
 		
 		private var _table:Table;
 		private var _blocks:Vector.<Block>; // 3 Blocks
+		
+		private var _blockAreaSize:Number;
+		private var _selectedBlockOriginWidth:Number;
+		private var _selectedBlockOriginHeight:Number;
+		private var _selectedBlockScaleX:Number;
+		private var _selectedBlockScaleY:Number;
 		private var _originBlockPosData:Vector.<Point>;
 		
 		public function GameScene(name:String)
@@ -52,12 +59,18 @@ package scene.gameScene
 		
 		public override function initialize():void
 		{
+			// test
+			DataManager.current.addEventListener(DataManager.UPDATE, onUpdateScore);
+			//
+			
 			var playData:PlayData = DataManager.playData;
 			
 			// UI
 			var ui:GameSceneUI = new GameSceneUI();
-			ui.initialize(playData.bestScore, playData.currentScore);
-			//addChild(ui);
+			ui.initialize(
+				this.nativeStageWidth, this.nativeStageHeight,
+				playData.bestScore, playData.currentScore);
+			addChild(ui);
 			
 			// Table
 			var tableData:TableData;
@@ -67,18 +80,22 @@ package scene.gameScene
 			}
 			else
 			{
-				tableData = new TableData(TABLE_SIZE);	
+				tableData = new TableData(TABLE_SIZE);
+				playData.tableData = tableData;
 			}
 			
 			_table = new Table();
 			_table.initialize(tableData);
 
-			var scale:Number =  this.nativeStageWidth * 0.9 / _table.width;
+			var scale:Number =  this.nativeStageWidth * 0.8 / _table.width;
 			_table.width *= scale;
 			_table.height *= scale;
 			_table.x = (this.nativeStageWidth / 2) - (_table.width / 2);
 			_table.y = (this.nativeStageHeight / 2) - (_table.height / 2);
 			addChild(_table);
+			
+			_blockAreaSize = _table.width / 3;
+			_selectedBlockScaleX = _selectedBlockScaleY = 1.9;
 			
 			// Block
 			createBlocks();
@@ -101,11 +118,10 @@ package scene.gameScene
 				// Block
 				block = new Block();
 				block.initialize(BlockDispenser.pop());
-//				scale = _table.width / 3 * 0.5 / block.width;
-//				block.width *= scale;
-//				block.height *= scale;
-				block.x = _table.x + (_table.width / 3 / 2) - (block.width / 2) + _table.width / 3 * i;  
-				block.y = _table.y + _table.height + (_table.width / 3 / 2) - (block.height / 2);
+				block.pivotX = block.width / 2;
+				block.pivotY = block.height / 2;
+				block.x = _table.x + (_table.width / 3 / 2) + _table.width / 3 * i;  
+				block.y = _table.y + _table.height + (_table.width / 3 / 2);
 				addChild(block);
 				
 				_blocks.insertAt(i, block);
@@ -144,22 +160,20 @@ package scene.gameScene
 			for (i = 0; i < _blocks.length; i++)
 			{
 				_blocks[i].initialize(BlockDispenser.pop());
-//				scale = _table.width / 3 * 0.5 / _blocks[i].width;
-//				_blocks[i].width *= scale;
-//				_blocks[i].height *= scale;
+				_blocks[i].pivotX = _blocks[i].width / 2;
+				_blocks[i].pivotY = _blocks[i].height / 2;
 				_blocks[i].x = _originBlockPosData[i].x;  
 				_blocks[i].y = _originBlockPosData[i].y;
 				_blocks[i].visible = true;
 			}
 		}
 		
-		private function moveBlock(blockIndex:int, touchPos:Point):void
+		private function moveBlock(block:Block, touchPos:Point):void
 		{
-			var block:Block = _blocks[blockIndex];
 			if (block.visible)
 			{
-				block.x = touchPos.x - block.width / 2;
-				block.y = touchPos.y - block.height * 1.2;
+				block.x = touchPos.x;
+				block.y = touchPos.y / 1.2;
 			}
 		}
 			
@@ -173,24 +187,32 @@ package scene.gameScene
 				return;
 			}
 			
+			var blockIndex:int = int(touchArea.name);
+			var block:Block = _blocks[blockIndex];
+			
 			switch (touch.phase)
 			{
 				case TouchPhase.BEGAN:
 				{
-					moveBlock(int(touchArea.name), touch.getLocation(this));
+//					_selectedBlockOriginWidth = block.width;
+//					_selectedBlockOriginHeight = block.height;
+//					block.width *= _selectedBlockScaleX;
+//					block.height *= _selectedBlockScaleY;
+					
+					moveBlock(block, touch.getLocation(this));
 				}
 					break;
 				
 				case TouchPhase.MOVED:
 				{
-					moveBlock(int(touchArea.name), touch.getLocation(this));
+					moveBlock(block, touch.getLocation(this));
 				}
 					break;
 				
 				case TouchPhase.ENDED:
 				{
-					var blockIndex:int = int(touchArea.name);
-					var block:Block = _blocks[blockIndex];
+//					block.width = _selectedBlockOriginWidth;
+//					block.height = _selectedBlockOriginHeight;
 					
 					// 테이블에 블럭 세팅
 					if (_table.setBlock(block))
@@ -219,12 +241,15 @@ package scene.gameScene
 					}
 					
 					refreshBlocks();
-					
-					// test
-					DataManager.test();
 				}
 					break;
 			} // switch (touch.phase)
 		} // private function onTouchBlock(event:TouchEvent):void
+		
+		private function onUpdateScore(event:Event):void // test
+		{
+			trace(DataManager.playData.currentScore.toString());
+			trace(event.data);
+		}
 	}
 }

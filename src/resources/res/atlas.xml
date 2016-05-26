@@ -2,12 +2,22 @@
 <TextureAtlas imagePath="atlas.png">
    <SubTexture name="background_game" x="544" y="359" width="200" height="355" />
    <SubTexture name="background_title" x="342" y="419" width="200" height="356" />
-   <SubTexture name="blue" x="0" y="747" width="55" height="55" />
-   <SubTexture name="green" x="57" y="747" width="55" height="55" />
-   <SubTexture name="orange" x="480" y="359" width="55" height="55" />
-   <SubTexture name="red" x="284" y="563" width="55" height="55" />
-   <SubTexture name="white" x="142" y="709" width="55" height="55" />
-   <SubTexture name="yellow" x="284" y="620" width="55" height="55" />
+   <SubTexture name="blue" x="480" y="359" width="55" height="55" />
+   <SubTexture name="green" x="284" y="563" width="55" height="55" />
+   <SubTexture name="orange" x="213" y="636" width="55" height="55" />
+   <SubTexture name="red" x="142" y="709" width="55" height="55" />
+   <SubTexture name="white" x="284" y="620" width="55" height="55" />
+   <SubTexture name="yellow" x="213" y="693" width="55" height="55" />
+   <SubTexture name="0" x="142" y="766" width="31" height="32" />
+   <SubTexture name="1" x="323" y="490" width="11" height="31" />
+   <SubTexture name="2" x="169" y="801" width="21" height="31" />
+   <SubTexture name="3" x="227" y="750" width="20" height="32" />
+   <SubTexture name="4" x="110" y="563" width="28" height="34" />
+   <SubTexture name="5" x="296" y="677" width="21" height="33" />
+   <SubTexture name="6" x="142" y="800" width="25" height="33" />
+   <SubTexture name="7" x="203" y="750" width="22" height="33" />
+   <SubTexture name="8" x="270" y="677" width="24" height="32" />
+   <SubTexture name="9" x="175" y="766" width="26" height="33" />
    <SubTexture name="alert" x="480" y="179" width="358" height="178" />
    <SubTexture name="bgm" x="110" y="490" width="69" height="71" />
    <SubTexture name="cancel" x="0" y="601" width="69" height="71" />
@@ -20,8 +30,9 @@
    <SubTexture name="popup_mini" x="480" y="0" width="391" height="177" />
    <SubTexture name="rank" x="142" y="563" width="69" height="71" />
    <SubTexture name="replay" x="71" y="674" width="69" height="71" />
-   <SubTexture name="resume" x="213" y="563" width="69" height="71" />
-   <SubTexture name="setting" x="142" y="636" width="69" height="71" />
+   <SubTexture name="resume" x="0" y="747" width="69" height="71" />
+   <SubTexture name="setting" x="213" y="563" width="69" height="71" />
    <SubTexture name="share" x="0" y="419" width="340" height="69" />
-   <SubTexture name="sound" x="213" y="636" width="69" height="71" />
+   <SubTexture name="shop" x="142" y="636" width="69" height="71" />
+   <SubTexture name="sound" x="71" y="747" width="69" height="71" />
 </TextureAtlas>

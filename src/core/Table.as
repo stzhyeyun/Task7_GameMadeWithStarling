@@ -113,16 +113,16 @@ package core
 			return _data.setBlock(pivotCol, pivotRow, block.data, onUpdate);
 		}
 		
-		private function onUpdate(updatedDataIndices:Vector.<int>):void
+		private function onUpdate(updatedDataIndices:Vector.<Index2D>):void
 		{
 			// 업데이트 된 타일 텍스처 변경
 			var tileData:Vector.<Vector.<TileData>> = _data.data;
 			var updatedCol:int;
 			var updatedRow:int;
-			for (var i:int = 0; i < updatedDataIndices.length; i += 2)
+			for (var i:int = 0; i < updatedDataIndices.length; i++)
 			{
-				updatedCol = updatedDataIndices[i];
-				updatedRow = updatedDataIndices[i + 1];
+				updatedCol = updatedDataIndices[i].col;
+				updatedRow = updatedDataIndices[i].row;
 				
 				_tiles[updatedCol][updatedRow].texture =
 					Resources.getTexture(tileData[updatedCol][updatedRow].textureName);

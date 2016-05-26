@@ -82,13 +82,20 @@ package gamedata
 			}
 		}
 		
-		public static function updateCurrentScore():void
+		public static function updateCurrentScore(numBlockTiles:int, numClearTiles:int = 0):void
 		{
+			var obtainedScore:int = numBlockTiles; // 맞춘 블럭 타일당 1점
 			
+			if (numClearTiles > 0)
+			{
+				obtainedScore +=
+					numClearTiles + // 클리어한 타일당 1점
+					((numClearTiles / _playData.tableData.size - 1) * 10); // 클리어한 라인 1개 초과 시마다 10점
+			}
+				
+			_playData.currentScore += obtainedScore;
 			
-			
-			
-			DataManager.current.dispatchEvent(new Event(DataManager.UPDATE));	
+			DataManager.current.dispatchEvent(new Event(DataManager.UPDATE, false, _playData.currentScore));	
 		}
 	}
 }

@@ -3,8 +3,6 @@ package core
 	import gamedata.DataManager;
 	
 	import resources.ResourcesName;
-	
-	import starling.events.Event;
 
 	public class TableData
 	{
@@ -106,7 +104,7 @@ package core
 
 		public function setBlock(pivotCol:int, pivotRow:int, blockData:BlockData, onUpdate:Function):Boolean
 		{
-			var destTilesIndices:Vector.<int> = new Vector.<int>();
+			var destTilesIndices:Vector.<Index2D> = new Vector.<Index2D>();
 			
 			var blockTiles:Vector.<TileData> = blockData.data;
 			var prevBlockTileCol:int = blockTiles[0].col;
@@ -131,52 +129,46 @@ package core
 					return false;
 				}
 				
-				destTilesIndices.push(pivotCol);
-				destTilesIndices.push(pivotRow);
+				destTilesIndices.push(new Index2D(pivotCol, pivotRow));
 
 				prevBlockTileCol = blockTiles[i].col;
 				prevBlockTileRow = blockTiles[i].row;
 			}
 			
-			// Set
-			var destIndex:int = 0;
+			// Update data
 			for (i = 0; i < blockTiles.length; i++)
 			{
-				_data[destTilesIndices[destIndex]][destTilesIndices[destIndex + 1]].textureName = blockTiles[i].textureName;
-				destIndex += 2;
+				_data[destTilesIndices[i].col][destTilesIndices[i].row].textureName = blockTiles[i].textureName;
 			}
 			
+			// Update view
 			if (onUpdate)
 			{
 				onUpdate(destTilesIndices);
 			}
-			clear(destTilesIndices, onUpdate);
 			
-			//DataManager.current.addEventListener(DataManager.UPDATE, onTest); // test
+			// Clear line
+			clear(destTilesIndices, onUpdate);
 			
 			return true;
 		}
-		
-		private function onTest(event:Event):void
+
+		public function clear(updatedTilesIndices:Vector.<Index2D>, onUpdate:Function):void
 		{
-			trace("onTest : Listened event."); 
-		}
-		
-		public function clear(updatedTilesIndices:Vector.<int>, onUpdate:Function):void
-		{
-			var totalClearTilesIndices:Vector.<int> = new Vector.<int>();
+			var totalClearTilesIndices:Vector.<Index2D> = new Vector.<Index2D>();
+			var verticalClearTilesIndices:Vector.<Index2D> = new Vector.<Index2D>();
+			var horizontalClearTilesIndices:Vector.<Index2D> = new Vector.<Index2D>();
 			
-			var verticalClearTilesIndices:Vector.<int> = new Vector.<int>();
-			var horizontalClearTilesIndices:Vector.<int> = new Vector.<int>();
 			var pivotCol:int;
 			var pivotRow:int;
 			var up:Boolean;
 			var left:Boolean;
-			for (var i:int = 0; i < updatedTilesIndices.length; i += 2)
+			
+			for (var i:int = 0; i < updatedTilesIndices.length; i++)
 			{
 				// Up
-				pivotCol = updatedTilesIndices[i];
-				pivotRow = updatedTilesIndices[i + 1];
+				pivotCol = updatedTilesIndices[i].col;
+				pivotRow = updatedTilesIndices[i].row;
 				up = true;
 				while (pivotRow >= 0)
 				{
@@ -186,15 +178,14 @@ package core
 						verticalClearTilesIndices.splice(0, verticalClearTilesIndices.length);
 						break;
 					}
-					verticalClearTilesIndices.push(pivotCol);
-					verticalClearTilesIndices.push(pivotRow);
+					verticalClearTilesIndices.push(new Index2D(pivotCol, pivotRow));
 					pivotRow--;
 				}
 				
 				// Down
 				if (up)
 				{
-					pivotRow = updatedTilesIndices[i + 1];
+					pivotRow = updatedTilesIndices[i].row;
 					while (pivotRow < _size)
 					{
 						if (_data[pivotCol][pivotRow].textureName == ResourcesName.WHITE)
@@ -202,15 +193,14 @@ package core
 							verticalClearTilesIndices.splice(0, verticalClearTilesIndices.length);
 							break;
 						}
-						verticalClearTilesIndices.push(pivotCol);
-						verticalClearTilesIndices.push(pivotRow);
+						verticalClearTilesIndices.push(new Index2D(pivotCol, pivotRow));
 						pivotRow++;
 					}
 				}
 				
 				// Left
-				pivotCol = updatedTilesIndices[i];
-				pivotRow = updatedTilesIndices[i + 1];
+				pivotCol = updatedTilesIndices[i].col;
+				pivotRow = updatedTilesIndices[i].row;
 				left = true;
 				while (pivotCol >= 0)
 				{
@@ -220,15 +210,14 @@ package core
 						horizontalClearTilesIndices.splice(0, horizontalClearTilesIndices.length);
 						break;
 					}
-					horizontalClearTilesIndices.push(pivotCol);
-					horizontalClearTilesIndices.push(pivotRow);
+					horizontalClearTilesIndices.push(new Index2D(pivotCol, pivotRow));
 					pivotCol--;
 				}
 				
 				// Right
 				if (left)
 				{
-					pivotCol = updatedTilesIndices[i];
+					pivotCol = updatedTilesIndices[i].col;
 					while (pivotCol < _size)
 					{
 						if (_data[pivotCol][pivotRow].textureName == ResourcesName.WHITE)
@@ -236,8 +225,7 @@ package core
 							horizontalClearTilesIndices.splice(0, horizontalClearTilesIndices.length);
 							break;
 						}
-						horizontalClearTilesIndices.push(pivotCol);
-						horizontalClearTilesIndices.push(pivotRow);
+						horizontalClearTilesIndices.push(new Index2D(pivotCol, pivotRow));
 						pivotCol++;
 					}
 				}
@@ -264,20 +252,43 @@ package core
 			// Clear
 			if (totalClearTilesIndices.length > 0)
 			{
-				for (i = 0; i < totalClearTilesIndices.length; i += 2)
+				// Remove duplicates
+				var tempVec:Vector.<int> = new Vector.<int>();
+				for (i = 0; i < totalClearTilesIndices.length; i++)
 				{
-					_data[totalClearTilesIndices[i]][totalClearTilesIndices[i + 1]].textureName = ResourcesName.WHITE;
+					for (j = totalClearTilesIndices.length - 1; j > i; j--)
+					{
+						if (totalClearTilesIndices[i].equality(totalClearTilesIndices[j]))
+						{
+							totalClearTilesIndices.removeAt(j);
+						}
+					}
 				}
 			
+				// Update data
+				for (i = 0; i < totalClearTilesIndices.length; i++)
+				{
+					_data[totalClearTilesIndices[i].col][totalClearTilesIndices[i].row].textureName = ResourcesName.WHITE;
+				}
+			
+				// Update view
 				if (onUpdate)
 				{
 					onUpdate(totalClearTilesIndices);
 				}	
+				
+				// Update score
+				DataManager.updateCurrentScore(updatedTilesIndices.length, totalClearTilesIndices.length);
+			}
+			else
+			{
+				DataManager.updateCurrentScore(updatedTilesIndices.length);
 			}
 			
 			totalClearTilesIndices = null;
 			verticalClearTilesIndices = null;
 			horizontalClearTilesIndices = null;
+			tempVec = null;
 		}
 		
 		public function export():String
