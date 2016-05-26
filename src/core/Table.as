@@ -51,21 +51,21 @@ package core
 				
 				for (var j:int = 0; j < data[i].length; j++)
 				{
-					tileData = data[j][i];
+					tileData = data[i][j];
 					
 					tile = new Tile(tileData);
-					tile.x = tile.width * j;
-					tile.y = tile.height * i;
+					tile.x = tile.width * i;
+					tile.y = tile.height * j;
 					
 					// 간격 보정
-					if (j != 0)
-					{
-						tile.x -= tile.width / margin * j;
-					}
-					
 					if (i != 0)
 					{
-						tile.y -= tile.height / margin * i;
+						tile.x -= tile.width / margin * i;
+					}
+					
+					if (j != 0)
+					{
+						tile.y -= tile.height / margin * j;
 					}
 					
 					// 색상 보정
@@ -88,13 +88,13 @@ package core
 			var primaryTarget:Tile = block.tiles[0];
 			var closestDist:Number = 0;
 			var dist:Number = 0;
-			var pivotJ:int = 0;
-			var pivotI:int = 0;
+			var pivotCol:int = 0;
+			var pivotRow:int = 0;
 			for (var i:int = 0; i < _tiles.length; i++)
 			{
 				for (var j:int = 0; j < _tiles[i].length; j++)
 				{
-					dist = _tiles[j][i].getDistance(primaryTarget);
+					dist = _tiles[i][j].getDistance(primaryTarget);
 					
 					if (i == 0 && j == 0)
 					{
@@ -104,155 +104,29 @@ package core
 					if (dist < closestDist)
 					{
 						closestDist = dist;
-						pivotJ = j;
-						pivotI = i;
+						pivotCol = i;
+						pivotRow = j;
 					}
 				}
 			}
 			
-			return _data.setBlock(pivotJ, pivotI, block.data, onUpdate);
+			return _data.setBlock(pivotCol, pivotRow, block.data, onUpdate);
 		}
 		
-		private function onUpdate(updatedDataIndices:Vector.<int>):void // Change tile's texture
+		private function onUpdate(updatedDataIndices:Vector.<int>):void
 		{
+			// 업데이트 된 타일 텍스처 변경
 			var tileData:Vector.<Vector.<TileData>> = _data.data;
-			var updatedJ:int;
-			var updatedI:int;
+			var updatedCol:int;
+			var updatedRow:int;
 			for (var i:int = 0; i < updatedDataIndices.length; i += 2)
 			{
-				updatedJ = updatedDataIndices[i];
-				updatedI = updatedDataIndices[i + 1];
+				updatedCol = updatedDataIndices[i];
+				updatedRow = updatedDataIndices[i + 1];
 				
-				_tiles[updatedJ][updatedI].texture =
-					Resources.getTexture(tileData[updatedJ][updatedI].textureName);
+				_tiles[updatedCol][updatedRow].texture =
+					Resources.getTexture(tileData[updatedCol][updatedRow].textureName);
 			}
 		}
-
-//		
-//		public function setBlock(target:Block):Boolean
-//		{
-//			if (!_tiles || !target)
-//			{
-//				if (!_tiles) trace(TAG + " setBlock : No tiles.");
-//				if (!target) trace(TAG + " setBlock : No target block.");
-//				return false;
-//			}
-//			
-//			var blockTiles:Vector.<Tile> = target.tiles;
-//			if (!blockTiles)
-//			{
-//				trace(TAG + " setBlock : No target tiles.");
-//				return false;
-//			}
-//			
-//			_closestTilesIndices = new Vector.<TileData>();
-//			var closestDist:Number = 0;
-//			var dist:Number = 0;
-//			for (var i:int = 0; i < blockTiles.length; i++)
-//			{
-//				for (var j:int = 0; j < _tiles.length; j++)
-//				{
-//					for (var k:int = 0; k < _tiles[j].length; k++)
-//					{
-//						if (j == 0 && k == 0)
-//						{
-//							closestDist = blockTiles[i].getDistance(_tiles[j][k]);
-//							_closestTilesIndices.insertAt(i, new TileData(j, k));
-//						}
-//						else
-//						{
-//							dist = blockTiles[i].getDistance(_tiles[j][k]);		
-//						}
-//						
-//						if (dist < closestDist)
-//						{
-//							closestDist = dist;
-//							if (_closestTilesIndices[i])
-//							{
-//								_closestTilesIndices[i].i = j;
-//								_closestTilesIndices[i].j = k;
-//							}
-//							else
-//							{
-//								_closestTilesIndices.insertAt(i, new TileData(j, k));
-//							}
-//						}
-//					}
-//				}
-//				
-//				if (_tiles[_closestTilesIndices[i].i][_closestTilesIndices[i].j].isFilled)
-//				{
-//					return false;
-//				}
-//				
-//				closestDist = 0;
-//				dist = 0;
-//			}
-//			
-//			// Set block (Fill tiles)
-//			target.visible = false;
-//			
-//			var selectedTile:Tile;
-//			for (i = 0; i < blockTiles.length; i++)
-//			{
-//				selectedTile = _tiles[_closestTilesIndices[i].i][_closestTilesIndices[i].j];
-//				selectedTile.isFilled = true;
-//				selectedTile.blockType = target.type;
-//				selectedTile.texture = blockTiles[i].texture;
-//			}
-//			selectedTile = null;
-//						
-//			clear();
-//			
-//			return true;
-//		}
-//
-//		private function clear():void
-//		{
-//			var canClearVertical:Boolean;
-//			var canClearHotizontal:Boolean;
-//			for (var i:int = 0; i < _closestTilesIndices.length; i++)
-//			{
-//				// Check
-//				canClearVertical = _tiles[_closestTilesIndices[i].i][_closestTilesIndices[i].j].checkLineFilled(Tile.UP);
-//				if (canClearVertical)
-//				{
-//					canClearVertical = _tiles[_closestTilesIndices[i].i][_closestTilesIndices[i].j].checkLineFilled(Tile.DOWN);
-//				}
-//				
-//				canClearHotizontal = _tiles[_closestTilesIndices[i].i][_closestTilesIndices[i].j].checkLineFilled(Tile.LEFT);
-//				if (canClearHotizontal)
-//				{
-//					canClearHotizontal = _tiles[_closestTilesIndices[i].i][_closestTilesIndices[i].j].checkLineFilled(Tile.RIGHT);
-//				}
-//				
-//				// Clear
-//				if (canClearVertical)
-//				{
-//					_tiles[_closestTilesIndices[i].i][_closestTilesIndices[i].j].clear(Tile.VERTICAL);
-//				}
-//				
-//				if (canClearHotizontal)
-//				{
-//					_tiles[_closestTilesIndices[i].i][_closestTilesIndices[i].j].clear(Tile.HORIZONTAL);
-//				}
-//			}
-//			_closestTilesIndices = null;
-//		}
-		
-		
-//		public function event(x, y)
-//		{
-//			if(_data.isPossible(x, y, block) == ture)
-//			{
-//				_data.setdata();
-//				_table.
-//			}
-//			else
-//			{
-//				//rewind;
-//			}
-//		}
-		
 	}
 }

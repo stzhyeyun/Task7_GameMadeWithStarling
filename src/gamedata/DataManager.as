@@ -3,13 +3,24 @@ package gamedata
 	import flash.filesystem.File;
 	
 	import media.SoundManager;
+	
+	import starling.events.Event;
+	import starling.events.EventDispatcher;
 
-	public class DataManager
+	public class DataManager extends EventDispatcher
 	{
+		public static const UPDATE:String = "update";
+		
+		private static var _current:DataManager;	
 		private static var _path:File;
 		private static var _playData:PlayData;
 		private static var _settingData:SettingData;
 		
+		public static function get current():DataManager
+		{
+			return _current;
+		}
+
 		public static function get playData():PlayData
 		{
 			return _playData;
@@ -45,6 +56,7 @@ package gamedata
 
 		public static function initialize():void
 		{
+			_current = new DataManager();
 			_path = File.applicationStorageDirectory.resolvePath("data");
 			
 			_playData = new PlayData("playData", _path);
@@ -68,6 +80,15 @@ package gamedata
 				SoundManager.isSoundEffectActive = false;	
 				SoundManager.stopSoundEffect();
 			}
+		}
+		
+		public static function updateCurrentScore():void
+		{
+			
+			
+			
+			
+			DataManager.current.dispatchEvent(new Event(DataManager.UPDATE));	
 		}
 	}
 }

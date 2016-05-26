@@ -4,28 +4,28 @@ package core
 
 	public class TileData
 	{
-		private var _i:int;
-		private var _j:int;
+		private var _col:int;
+		private var _row:int;
 		private var _textureName:String;
 
-		public function get i():int
+		public function get col():int
 		{
-			return _i;
+			return _col;
 		}
 		
-		public function set i(value:int):void
+		public function set col(value:int):void
 		{
-			_i = value;
+			_col = value;
 		}
 		
-		public function get j():int
+		public function get row():int
 		{
-			return _j;
+			return _row;
 		}
 		
-		public function set j(value:int):void
+		public function set row(value:int):void
 		{
-			_j = value;
+			_row = value;
 		}
 		
 		public function get textureName():String
@@ -39,10 +39,10 @@ package core
 		}
 
 		
-		public function TileData(i:int = 0, j:int = 0, textureName:String = ResourcesName.WHITE)
+		public function TileData(col:int = 0, row:int = 0, textureName:String = ResourcesName.WHITE)
 		{
-			_i = i;
-			_j = j;
+			_col = col;
+			_row = row;
 			_textureName = textureName;
 		}
 	}

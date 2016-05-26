@@ -206,15 +206,22 @@ package scene.gameScene
 					}
 					
 					// 남은 블럭이 테이블에 세팅 가능한지 확인
-					if (!_table.isSettable(block))
+					for (var i:int = 0; i < _blocks.length; i++)
 					{
-						// Game over
-						
+						if (i != blockIndex)
+						{
+							if (!_table.isSettable(_blocks[i]))
+							{
+								// Game over
+								trace("onTouchBlock : Game Over."); // test
+							}
+						}
 					}
 					
-					//block.visible = false; // temp
-					
 					refreshBlocks();
+					
+					// test
+					DataManager.test();
 				}
 					break;
 			} // switch (touch.phase)

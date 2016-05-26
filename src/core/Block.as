@@ -55,18 +55,18 @@ package core
 					tile.texture = Resources.getTexture(tile.data.textureName);
 					tile.visible = true;
 				}
-				tile.x = tile.width * tileData.i; 
-				tile.y = tile.height * tileData.j;
+				tile.x = tile.width * tileData.col; 
+				tile.y = tile.height * tileData.row;
 				
 				// 간격 보정
-				if (tileData.i != 0)
+				if (tileData.col != 0)
 				{
-					tile.x -= tile.width / margin * tileData.i;
+					tile.x -= tile.width / margin * tileData.col;
 				}
 				
-				if (tileData.j != 0)
+				if (tileData.row != 0)
 				{
-					tile.y -= tile.height / margin * tileData.j;
+					tile.y -= tile.height / margin * tileData.row;
 				}
 				
 				// 색상 보정
