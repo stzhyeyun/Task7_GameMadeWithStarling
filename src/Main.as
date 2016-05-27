@@ -4,6 +4,7 @@ package
 	
 	import gamedata.DataManager;
 	
+	import media.Sound;
 	import media.SoundManager;
 	
 	import resources.Resources;
@@ -59,7 +60,12 @@ package
 			
 			SceneManager.switchScene(SceneName.TITLE);
 			
-			SoundManager.play(Resources.getSound(SoundName.MAIN_THEME));
+			var sound:Sound = Resources.getSound(SoundName.MAIN_THEME);
+			if (sound)
+			{
+				sound.loops = Sound.INFINITE;
+			}
+			SoundManager.play(sound);
 		}
 	}
 }

@@ -16,6 +16,9 @@ package ui.popup
 		{
 			addChild(base);
 			
+			this.pivotX = this.width / 2;
+			this.pivotY = this.height / 2;
+			
 			_assets = new Dictionary();
 			_assets[base] = base;
 		}

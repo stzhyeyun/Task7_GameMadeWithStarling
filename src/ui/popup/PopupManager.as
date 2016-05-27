@@ -2,9 +2,12 @@ package ui.popup
 {
 	import flash.utils.Dictionary;
 	
-	import gamedata.DataManager;
+	import resources.Resources;
+	import resources.TextureName;
 	
+	import starling.display.Button;
 	import starling.display.DisplayObjectContainer;
+	import starling.display.Image;
 	import starling.events.Event;
 	import starling.events.EventDispatcher;
 	
@@ -54,7 +57,12 @@ package ui.popup
 			_stack = new Vector.<Popup>();
 			
 			// Exit
+			var exit:Popup = new Popup(new Image(Resources.getTexture(TextureName.ALERT)));
+			var confirm:Button = new Button(Resources.getTexture(TextureName.BTN_CONFIRM));
+			var cancel:Button = new Button(Resources.getTexture(TextureName.BTN_CANCEL));
+			//exit.addAsset("confirm"
 			
+			_popups[PopupName.EXIT] = exit;
 			
 			// Pause
 			
@@ -71,25 +79,67 @@ package ui.popup
 		{
 			trace("showPopup : " + container + ", " + name); // test
 			
-			// 이전 팝업 touchable = false
-			
-			if (!_stack)
+			if (!container || !name || !_popups[name])
 			{
-				_stack = new Vector.<Popup>();
+				if (!container) trace("showPopup : No container.");
+				if (!name) trace("showPopup : No name.");
+				if (!_popups[name]) trace("showPopup : Not registered name.");
+				return;
 			}
 			
-			// to do
+			if (_stack.length > 0)
+			{
+				_stack[_stack.length - 1].touchable = false;
+			}
 			
+			var popupToShow:Popup = _popups[name];
+			popupToShow.x = container.width / 2;
+			popupToShow.y = container.height / 2;
+			popupToShow.touchable = true;
+			container.addChild(popupToShow);
+
+			_stack.push(_popups[name]);
 			
-			DataManager.current.dispatchEvent(new Event(PopupManager.SHOW));
+			PopupManager.current.dispatchEvent(new Event(PopupManager.SHOW));
 		}
 		
-		public static function closePopup(container:DisplayObjectContainer, name:String):void
+		public static function closePopup(name:String):void
 		{
-			// 이전 팝업 touchable = true
+			trace("closePopup : " + name); // test
 			
+			if (!name || !_popups[name])
+			{
+				if (!name) trace("closePopup : No name.");
+				if (!_popups[name]) trace("closePopup : Not registered name.");
+				return;
+			}
 			
-			DataManager.current.dispatchEvent(new Event(PopupManager.CLOSE));
+			var index:int = _stack.indexOf(_popups[name]);
+			
+			if (index == -1)
+			{
+				trace("closePopup : You named closed Popup.");
+				return;
+			}
+			
+			if (index == _stack.length - 1)
+			{
+				_stack.pop().removeFromParent();
+			}
+			else
+			{
+				for (var i:int = _stack.length - 1; i >= index; i--)
+				{
+					_stack.pop().removeFromParent();
+				}
+			}
+			
+			if (index - 1 >= 0)
+			{
+				_stack[index - 1].touchable = true;
+			}
+			
+			PopupManager.current.dispatchEvent(new Event(PopupManager.CLOSE));
 		}
 	}
 }

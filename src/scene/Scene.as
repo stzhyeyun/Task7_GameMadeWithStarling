@@ -1,8 +1,10 @@
 package scene
 {
 	import flash.desktop.NativeApplication;
+	import flash.display.Screen;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
+	import flash.geom.Rectangle;
 	
 	import starling.core.Starling;
 	import starling.display.Sprite;

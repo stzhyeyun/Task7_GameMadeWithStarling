@@ -24,7 +24,7 @@ package scene.titleScene
 		
 		protected override function onKeyDown(event:KeyboardEvent):void
 		{
-			if (!this.visible)
+			if (!this.parent)
 			{
 				return;
 			}

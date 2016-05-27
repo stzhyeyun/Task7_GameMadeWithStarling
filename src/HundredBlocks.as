@@ -1,6 +1,7 @@
 package
 {
 	import flash.desktop.NativeApplication;
+	import flash.display.Screen;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
@@ -25,8 +26,8 @@ package
 		public function HundredBlocks()
 		{
 			super();
-		
-			_starling = new Starling(Main, stage);
+			
+			_starling = new Starling(Main, stage, Screen.mainScreen.bounds);
 			_starling.start();
 			_starling.showStats = true; // debug
 			
