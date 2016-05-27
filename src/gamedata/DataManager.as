@@ -39,16 +39,16 @@ package gamedata
 		
 		public static function dispose():void
 		{
+			export();
+			
 			if (_playData)
 			{
-				_playData.write();
 				_playData.dispose();
 			}
 			_playData = null;
 			
 			if (_settingData)
 			{
-				_settingData.write();
 				_settingData.dispose();
 			}
 			_settingData = null;
@@ -67,6 +67,38 @@ package gamedata
 			_settingData.read();
 		}
 		
+		public static function updateCurrentScore(numBlockTiles:int, numClearTiles:int = 0):void
+		{
+			// 맞춘 블럭 타일당 1점
+			var obtainedScore:int = numBlockTiles; 
+			
+			if (numClearTiles > 0)
+			{
+				obtainedScore += 
+					// 클리어한 타일당 1점
+					numClearTiles + 
+					// 클리어한 라인 1개 초과 시마다 10점
+					((numClearTiles / _playData.tableData.size - 1) * 10);
+			}
+			
+			_playData.currentScore += obtainedScore;
+			
+			DataManager.current.dispatchEvent(new Event(DataManager.UPDATE, false, _playData.currentScore));	
+		}
+		
+		public static function export():void
+		{
+			if (_playData)
+			{
+				_playData.write();
+			}
+			
+			if (_settingData)
+			{
+				_settingData.write();
+			}
+		}
+		
 		private static function preset():void
 		{
 			if (!_settingData.bgm)
@@ -80,22 +112,6 @@ package gamedata
 				SoundManager.isSoundEffectActive = false;	
 				SoundManager.stopSoundEffect();
 			}
-		}
-		
-		public static function updateCurrentScore(numBlockTiles:int, numClearTiles:int = 0):void
-		{
-			var obtainedScore:int = numBlockTiles; // 맞춘 블럭 타일당 1점
-			
-			if (numClearTiles > 0)
-			{
-				obtainedScore +=
-					numClearTiles + // 클리어한 타일당 1점
-					((numClearTiles / _playData.tableData.size - 1) * 10); // 클리어한 라인 1개 초과 시마다 10점
-			}
-				
-			_playData.currentScore += obtainedScore;
-			
-			DataManager.current.dispatchEvent(new Event(DataManager.UPDATE, false, _playData.currentScore));	
 		}
 	}
 }

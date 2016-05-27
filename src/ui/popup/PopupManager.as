@@ -2,18 +2,32 @@ package ui.popup
 {
 	import flash.utils.Dictionary;
 	
-	import starling.display.DisplayObjectContainer;
+	import gamedata.DataManager;
 	
-	public class PopupManager
+	import starling.display.DisplayObjectContainer;
+	import starling.events.Event;
+	import starling.events.EventDispatcher;
+	
+	public class PopupManager extends EventDispatcher
 	{
+		public static const SHOW:String = "show";
+		public static const CLOSE:String = "close";
+		
+		private static var _current:PopupManager;
 		private static var _popups:Dictionary;
 		private static var _stack:Vector.<Popup>;
+		
+		public static function get current():PopupManager
+		{
+			return _current;
+		}
+		
 		
 		public function PopupManager()
 		{
 			
 		}
-		
+
 		public static function dispose():void
 		{
 			if (_popups)
@@ -35,7 +49,21 @@ package ui.popup
 		
 		public static function initialize():void
 		{
-			// Create popups		
+			_current = new PopupManager();
+			_popups = new Dictionary();
+			_stack = new Vector.<Popup>();
+			
+			// Exit
+			
+			
+			// Pause
+			
+			
+			// Setting
+			
+			
+			// Game Over
+			
 			
 		}
 		
@@ -51,11 +79,17 @@ package ui.popup
 			}
 			
 			// to do
+			
+			
+			DataManager.current.dispatchEvent(new Event(PopupManager.SHOW));
 		}
 		
 		public static function closePopup(container:DisplayObjectContainer, name:String):void
 		{
 			// 이전 팝업 touchable = true
+			
+			
+			DataManager.current.dispatchEvent(new Event(PopupManager.CLOSE));
 		}
 	}
 }

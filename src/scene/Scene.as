@@ -1,10 +1,11 @@
 package scene
 {
+	import flash.desktop.NativeApplication;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	
 	import starling.core.Starling;
 	import starling.display.Sprite;
-	import starling.events.KeyboardEvent;
 
 	public class Scene extends Sprite
 	{
@@ -39,7 +40,14 @@ package scene
 			
 			addEventListener(Event.ACTIVATE, onActivate);
 			addEventListener(Event.DEACTIVATE, onDeactivate);
-			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			NativeApplication.nativeApplication.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+		}
+		
+		public override function dispose():void
+		{
+			NativeApplication.nativeApplication.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			
+			super.dispose();
 		}
 
 		public virtual function initialize():void

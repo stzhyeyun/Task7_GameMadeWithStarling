@@ -12,6 +12,7 @@ package core
 		private const TAG:String = "[Table]";
 		
 		private var _data:TableData;
+		private var _history:Vector.<TableData>; // for Undo item
 		private var _tiles:Vector.<Vector.<Tile>>;
 
 		public function get tiles():Vector.<Vector.<Tile>>

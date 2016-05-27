@@ -31,17 +31,32 @@ package
 			_starling.showStats = true; // debug
 			
 			NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExit);
+			NativeApplication.nativeApplication.addEventListener(Event.ACTIVATE, onActivate);
+			NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeactivate);
 		}
 
 		private function onExit(event:Event):void
 		{
 			NativeApplication.nativeApplication.removeEventListener(Event.EXITING, onExit);
+			NativeApplication.nativeApplication.removeEventListener(Event.ACTIVATE, onActivate);
+			NativeApplication.nativeApplication.removeEventListener(Event.DEACTIVATE, onDeactivate);
 			
 			PopupManager.dispose();
 			SceneManager.dispose();
 			DataManager.dispose();
 			SoundManager.dispose();
 			Resources.dispose();
+		}
+		
+		private function onActivate(event:Event):void
+		{
+			SoundManager.wakeBgm();
+		}
+		
+		private function onDeactivate(event:Event):void
+		{
+			SoundManager.stopAll();
+			DataManager.export();
 		}
 	}
 }

@@ -140,6 +140,7 @@ package core
 			{
 				_data[destTilesIndices[i].col][destTilesIndices[i].row].textureName = blockTiles[i].textureName;
 			}
+			DataManager.playData.tableData = this;
 			
 			// Update view
 			if (onUpdate)
@@ -270,6 +271,7 @@ package core
 				{
 					_data[totalClearTilesIndices[i].col][totalClearTilesIndices[i].row].textureName = TextureName.TILE_WHITE;
 				}
+				DataManager.playData.tableData = this;
 			
 				// Update view
 				if (onUpdate)

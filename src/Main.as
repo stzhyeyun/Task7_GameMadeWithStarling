@@ -1,6 +1,5 @@
 package
 {
-	import flash.events.Event;
 	import flash.filesystem.File;
 	
 	import gamedata.DataManager;
@@ -8,6 +7,7 @@ package
 	import media.SoundManager;
 	
 	import resources.Resources;
+	import resources.SoundName;
 	
 	import scene.SceneManager;
 	import scene.SceneName;
@@ -34,9 +34,6 @@ package
 			
 			Resources.onReadyToUseResources = onCompleteLoad;
 			Resources.load(File.applicationDirectory.resolvePath("resources/res"));
-			
-			addEventListener(Event.ACTIVATE, onActivate);
-			addEventListener(Event.DEACTIVATE, onDeactivate);
 		}
 		
 		public override function dispose():void
@@ -61,16 +58,8 @@ package
 			SceneManager.addScene(SceneName.GAME, gameScene);
 			
 			SceneManager.switchScene(SceneName.TITLE);
-		}
-		
-		private function onActivate(event:Event):void
-		{
-			SoundManager.wakeBgm();
-		}
-		
-		private function onDeactivate(event:Event):void
-		{
-			SoundManager.stopAll();
+			
+			SoundManager.play(Resources.getSound(SoundName.MAIN_THEME));
 		}
 	}
 }

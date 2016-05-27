@@ -1,6 +1,7 @@
 package scene.gameScene
 {
 	import flash.display.BitmapData;
+	import flash.events.KeyboardEvent;
 	import flash.geom.ColorTransform;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -17,7 +18,6 @@ package scene.gameScene
 	import scene.Scene;
 	
 	import starling.display.Image;
-	import starling.events.KeyboardEvent;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
@@ -99,6 +99,11 @@ package scene.gameScene
 		
 		protected override function onKeyDown(event:KeyboardEvent):void
 		{
+			if (!this.visible)
+			{
+				return;
+			}
+			
 			if (event.keyCode == Keyboard.BACK)
 			{
 				event.preventDefault();

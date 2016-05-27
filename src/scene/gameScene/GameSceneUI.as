@@ -36,7 +36,6 @@ package scene.gameScene
 		public override function dispose():void
 		{
 			DataManager.current.removeEventListener(DataManager.UPDATE, onUpdateCurrentScore);
-			// to do
 			
 			super.dispose();
 		}

@@ -1,10 +1,9 @@
 package scene.titleScene
 {
+	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
 	
 	import scene.Scene;
-	
-	import starling.events.KeyboardEvent;
 	
 	import ui.popup.PopupManager;
 	import ui.popup.PopupName;
@@ -25,6 +24,11 @@ package scene.titleScene
 		
 		protected override function onKeyDown(event:KeyboardEvent):void
 		{
+			if (!this.visible)
+			{
+				return;
+			}
+			
 			if (event.keyCode == Keyboard.BACK)
 			{
 				event.preventDefault();
