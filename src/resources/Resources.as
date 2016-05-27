@@ -16,7 +16,6 @@ package resources
 	{
 		private static var _textureAtlas:TextureAtlas;
 		private static var _soundDic:Dictionary;
-		private static var _fontDic:Dictionary;
 		
 		private static var _path:File;
 		private static var _pngList:Array;

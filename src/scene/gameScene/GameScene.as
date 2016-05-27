@@ -95,7 +95,7 @@ package scene.gameScene
 			addChild(_table);
 			
 			_blockAreaSize = _table.width / 3;
-			_selectedBlockScaleX = _selectedBlockScaleY = 1.9;
+			_selectedBlockScaleX = _selectedBlockScaleY = 1.8;
 			
 			// Block
 			createBlocks();
@@ -105,23 +105,25 @@ package scene.gameScene
 		{
 			BlockDispenser.initialize();
 			
-			var bitmapData:BitmapData = new BitmapData(_table.width / 3, _table.width / 3);
+			var bitmapData:BitmapData = new BitmapData(_blockAreaSize, _blockAreaSize);
 			var ct:ColorTransform = new ColorTransform();
 			ct.alphaMultiplier = 0; 
 			bitmapData.colorTransform(new Rectangle(0, 0, bitmapData.width, bitmapData.height), ct);
 			
 			var block:Block;
-			var scale:Number;
+			var scale:Number = 0.5;
 			var touchArea:Image;
 			for (var i:int = 0; i < BLOCK_NUM; i++)
 			{
 				// Block
 				block = new Block();
 				block.initialize(BlockDispenser.pop());
+				block.width *= scale;
+				block.height *= scale;
 				block.pivotX = block.width / 2;
 				block.pivotY = block.height / 2;
-				block.x = _table.x + (_table.width / 3 / 2) + _table.width / 3 * i;  
-				block.y = _table.y + _table.height + (_table.width / 3 / 2);
+				block.x = _table.x + (_blockAreaSize / 2) + _blockAreaSize * i;  
+				block.y = _table.y + _table.height + (_blockAreaSize / 2);
 				addChild(block);
 				
 				_blocks.insertAt(i, block);
@@ -130,9 +132,9 @@ package scene.gameScene
 				// Touch area
 				touchArea = new Image(Texture.fromBitmapData(bitmapData));
 				touchArea.name = i.toString();
-				touchArea.width = _table.width / 3;
+				touchArea.width = _blockAreaSize;
 				touchArea.height = touchArea.width;
-				touchArea.x = _table.x + _table.width / 3 * i;
+				touchArea.x = _table.x + _blockAreaSize * i;
 				touchArea.y = _table.y + _table.height;
 				touchArea.addEventListener(TouchEvent.TOUCH, onTouchBlock);
 				addChild(touchArea);
@@ -173,7 +175,7 @@ package scene.gameScene
 			if (block.visible)
 			{
 				block.x = touchPos.x;
-				block.y = touchPos.y / 1.2;
+				block.y = touchPos.y - block.height;
 			}
 		}
 			
@@ -194,10 +196,11 @@ package scene.gameScene
 			{
 				case TouchPhase.BEGAN:
 				{
-//					_selectedBlockOriginWidth = block.width;
-//					_selectedBlockOriginHeight = block.height;
-//					block.width *= _selectedBlockScaleX;
-//					block.height *= _selectedBlockScaleY;
+					// 블럭 확대
+					_selectedBlockOriginWidth = block.width;
+					_selectedBlockOriginHeight = block.height;
+					block.width *= _selectedBlockScaleX;
+					block.height *= _selectedBlockScaleY;
 					
 					moveBlock(block, touch.getLocation(this));
 				}
@@ -211,8 +214,9 @@ package scene.gameScene
 				
 				case TouchPhase.ENDED:
 				{
-//					block.width = _selectedBlockOriginWidth;
-//					block.height = _selectedBlockOriginHeight;
+					// 블럭 크기 원복
+					block.width = _selectedBlockOriginWidth;
+					block.height = _selectedBlockOriginHeight;
 					
 					// 테이블에 블럭 세팅
 					if (_table.setBlock(block))
@@ -234,7 +238,7 @@ package scene.gameScene
 						{
 							if (!_table.isSettable(_blocks[i]))
 							{
-								// Game over
+								// Game over - 종료 팝업 호출
 								trace("onTouchBlock : Game Over."); // test
 							}
 						}

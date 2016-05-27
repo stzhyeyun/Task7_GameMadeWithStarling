@@ -9,13 +9,6 @@ package core
 
 	public class Tile extends Image
 	{
-		public static const VERTICAL:int = 0;
-		public static const HORIZONTAL:int = 1;
-		public static const UP:int = 2;
-		public static const DOWN:int = 3;
-		public static const LEFT:int = 4;
-		public static const RIGHT:int = 5;
-	
 		private const TAG:String = "[Tile]"; 
 		
 		private var _data:TileData;

@@ -1,6 +1,6 @@
-package core
+package util
 {
-	internal class Index2D
+	public class Index2D
 	{
 		private var _col:int;
 		private var _row:int;

@@ -3,6 +3,9 @@ package core
 	import resources.Resources;
 	
 	import starling.display.Sprite;
+	
+	import util.Color;
+	import util.Index2D;
 
 	public class Table extends Sprite
 	{
@@ -69,7 +72,7 @@ package core
 					}
 					
 					// 색상 보정
-					tile.color = 0xf2f2f2;
+					tile.color = Color.TILE;
 					
 					_tiles[i].push(tile);
 					addChild(tile);

@@ -3,6 +3,7 @@ package core
 	import gamedata.DataManager;
 	
 	import resources.ResourcesName;
+	import util.Index2D;
 
 	public class TableData
 	{
