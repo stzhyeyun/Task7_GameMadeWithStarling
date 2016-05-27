@@ -8,7 +8,7 @@ package resources
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	
-	public class TextureAtlasLoader
+	internal class TextureAtlasLoader
 	{
 		private const TAG:String = "[TextureAtlasLoader]";
 		

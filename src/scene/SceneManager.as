@@ -2,9 +2,6 @@ package scene
 {
 	import flash.utils.Dictionary;
 	
-	import scene.gameScene.GameScene;
-	import scene.titleScene.TitleScene;
-	
 	public class SceneManager
 	{
 		private static var _scenes:Dictionary;
@@ -33,23 +30,37 @@ package scene
 			_currentSceneName = null;
 		}
 		
-		public static function initialize():void
+		public static function addScene(name:String, scene:Scene):void
 		{
-			_scenes = new Dictionary();
-			_currentSceneName = null;
+			if (!name || !scene)
+			{
+				if (!name) trace("addScene : No name.");
+				if (!scene) trace("addScene : No scene.");
+				return;
+			}
 			
-//			var title:TitleScene = new TitleScene(SceneName.TITLE);
-//			title.initialize();
-//			_scenes[title.name] = title;
-//			
-//			switchScene(title.name);
+			if (!_scenes)
+			{
+				_scenes = new Dictionary();
+			}
+			_scenes[name] = scene;
+		}
+		
+		public static function removeScene(name:String):void
+		{
+			if (!name || !_scenes || !_scenes[name])
+			{
+				if (!name) trace("removeScene : No name.");
+				if (!_scenes) trace("removeScene : No scenes.");
+				if (!_scenes[name]) trace("removeScene : Not registered name.");
+				return;
+			}
 			
-			var game:GameScene = new GameScene(SceneName.GAME);
-			game.initialize(); // test
-			//game.visible = false;
-			_scenes[game.name] = game;
-			
-			switchScene(game.name);
+			var sceneToRemove:Scene = _scenes[name];
+			sceneToRemove.dispose();
+			sceneToRemove = null;
+
+			delete _scenes[name];
 		}
 		
 		public static function switchScene(nextSceneName:String):void

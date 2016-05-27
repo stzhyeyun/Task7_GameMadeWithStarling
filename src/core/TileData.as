@@ -1,6 +1,6 @@
 package core
 {
-	import resources.ResourcesName;
+	import resources.TextureName;
 
 	public class TileData
 	{
@@ -39,7 +39,7 @@ package core
 		}
 
 		
-		public function TileData(col:int = 0, row:int = 0, textureName:String = ResourcesName.WHITE)
+		public function TileData(col:int = 0, row:int = 0, textureName:String = TextureName.TILE_WHITE)
 		{
 			_col = col;
 			_row = row;

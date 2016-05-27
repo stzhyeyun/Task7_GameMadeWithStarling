@@ -4,6 +4,7 @@ package scene.gameScene
 	import flash.geom.ColorTransform;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.ui.Keyboard;
 	
 	import core.Block;
 	import core.BlockDispenser;
@@ -16,11 +17,14 @@ package scene.gameScene
 	import scene.Scene;
 	
 	import starling.display.Image;
-	import starling.events.Event;
+	import starling.events.KeyboardEvent;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.textures.Texture;
+	
+	import ui.popup.PopupManager;
+	import ui.popup.PopupName;
 	
 	public class GameScene extends Scene
 	{
@@ -40,10 +44,8 @@ package scene.gameScene
 		private var _selectedBlockScaleY:Number;
 		private var _originBlockPosData:Vector.<Point>;
 		
-		public function GameScene(name:String)
+		public function GameScene()
 		{
-			super(name);	
-			
 			_table = null;
 			_blocks = new Vector.<Block>();
 			_originBlockPosData = new Vector.<Point>();
@@ -52,25 +54,19 @@ package scene.gameScene
 		public override function dispose():void
 		{
 			// to do
-			// touchArea.addEventListener(TouchEvent.TOUCH, onTouchBlock);
 			
 			super.dispose();
 		}
 		
 		public override function initialize():void
 		{
-			// test
-			DataManager.current.addEventListener(DataManager.UPDATE, onUpdateScore);
-			//
-			
 			var playData:PlayData = DataManager.playData;
 			
 			// UI
-			var ui:GameSceneUI = new GameSceneUI();
-			ui.initialize(
-				this.nativeStageWidth, this.nativeStageHeight,
-				playData.bestScore, playData.currentScore);
-			addChild(ui);
+			var gameUI:GameSceneUI = new GameSceneUI();
+			gameUI.initialize(this.nativeStageWidth, this.nativeStageHeight,
+						  	  playData.bestScore, playData.currentScore);
+			addChild(gameUI);
 			
 			// Table
 			var tableData:TableData;
@@ -101,6 +97,15 @@ package scene.gameScene
 			createBlocks();
 		}
 		
+		protected override function onKeyDown(event:KeyboardEvent):void
+		{
+			if (event.keyCode == Keyboard.BACK)
+			{
+				event.preventDefault();
+				PopupManager.showPopup(this, PopupName.PAUSE);
+			}
+		}
+		
 		private function createBlocks():void
 		{
 			BlockDispenser.initialize();
@@ -118,6 +123,7 @@ package scene.gameScene
 				// Block
 				block = new Block();
 				block.initialize(BlockDispenser.pop());
+				//block.scale = scale;
 				block.width *= scale;
 				block.height *= scale;
 				block.pivotX = block.width / 2;
@@ -238,8 +244,8 @@ package scene.gameScene
 						{
 							if (!_table.isSettable(_blocks[i]))
 							{
-								// Game over - 종료 팝업 호출
-								trace("onTouchBlock : Game Over."); // test
+								// 종료 팝업 호출
+								PopupManager.showPopup(this, PopupName.GAME_OVER);
 							}
 						}
 					}
@@ -249,11 +255,5 @@ package scene.gameScene
 					break;
 			} // switch (touch.phase)
 		} // private function onTouchBlock(event:TouchEvent):void
-		
-		private function onUpdateScore(event:Event):void // test
-		{
-			trace(DataManager.playData.currentScore.toString());
-			trace(event.data);
-		}
 	}
 }

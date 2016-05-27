@@ -1,4 +1,4 @@
-package util
+package ui
 {
 	import resources.Resources;
 	
@@ -7,7 +7,7 @@ package util
 
 	public class SpriteNumber extends Sprite
 	{
-		private var _numbers:Vector.<Image>;
+		//private var _numbers:Vector.<Image>;
 		private var _color:uint;
 		
 		public function set color(value:uint):void
@@ -18,10 +18,17 @@ package util
 		
 		public function SpriteNumber(num:int, color:uint = 0xffffff)
 		{
-			_numbers = new Vector.<Image>();
+			//_numbers = new Vector.<Image>();
 			_color = color;
 			
 			update(num);
+		}
+		
+		public override function dispose():void
+		{
+			// to do
+			
+			super.dispose();
 		}
 
 		public function update(num:int):void

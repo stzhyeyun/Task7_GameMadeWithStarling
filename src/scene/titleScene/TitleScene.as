@@ -1,45 +1,35 @@
 package scene.titleScene
 {
-	import scene.Scene;
-	import scene.SceneManager;
-	import scene.SceneName;
+	import flash.ui.Keyboard;
 	
-	import starling.events.Touch;
-	import starling.events.TouchEvent;
-	import starling.events.TouchPhase;
+	import scene.Scene;
+	
+	import starling.events.KeyboardEvent;
+	
+	import ui.popup.PopupManager;
+	import ui.popup.PopupName;
 
 	public class TitleScene extends Scene
 	{
-		public function TitleScene(name:String)
+		public function TitleScene()
 		{
-			super(name);
-		}
-		
-		public override function dispose():void
-		{
-			removeEventListener(TouchEvent.TOUCH, onTouch);
 			
-			super.dispose();
 		}
 		
 		public override function initialize():void
 		{
-			var ui:TitleSceneUI = new TitleSceneUI();
-			addChild(ui);
-			
-			addEventListener(TouchEvent.TOUCH, onTouch);
+			var titleUI:TitleSceneUI = new TitleSceneUI();
+			titleUI.initialize(this.nativeStageWidth, this.nativeStageHeight);
+			addChild(titleUI);
 		}
 		
-		private function onTouch(event:TouchEvent):void
+		protected override function onKeyDown(event:KeyboardEvent):void
 		{
-			var touch:Touch = event.getTouch(this, TouchPhase.ENDED);
-			
-			if (!touch)
+			if (event.keyCode == Keyboard.BACK)
 			{
-				return;
+				event.preventDefault();
+				PopupManager.showPopup(this, PopupName.EXIT);
 			}
-			
-			SceneManager.switchScene(SceneName.GAME);
 		}
 	}
 }

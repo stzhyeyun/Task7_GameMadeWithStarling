@@ -1,7 +1,10 @@
 package scene
 {
+	import flash.events.Event;
+	
 	import starling.core.Starling;
 	import starling.display.Sprite;
+	import starling.events.KeyboardEvent;
 
 	public class Scene extends Sprite
 	{
@@ -29,20 +32,32 @@ package scene
 		}
 		
 		
-		public function Scene(name:String)
+		public function Scene()
 		{
-			if (!name)
-			{
-				trace("Scene : No name."); 
-				return;
-			}
-			
-			this.name = name;
 			_nativeStageWidth = Starling.current.nativeStage.stageWidth;
 			_nativeStageHeight = Starling.current.nativeStage.stageHeight;
+			
+			addEventListener(Event.ACTIVATE, onActivate);
+			addEventListener(Event.DEACTIVATE, onDeactivate);
+			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
 
 		public virtual function initialize():void
+		{
+			// Empty
+		}
+		
+		protected virtual function onActivate(event:Event):void
+		{
+			// Empty
+		}
+		
+		protected virtual function onDeactivate(event:Event):void
+		{
+			// Empty
+		}
+		
+		protected virtual function onKeyDown(event:KeyboardEvent):void
 		{
 			// Empty
 		}

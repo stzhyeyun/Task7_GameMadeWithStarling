@@ -2,7 +2,7 @@ package core
 {
 	import gamedata.DataManager;
 	
-	import resources.ResourcesName;
+	import resources.TextureName;
 	import util.Index2D;
 
 	public class TableData
@@ -82,7 +82,7 @@ package core
 						pivotRow += diffRow;
 						
 						if (pivotCol < 0 || pivotCol >= _size || pivotRow < 0 || pivotRow >= _size ||
-							_data[pivotCol][pivotRow].textureName != ResourcesName.WHITE)
+							_data[pivotCol][pivotRow].textureName != TextureName.TILE_WHITE)
 						{
 							isSettable = false;
 							break;
@@ -94,7 +94,6 @@ package core
 					
 					if (isSettable)
 					{
-						trace("isSettable : The block is settable."); // test
 						return true;
 					}
 				}
@@ -123,7 +122,7 @@ package core
 				pivotRow += diffRow;
 				
 				if (pivotCol < 0 || pivotCol >= _size || pivotRow < 0 || pivotRow >= _size ||
-					_data[pivotCol][pivotRow].textureName != ResourcesName.WHITE)
+					_data[pivotCol][pivotRow].textureName != TextureName.TILE_WHITE)
 				{
 					destTilesIndices = null;
 					blockTiles = null;
@@ -173,7 +172,7 @@ package core
 				up = true;
 				while (pivotRow >= 0)
 				{
-					if (_data[pivotCol][pivotRow].textureName == ResourcesName.WHITE)
+					if (_data[pivotCol][pivotRow].textureName == TextureName.TILE_WHITE)
 					{
 						up = false;
 						verticalClearTilesIndices.splice(0, verticalClearTilesIndices.length);
@@ -189,7 +188,7 @@ package core
 					pivotRow = updatedTilesIndices[i].row;
 					while (pivotRow < _size)
 					{
-						if (_data[pivotCol][pivotRow].textureName == ResourcesName.WHITE)
+						if (_data[pivotCol][pivotRow].textureName == TextureName.TILE_WHITE)
 						{
 							verticalClearTilesIndices.splice(0, verticalClearTilesIndices.length);
 							break;
@@ -205,7 +204,7 @@ package core
 				left = true;
 				while (pivotCol >= 0)
 				{
-					if (_data[pivotCol][pivotRow].textureName == ResourcesName.WHITE)
+					if (_data[pivotCol][pivotRow].textureName == TextureName.TILE_WHITE)
 					{
 						left = false;
 						horizontalClearTilesIndices.splice(0, horizontalClearTilesIndices.length);
@@ -221,7 +220,7 @@ package core
 					pivotCol = updatedTilesIndices[i].col;
 					while (pivotCol < _size)
 					{
-						if (_data[pivotCol][pivotRow].textureName == ResourcesName.WHITE)
+						if (_data[pivotCol][pivotRow].textureName == TextureName.TILE_WHITE)
 						{
 							horizontalClearTilesIndices.splice(0, horizontalClearTilesIndices.length);
 							break;
@@ -269,7 +268,7 @@ package core
 				// Update data
 				for (i = 0; i < totalClearTilesIndices.length; i++)
 				{
-					_data[totalClearTilesIndices[i].col][totalClearTilesIndices[i].row].textureName = ResourcesName.WHITE;
+					_data[totalClearTilesIndices[i].col][totalClearTilesIndices[i].row].textureName = TextureName.TILE_WHITE;
 				}
 			
 				// Update view
