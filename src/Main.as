@@ -35,6 +35,8 @@ package
 			
 			Resources.onReadyToUseResources = onCompleteLoad;
 			Resources.load(File.applicationDirectory.resolvePath("resources/res"));
+			
+			DataManager.initialize();
 		}
 		
 		public override function dispose():void
@@ -46,7 +48,6 @@ package
 		
 		private function onCompleteLoad():void
 		{
-			DataManager.initialize();
 			PopupManager.initialize();
 
 			var titleScene:TitleScene = new TitleScene();

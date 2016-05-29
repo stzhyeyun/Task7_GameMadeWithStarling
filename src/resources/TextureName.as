@@ -22,15 +22,19 @@ package resources
 		public static const BTN_SHOP:String = "btn_shop";
 		
 		public static const BTN_PAUSE:String = "btn_pause";
-		public static const BTN_BGM:String = "btn_bgm";
-		public static const BTN_SOUND:String = "btn_sound";
 		public static const BTN_RESUME:String = "btn_resume";
 		public static const BTN_MENU:String = "btn_menu";
 		public static const BTN_REPLAY:String = "btn_replay";
 		
+		public static const BTN_BGM:String = "btn_bgm";
+		public static const BTN_SOUND:String = "btn_sound";
+		
 		public static const BTN_SHARE:String = "btn_share";
 		public static const BTN_CONFIRM:String = "btn_confirm";
 		public static const BTN_CANCEL:String = "btn_cancel";
+		
+		// Image
+		public static const IMG_BAN:String = "img_ban";
 		
 		// Popup
 		public static const POPUP:String = "popup";

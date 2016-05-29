@@ -86,6 +86,16 @@ package gamedata
 			DataManager.current.dispatchEvent(new Event(DataManager.UPDATE, false, _playData.currentScore));	
 		}
 		
+		public static function updateBestScore():void
+		{
+			if (_playData.currentScore > _playData.bestScore)
+			{
+				_playData.bestScore = _playData.currentScore;
+			}
+			
+			DataManager.current.dispatchEvent(new Event(DataManager.UPDATE, false, _playData.bestScore));	
+		}
+		
 		public static function export():void
 		{
 			if (_playData)

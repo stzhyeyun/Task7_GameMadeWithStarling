@@ -26,12 +26,6 @@ package scene.titleScene
 		
 		public function initialize(stageWidth:Number, stageHeight:Number):void
 		{
-			// Background
-			var background:Image = new Image(Resources.getTexture(TextureName.BACKGROUND_TITLE));
-			background.width = stageWidth;
-			background.height = stageHeight;
-			addChild(background);
-			
 			// Title
 			var title:Image = new Image(Resources.getTexture(TextureName.TITLE_GAME));
 			var titleScale:Number = stageWidth * 0.8 / title.width;
@@ -92,7 +86,7 @@ package scene.titleScene
 			
 			if (touch)
 			{
-				PopupManager.showPopup(this, PopupName.RANK);	
+				PopupManager.showPopup(this, PopupName.RANK);
 			}	
 		}
 		

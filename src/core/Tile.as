@@ -27,7 +27,7 @@ package core
 		public function Tile(tileData:TileData)
 		{
 			_data = tileData;
-
+			
 			super(Resources.getTexture(_data.textureName));
 		}
 		

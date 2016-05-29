@@ -1,16 +1,18 @@
 package scene
 {
 	import flash.desktop.NativeApplication;
-	import flash.display.Screen;
-	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-	import flash.geom.Rectangle;
 	
 	import starling.core.Starling;
 	import starling.display.Sprite;
+	import starling.events.Event;
 
 	public class Scene extends Sprite
 	{
+		public static const START_SCENE:String = "startScene";
+		public static const RESTART_SCENE:String = "restartScene";
+		public static const END_SCENE:String = "endScene";
+		
 		private var _nativeStageWidth:Number;
 		private var _nativeStageHeight:Number;
 		
@@ -40,8 +42,9 @@ package scene
 			_nativeStageWidth = Starling.current.nativeStage.stageWidth;
 			_nativeStageHeight = Starling.current.nativeStage.stageHeight;
 			
-			addEventListener(Event.ACTIVATE, onActivate);
-			addEventListener(Event.DEACTIVATE, onDeactivate);
+			addEventListener(START_SCENE, onStartScene);
+			addEventListener(RESTART_SCENE, onRestartScene);
+			addEventListener(END_SCENE, onEndScene);
 			NativeApplication.nativeApplication.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
 		
@@ -57,12 +60,17 @@ package scene
 			// Empty
 		}
 		
-		protected virtual function onActivate(event:Event):void
+		protected virtual function onStartScene(event:Event):void
 		{
 			// Empty
 		}
 		
-		protected virtual function onDeactivate(event:Event):void
+		protected virtual function onRestartScene(event:Event):void
+		{
+			// Empty
+		}
+		
+		protected virtual function onEndScene(event:Event):void
 		{
 			// Empty
 		}

@@ -27,5 +27,30 @@ package core
 			
 			_data.push(data);
 		}
+		
+		public function export():String
+		{
+			var dataStr:String = "";
+			
+			for (var i:int = 0; i < _data.length; i++)
+			{
+				if (i == 0)
+				{
+					dataStr += _data.length.toString() + ", ";
+				}
+				
+				if (i != 0)
+				{
+					dataStr += ", ";
+				}
+		
+				dataStr += 
+					_data[i].col.toString() + ", " +
+					_data[i].row.toString() + ", " +
+					_data[i].textureName;
+			}
+			
+			return dataStr;
+		}
 	}
 }

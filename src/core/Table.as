@@ -1,8 +1,13 @@
 package core
 {
-	import resources.Resources;
+	import flash.geom.Rectangle;
 	
+	import resources.Resources;
+	import resources.TextureName;
+	
+	import starling.display.Canvas;
 	import starling.display.Sprite;
+	import starling.text.TextField;
 	
 	import util.Color;
 	import util.Index2D;
@@ -77,6 +82,56 @@ package core
 					
 					_tiles[i].push(tile);
 					addChild(tile);
+					
+					// debug
+//					var textField:TextField = new TextField(
+//						tile.width, tile.height, i.toString() + ", " + j.toString());
+//					textField.x = tile.width * i;
+//					textField.y = tile.height * j;
+//					if (i != 0)
+//					{
+//						textField.x -= tile.width / margin * i;
+//					}
+//					if (j != 0)
+//					{
+//						textField.y -= tile.height / margin * j;
+//					}
+//					addChild(textField);
+				}
+			}
+		}
+		
+		public function setTableData(tableData:TableData):void
+		{
+			if (!_tiles)
+			{
+				trace(TAG + " setTableData : No tiles.");
+				return;
+			}
+			
+			if (tableData)
+			{
+				_data = tableData;
+				
+				var data:Vector.<Vector.<TileData>> = _data.data;
+				for (var i:int = 0; i < data.length; i++)
+				{
+					for (var j:int = 0; j < data[i].length; j++)
+					{
+						_tiles[i][j].texture = Resources.getTexture(data[i][j].textureName);
+					}
+				}
+			}
+			else
+			{
+				data = _data.data;
+				for (i = 0; i < data.length; i++)
+				{
+					for (j = 0; j < data[i].length; j++)
+					{
+						data[i][j].textureName = TextureName.TILE_WHITE;
+						_tiles[i][j].texture = Resources.getTexture(data[i][j].textureName);
+					}
 				}
 			}
 		}
@@ -113,6 +168,8 @@ package core
 					}
 				}
 			}
+			
+			//_tiles[pivotCol][pivotRow].color = 0x000000; // debug
 			
 			return _data.setBlock(pivotCol, pivotRow, block.data, onUpdate);
 		}

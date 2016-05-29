@@ -105,6 +105,11 @@ package gamedata
 			
 			_bgm = plainText.bgm;
 			_sound = plainText.sound;
+			
+			if (_onReadyToPreset)
+			{
+				_onReadyToPreset();
+			}
 		}
 	}
 }

@@ -2,16 +2,19 @@ package scene
 {
 	import flash.utils.Dictionary;
 	
+	import starling.events.Event;
+	
 	public class SceneManager
 	{
 		private static var _scenes:Dictionary;
 		private static var _currentSceneName:String;
+
 		
 		public function SceneManager()
 		{
 	
 		}
-		
+
 		public static function dispose():void
 		{
 			if (_scenes)
@@ -78,15 +81,29 @@ package scene
 			if (_currentSceneName)
 			{
 				currentScene = _scenes[_currentSceneName];
-				currentScene.visible = false;
+				currentScene.dispatchEvent(new Event(Scene.END_SCENE));
 				Main.current.removeChild(currentScene);
 			}
 			
 			_currentSceneName = nextSceneName;
 			
 			currentScene = _scenes[_currentSceneName];
+			currentScene.dispatchEvent(new Event(Scene.START_SCENE));
 			currentScene.visible = true;
 			Main.current.addChild(currentScene);
+		}
+		
+		public static function restartScene():void
+		{
+			if (!_scenes || !_currentSceneName)
+			{
+				if (!_scenes) trace("restartScene : No scenes.");
+				if (!_currentSceneName) trace("restartScene : No name.");
+				return;
+			}
+			
+			var currentScene:Scene = _scenes[_currentSceneName];
+			currentScene.dispatchEvent(new Event(Scene.RESTART_SCENE));
 		}
 	}
 }

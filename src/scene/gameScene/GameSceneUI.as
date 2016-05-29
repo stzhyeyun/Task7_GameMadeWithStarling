@@ -24,6 +24,8 @@ package scene.gameScene
 
 	public class GameSceneUI extends Sprite
 	{
+		private const HEADER_HEIGHT_FACTOR:Number = 10;
+		
 		private var _bestScore:SpriteNumber;
 		private var _currentScore:SpriteNumber;
 		
@@ -40,17 +42,11 @@ package scene.gameScene
 			super.dispose();
 		}
 		
-		public function initialize(stageWidth:Number, stageHeight:Number, bestScore:int = 0, currentScore:int = 0):void
+		public function initialize(stageWidth:Number, stageHeight:Number, bestScore:int, currentScore:int):void
 		{
-			// Background
-			var background:Image = new Image(Resources.getTexture(TextureName.BACKGROUND_GAME));
-			background.width = stageWidth;
-			background.height = stageHeight;
-			addChild(background);
-			
 			// Header
 			var bitmapData:BitmapData =
-				new BitmapData(int(stageWidth), int(stageHeight / 10), false, Color.HEADER);
+				new BitmapData(int(stageWidth), int(stageHeight / HEADER_HEIGHT_FACTOR), false, Color.HEADER);
 			var header:Image = new Image(Texture.fromBitmapData(bitmapData));
 			addChild(header);
 			
@@ -66,9 +62,24 @@ package scene.gameScene
 			pause.addEventListener(TouchEvent.TOUCH, onEndedPauseButton);
 			addChild(pause);
 			
+			// Score
+			setScore(stageWidth, stageHeight, bestScore, currentScore);
+			
+			DataManager.current.addEventListener(DataManager.UPDATE, onUpdateCurrentScore);
+		}
+		
+		public function setScore(stageWidth:Number, stageHeight:Number, bestScore:int, currentScore:int):void
+		{
+			var headerHeight:Number = stageHeight / HEADER_HEIGHT_FACTOR;
+			
 			// Best score
+			if (_bestScore)
+			{
+				removeChild(_bestScore, true);
+				_bestScore = null;
+			}
 			_bestScore = new SpriteNumber(bestScore, Color.BEST_SCORE);
-			var bestScoreScale:Number = header.height * 0.25 / _bestScore.height;
+			var bestScoreScale:Number = headerHeight * 0.25 / _bestScore.height;
 			_bestScore.height *= bestScoreScale;
 			_bestScore.width *= bestScoreScale; 
 			_bestScore.x = stageWidth / 2;
@@ -76,15 +87,18 @@ package scene.gameScene
 			addChild(_bestScore);
 			
 			// Current score
+			if (_currentScore)
+			{
+				removeChild(_currentScore, true);
+				_currentScore = null;
+			}
 			_currentScore = new SpriteNumber(currentScore, Color.CURRENT_SCORE);
-			var currentScoreScale:Number = header.height * 0.4 / _currentScore.height;
+			var currentScoreScale:Number = headerHeight * 0.4 / _currentScore.height;
 			_currentScore.height *= currentScoreScale;
 			_currentScore.width *= currentScoreScale; 
 			_currentScore.x = stageWidth / 2;
 			_currentScore.y = stageHeight / 6.5;
 			addChild(_currentScore);
-			
-			DataManager.current.addEventListener(DataManager.UPDATE, onUpdateCurrentScore);
 		}
 		
 		private function onEndedPauseButton(event:TouchEvent):void

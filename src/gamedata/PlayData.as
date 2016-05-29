@@ -6,6 +6,7 @@ package gamedata
 	import flash.filesystem.FileStream;
 	import flash.net.URLLoader;
 	
+	import core.BlockData;
 	import core.TableData;
 	import core.TileData;
 
@@ -16,6 +17,7 @@ package gamedata
 		private var _bestScore:int;
 		private var _currentScore:int;
 		private var _tableData:TableData;
+		private var _blocksData:Vector.<BlockData>
 
 		public function get bestScore():int
 		{
@@ -46,7 +48,7 @@ package gamedata
 		{
 			_tableData = value;
 		}
-		
+	
 		
 		public function PlayData(name:String, path:File)
 		{
@@ -55,6 +57,14 @@ package gamedata
 			_bestScore = 0;
 			_currentScore = 0;
 			_tableData = null;
+			_blocksData = null;
+		}
+		
+		public override function dispose():void
+		{
+			// to do
+			
+			
 		}
 		
 		/**
@@ -78,8 +88,18 @@ package gamedata
 			{
 				plainText += _tableData.export();
 			}
-			plainText += "\n}";
 			
+			if (_blocksData)
+			{
+				plainText += ",\n\t\"blocksData\" : [";
+				for (var i:int = 0; i < _blocksData.length; i++)
+				{
+					plainText += _blocksData[i].export();	
+				}
+				plainText += "]";
+			}
+			
+			plainText += "\n}";
 			plainText = AesCrypto.encrypt(plainText, "ahundrendblocksbybamkie");
 			
 			var stream:FileStream = new FileStream();
@@ -125,12 +145,46 @@ package gamedata
 							plainText.tableData[plainTextIndex++],
 							plainText.tableData[plainTextIndex++],
 							plainText.tableData[plainTextIndex++]));
-						
-						//plainTextIndex += 3;
 					}
 				}
 				_tableData.data = data;
 			}
+			
+			if (plainText.blocksData)
+			{
+				_blocksData = new Vector.<BlockData>();
+				
+				var blockData:BlockData;
+				var count:int = 0;
+				var length:int;
+				for (i = 0; i < plainText.blocksData.length; )
+				{
+					blockData = new BlockData();
+					length = plainText.blocksData[i++];
+					
+					while (count < length)
+					{
+						blockData.addData(
+							new TileData(plainText.blocksData[i++], plainText.blocksData[i++], plainText.blocksData[i++]));
+						count++;
+					}
+					
+					_blocksData.push(blockData);
+					count = 0;
+				}
+			}
+		}
+		
+		public function setBlockData(index:int, data:BlockData):void
+		{
+			
+		}
+		
+		public function clean():void
+		{
+			_currentScore = 0;
+			_tableData = null;
+			_blocksData = null;
 		}
 	}
 }

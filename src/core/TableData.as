@@ -99,6 +99,7 @@ package core
 				}
 			}
 			
+			DataManager.updateBestScore();
 			return false;	
 		}
 
@@ -295,7 +296,7 @@ package core
 		
 		public function export():String
 		{
-			var dataStr:String = ",\n\t\"tableSize\" : " + _size.toString() +
+			var dataStr:String = "\n\t\"tableSize\" : " + _size.toString() +
 								 ",\n\t\"tableData\" : [";
 				
 			for (var i:int = 0; i < _data.length; i++)
