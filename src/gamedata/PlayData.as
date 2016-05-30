@@ -48,6 +48,11 @@ package gamedata
 		{
 			_tableData = value;
 		}
+		
+		public function get blocksData():Vector.<BlockData>
+		{
+			return _blocksData;
+		}
 	
 		
 		public function PlayData(name:String, path:File)
@@ -73,11 +78,10 @@ package gamedata
 		 */
 		public override function write():void
 		{
-			if (!_name || !_path || _currentScore == 0)
+			if (!_name || !_path)
 			{
 				if (!_name) trace(TAG + " write : No name.");
 				if (!_path) trace(TAG + " write : No path.");				
-				if (!_currentScore == 0) trace(TAG + " write : No necessity of writing.");
 				return;
 			}
 			
@@ -86,6 +90,7 @@ package gamedata
 
 			if (_tableData)
 			{
+				plainText += ", ";
 				plainText += _tableData.export();
 			}
 			
@@ -94,7 +99,10 @@ package gamedata
 				plainText += ",\n\t\"blocksData\" : [";
 				for (var i:int = 0; i < _blocksData.length; i++)
 				{
-					plainText += _blocksData[i].export();	
+					if (_blocksData[i])
+					{
+						plainText += _blocksData[i].export(i);
+					}
 				}
 				plainText += "]";
 			}
@@ -135,16 +143,20 @@ package gamedata
 				
 				var data:Vector.<Vector.<TileData>> = new Vector.<Vector.<TileData>>();
 				var plainTextIndex:int = 0;
+				var col:int;
+				var row:int;
+				var textureName:String;
 				for (var i:int = 0; i < _tableData.size; i++)
 				{
 					data[i] = new Vector.<TileData>();
 					
 					for (var j:int = 0; j < _tableData.size; j++)
 					{
-						data[i].push(new TileData(
-							plainText.tableData[plainTextIndex++],
-							plainText.tableData[plainTextIndex++],
-							plainText.tableData[plainTextIndex++]));
+						col = plainText.tableData[plainTextIndex++].col;
+						row = plainText.tableData[plainTextIndex++].row;
+						textureName = plainText.tableData[plainTextIndex++].textureName;
+						
+						data[i].push(new TileData(col, row, textureName));
 					}
 				}
 				_tableData.data = data;
@@ -152,32 +164,49 @@ package gamedata
 			
 			if (plainText.blocksData)
 			{
-				_blocksData = new Vector.<BlockData>();
+				_blocksData = new Vector.<BlockData>(3);
 				
 				var blockData:BlockData;
 				var count:int = 0;
+				var index:int = -1;
 				var length:int;
 				for (i = 0; i < plainText.blocksData.length; )
 				{
 					blockData = new BlockData();
+					index = plainText.blocksData[i++];
 					length = plainText.blocksData[i++];
 					
 					while (count < length)
 					{
-						blockData.addData(
-							new TileData(plainText.blocksData[i++], plainText.blocksData[i++], plainText.blocksData[i++]));
+						col = plainText.blocksData[i++].col;
+						row = plainText.blocksData[i++].row;
+						textureName = plainText.blocksData[i++].textureName;
+						
+						blockData.addData(new TileData(col, row, textureName));
 						count++;
 					}
 					
-					_blocksData.push(blockData);
+					_blocksData[index] = blockData;
 					count = 0;
 				}
+				
+				var test:int = 0;
 			}
 		}
 		
-		public function setBlockData(index:int, data:BlockData):void
+		public function setBlockData(index:int, data:BlockData = null):void
 		{
+			if (index < 0)
+			{
+				if (index < 0) trace(TAG + " setBlockData : Invalid index.");
+				return;
+			}
 			
+			if (!_blocksData)
+			{
+				_blocksData = new Vector.<BlockData>(3);
+			}
+			_blocksData[index] = data;
 		}
 		
 		public function clean():void

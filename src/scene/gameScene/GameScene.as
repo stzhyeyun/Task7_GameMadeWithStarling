@@ -8,6 +8,7 @@ package scene.gameScene
 	import flash.ui.Keyboard;
 	
 	import core.Block;
+	import core.BlockData;
 	import core.BlockDispenser;
 	import core.Table;
 	import core.TableData;
@@ -107,7 +108,7 @@ package scene.gameScene
 			DataManager.playData.clean();
 			
 			_table.setTableData(DataManager.playData.tableData);
-			setBlocks();
+			refreshBlocks(true);
 			_ui.setScore(
 				this.nativeStageWidth, this.nativeStageHeight,
 				DataManager.playData.bestScore, DataManager.playData.currentScore);
@@ -141,13 +142,25 @@ package scene.gameScene
 			ct.alphaMultiplier = 0; 
 			bitmapData.colorTransform(new Rectangle(0, 0, bitmapData.width, bitmapData.height), ct);
 			
+			var blocksData:Vector.<BlockData> = DataManager.playData.blocksData;
 			var block:Block;
 			var touchArea:Image;
 			for (var i:int = 0; i < BLOCK_NUM; i++)
 			{
 				// Block
 				block = new Block(_tableScale * 0.5);
-				block.initialize(BlockDispenser.pop());
+				if (!blocksData)
+				{
+					block.initialize(BlockDispenser.pop());
+				}
+				else if (blocksData && blocksData[i])
+				{
+					block.initialize(blocksData[i]);
+				}
+				else if (blocksData && !blocksData[i])
+				{
+					block.initialize(null);
+				}
 				block.x = _table.x + (_blockAreaSize / 2) + _blockAreaSize * i;  
 				block.y = _table.y + _table.height + (_blockAreaSize / 2);
 				addChild(block);
@@ -174,15 +187,19 @@ package scene.gameScene
 			// set blocks
 		}
 			
-		private function refreshBlocks():void
+		private function refreshBlocks(restart:Boolean = false):void
 		{
 			var needRefresh:Boolean = true;
-			for (var i:int = 0; i < _blocks.length; i++)
+			
+			if (!restart)
 			{
-				if (_blocks[i].visible)
+				for (var i:int = 0; i < _blocks.length; i++)
 				{
-					needRefresh = false;
-					break;
+					if (_blocks[i].visible)
+					{
+						needRefresh = false;
+						break;
+					}
 				}
 			}
 			
@@ -252,7 +269,14 @@ package scene.gameScene
 						
 						for (var i:int = 0; i < _blocks.length; i++)
 						{
-							DataManager.playData.setBlockData(i, _blocks[i].data);
+							if (_blocks[i].visible)
+							{
+								DataManager.playData.setBlockData(i, _blocks[i].data);
+							}
+							else
+							{
+								DataManager.playData.setBlockData(i);
+							}
 						}
 					}
 					else

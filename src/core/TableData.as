@@ -303,13 +303,13 @@ package core
 			{
 				for (var j:int = 0; j < _data[i].length; j++)
 				{
-					if (i != 0)
+					if (i != 0 || j != 0)
 					{
 						dataStr += ", ";
 					}
-					dataStr += _data[i][j].col.toString() + ", " +
-							   _data[i][j].row.toString() + ", " +
-							   _data[i][j].textureName;
+					dataStr += "{\"col\" : " + _data[i][j].col.toString() + "}, " +
+							   "{\"row\" : " + _data[i][j].row.toString() + "}, " +
+							   "{\"textureName\" : \"" + _data[i][j].textureName + "\"}";
 				}
 			}
 			dataStr += "]";

@@ -5,6 +5,7 @@ package ui.popup
 	import media.SoundManager;
 	
 	import resources.Resources;
+	import resources.SoundName;
 	import resources.TextureName;
 	
 	import starling.display.Button;
@@ -32,8 +33,8 @@ package ui.popup
 			var title:Image = new Image(Resources.getTexture(TextureName.TITLE_SETTING));
 			var bgm:Button = new Button(Resources.getTexture(TextureName.BTN_BGM));
 			var sound:Button = new Button(Resources.getTexture(TextureName.BTN_SOUND));
-			_banBgm = new Image(Resources.getTexture(TextureName.BTN_CANCEL)); // IMG_BAN
-			_banSound = new Image(Resources.getTexture(TextureName.BTN_CANCEL)); // IMG_BAN
+			_banBgm = new Image(Resources.getTexture(TextureName.IMG_BAN));
+			_banSound = new Image(Resources.getTexture(TextureName.IMG_BAN));
 			
 			title.pivotX = title.width / 2;
 			title.pivotY = title.height / 2;
@@ -46,8 +47,8 @@ package ui.popup
 			bgm.x = panel.width * 0.3;
 			bgm.y = btnY;
 				
-			_banBgm.pivotX = bgm.width / 2;
-			_banBgm.pivotY = bgm.height / 2;
+			_banBgm.pivotX = _banBgm.width / 2;
+			_banBgm.pivotY = _banBgm.height / 2;
 			_banBgm.x = bgm.x;
 			_banBgm.y = btnY;
 			_banBgm.visible = false;
@@ -57,8 +58,8 @@ package ui.popup
 			sound.x = panel.width * 0.7;
 			sound.y = btnY;
 			
-			_banSound.pivotX = sound.width / 2;
-			_banSound.pivotY = sound.height / 2;
+			_banSound.pivotX = _banSound.width / 2;
+			_banSound.pivotY = _banSound.height / 2;
 			_banSound.x = sound.x;
 			_banSound.y = btnY;
 			_banSound.visible = false;
@@ -126,7 +127,7 @@ package ui.popup
 			{
 				DataManager.settingData.bgm = true;
 				SoundManager.isBgmActive = true;
-				SoundManager.wakeBgm();
+				SoundManager.play(Resources.getSound(SoundName.MAIN_THEME));
 				_banBgm.visible = false;
 			}
 		}

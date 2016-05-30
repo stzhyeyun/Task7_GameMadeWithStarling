@@ -27,6 +27,7 @@
    <SubTexture name="btn_share" x="0" y="807" width="340" height="69" />
    <SubTexture name="btn_shop" x="736" y="771" width="69" height="71" />
    <SubTexture name="btn_sound" x="665" y="844" width="69" height="71" />
+   <SubTexture name="img_ban" x="342" y="807" width="47" height="47" />
    <SubTexture name="popup" x="0" y="0" width="478" height="476" />
    <SubTexture name="popup_mini" x="0" y="478" width="390" height="147" />
    <SubTexture name="text_bestScore" x="208" y="878" width="145" height="23" />

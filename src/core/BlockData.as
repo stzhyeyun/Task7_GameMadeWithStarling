@@ -28,26 +28,30 @@ package core
 			_data.push(data);
 		}
 		
-		public function export():String
+		public function export(index:int):String
 		{
 			var dataStr:String = "";
+			
+			if (index != 0)
+			{
+				dataStr += ", ";
+			}
 			
 			for (var i:int = 0; i < _data.length; i++)
 			{
 				if (i == 0)
 				{
-					dataStr += _data.length.toString() + ", ";
+					dataStr += index.toString() + ", " + _data.length.toString() + ", ";
 				}
+		
+				dataStr += "{\"col\" : " + _data[i].col.toString() + "}, " +
+						   "{\"row\" : " + _data[i].row.toString() + "}, " +
+						   "{\"textureName\" : \"" + _data[i].textureName + "\"}";
 				
-				if (i != 0)
+				if (i != _data.length - 1)
 				{
 					dataStr += ", ";
 				}
-		
-				dataStr += 
-					_data[i].col.toString() + ", " +
-					_data[i].row.toString() + ", " +
-					_data[i].textureName;
 			}
 			
 			return dataStr;

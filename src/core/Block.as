@@ -35,9 +35,13 @@ package core
 		public function initialize(blockData:BlockData):void
 		{
 			removeChildren();
-			_tiles.splice(0, _tiles.length);
 			
 			_data = blockData;
+			
+			if (!_data)
+			{
+				return;
+			}
 			
 			// Create tiles
 			var data:Vector.<TileData> = _data.data;
