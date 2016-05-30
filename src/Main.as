@@ -67,6 +67,18 @@ package
 				sound.loops = Sound.INFINITE;
 			}
 			SoundManager.play(sound);
+			
+			sound = Resources.getSound(SoundName.SET);
+			if (sound)
+			{
+				sound.volume = 0.5;
+			}
+			
+			sound = Resources.getSound(SoundName.CLEAR);
+			if (sound)
+			{
+				sound.volume = 0.5;
+			}
 		}
 	}
 }

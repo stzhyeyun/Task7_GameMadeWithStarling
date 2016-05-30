@@ -17,6 +17,22 @@ package core
 			_data = new Vector.<TileData>();
 		}
 		
+		public function dispose():void
+		{
+			if (_data)
+			{
+				for (var i:int = 0; i < _data.length; i++)
+				{
+					if (_data[i])
+					{
+						_data[i].dispose();
+					}
+					_data[i] = null;
+				}
+			}
+			_data = null;
+		}
+		
 		public function addData(data:TileData):void
 		{
 			if (!data)

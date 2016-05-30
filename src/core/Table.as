@@ -1,13 +1,9 @@
 package core
 {
-	import flash.geom.Rectangle;
-	
 	import resources.Resources;
 	import resources.TextureName;
 	
-	import starling.display.Canvas;
 	import starling.display.Sprite;
-	import starling.text.TextField;
 	
 	import util.Color;
 	import util.Index2D;
@@ -34,12 +30,28 @@ package core
 		public function Table()
 		{
 			_data = null;
-			_tiles = new Vector.<Vector.<Tile>>;
+			_tiles = new Vector.<Vector.<Tile>>();
 		}
 		
 		public override function dispose():void
 		{
 			_data = null;
+			
+			if (_tiles)
+			{
+				for (var i:int = 0; i < _tiles.length; i++)
+				{
+					for (var j:int = 0; j < _tiles[i].length; j++)
+					{
+						if (_tiles[i][j])
+						{
+							_tiles[i][j].dispose();
+							_tiles[i][j] = null;
+						}
+					}
+					_tiles[i] = null;
+				}
+			}
 			_tiles = null;
 			
 			super.dispose();

@@ -41,16 +41,7 @@ package gamedata
 		{
 			export();
 			
-			if (_playData)
-			{
-				_playData.dispose();
-			}
 			_playData = null;
-			
-			if (_settingData)
-			{
-				_settingData.dispose();
-			}
 			_settingData = null;
 		}
 

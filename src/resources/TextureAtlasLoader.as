@@ -27,7 +27,7 @@ package resources
 			_onCompleteLoad = onCompleteLoad;
 		}
 		
-		public function dispose():void // need test
+		public function dispose():void
 		{
 			_path = null;
 			_name = null;

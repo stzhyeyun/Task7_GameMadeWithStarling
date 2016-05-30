@@ -33,6 +33,10 @@ package core
 		
 		public override function dispose():void
 		{
+			if (_data)
+			{
+				_data.dispose();
+			}
 			_data = null;
 			
 			super.dispose();

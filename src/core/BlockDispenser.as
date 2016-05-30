@@ -9,7 +9,7 @@ package core
 		public function BlockDispenser()
 		{
 			
-		}		
+		}	
 		
 		public static function initialize():void
 		{

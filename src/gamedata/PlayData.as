@@ -65,13 +65,6 @@ package gamedata
 			_blocksData = null;
 		}
 		
-		public override function dispose():void
-		{
-			// to do
-			
-			
-		}
-		
 		/**
 		 * PlayData를 AES-128로 암호화하여 JSON 파일로 출력합니다.   
 		 * 

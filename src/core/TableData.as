@@ -2,7 +2,12 @@ package core
 {
 	import gamedata.DataManager;
 	
+	import media.SoundManager;
+	
+	import resources.Resources;
+	import resources.SoundName;
 	import resources.TextureName;
+	
 	import util.Index2D;
 
 	public class TableData
@@ -142,7 +147,8 @@ package core
 				_data[destTilesIndices[i].col][destTilesIndices[i].row].textureName = blockTiles[i].textureName;
 			}
 			DataManager.playData.tableData = this;
-			
+			SoundManager.play(Resources.getSound(SoundName.SET));
+
 			// Update view
 			if (onUpdate)
 			{
@@ -273,7 +279,8 @@ package core
 					_data[totalClearTilesIndices[i].col][totalClearTilesIndices[i].row].textureName = TextureName.TILE_WHITE;
 				}
 				DataManager.playData.tableData = this;
-			
+				SoundManager.play(Resources.getSound(SoundName.CLEAR));
+				
 				// Update view
 				if (onUpdate)
 				{

@@ -53,7 +53,21 @@ package scene.gameScene
 		
 		public override function dispose():void
 		{
-			// to do
+			if (_table)
+			{
+				_table.dispose();
+			}
+			_table = null;
+			
+			_blocks = null;
+			
+			if (_ui)
+			{
+				_ui.dispose();
+			}
+			_ui = null;
+			
+			_originBlockPosData = null;
 			
 			super.dispose();
 		}

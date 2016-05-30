@@ -5,6 +5,8 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
+	import core.BlockDispenser;
+	
 	import gamedata.DataManager;
 	
 	import media.SoundManager;

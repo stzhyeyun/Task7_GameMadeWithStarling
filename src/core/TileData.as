@@ -45,5 +45,10 @@ package core
 			_row = row;
 			_textureName = textureName;
 		}
+		
+		public function dispose():void
+		{
+			_textureName = null;
+		}
 	}
 }
