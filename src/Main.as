@@ -1,5 +1,8 @@
 package
 {
+	import com.facebook.graph.Facebook;
+	
+	import flash.external.ExternalInterface;
 	import flash.filesystem.File;
 	
 	import gamedata.DataManager;
@@ -21,11 +24,24 @@ package
 
 	public class Main extends Sprite
 	{
+		public static const FACEBOOK_APP_ID:String = "943928415704678";
+		
 		private static var _current:Main;
+		private static var _facebookLogin:Boolean;
 
 		public static function get current():Main
 		{
 			return _current;
+		}
+		
+		public static function get facebookLogin():Boolean
+		{
+			return _facebookLogin;
+		}
+		
+		public static function set facebookLogin(value:Boolean):void
+		{
+			_facebookLogin = value;
 		}
 		
 		
@@ -37,6 +53,11 @@ package
 			Resources.load(File.applicationDirectory.resolvePath("resources/res"));
 			
 			DataManager.initialize();
+			
+//			if (ExternalInterface.available)
+//			{
+//				Facebook.init(FACEBOOK_APP_ID, handleLogin);
+//			}
 		}
 		
 		public override function dispose():void
@@ -78,6 +99,18 @@ package
 			if (sound)
 			{
 				sound.volume = 0.5;
+			}
+		}
+
+		private function handleLogin(response:Object, fail:Object):void
+		{
+			if (response == null)
+			{
+				_facebookLogin = false;
+			}
+			else
+			{
+				_facebookLogin = true;
 			}
 		}
 	}

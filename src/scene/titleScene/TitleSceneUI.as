@@ -65,9 +65,11 @@ package scene.titleScene
 			setting.addEventListener(TouchEvent.TOUCH, onEndedSettingButton);
 			addChild(setting);
 			
-			// Facebook Login
-			
-			
+			// Facebook button
+			var facebook:Button = new Button(Resources.getTexture(TextureName.BTN_FACEBOOK));
+			facebook.x = play.x + facebook.width * 1.5;
+			facebook.y = play.y;
+			addChild(facebook);	
 		}
 		
 		private function onEndedPlayButton(event:TouchEvent):void
