@@ -1,21 +1,32 @@
 package resources
 {
 	import flash.display.Bitmap;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.filesystem.File;
+	import flash.net.URLLoader;
+	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
+	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	
 	import media.Sound;
 	
+	import starling.events.EventDispatcher;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 	
-	public class Resources
+	public class Resources extends EventDispatcher
 	{
+		public static const USER_PICTURE_READY:String = "userPictureReady";
+		
+		private static var _current:Resources;
+		
 		private static var _textureAtlas:TextureAtlas;
 		private static var _soundDic:Dictionary;
+		private static var _userPicture:Texture;
 		
 		private static var _path:File;
 		private static var _pngList:Array;
@@ -24,6 +35,11 @@ package resources
 		private static var _loadedResourcesCount:int;
 		
 		private static var _onReadyToUseResources:Function;
+		
+		public static function get current():Resources
+		{
+			return _current;
+		}
 		
 		public static function set onReadyToUseResources(value:Function):void
 		{
@@ -57,7 +73,12 @@ package resources
 			_onReadyToUseResources = null;
 		}
 		
-		public static function load(path:File):void
+		public static function initialize():void
+		{
+			_current = new Resources();
+		}
+		
+		public static function loadFromDisk(path:File):void
 		{
 			if (!path.exists)
 			{
@@ -138,6 +159,20 @@ package resources
 			}
 		}
 		
+		public static function loadImageFromURL(url:String):void
+		{
+			if (!url)
+			{
+				if (!url) trace("loadImageFromURL : No URL.");
+				return;
+			}
+			
+			var loader:URLLoader = new URLLoader();
+			loader.dataFormat = URLLoaderDataFormat.BINARY;
+			loader.addEventListener(flash.events.Event.COMPLETE, onLoadedFromURL);
+			loader.load(new URLRequest(url));
+		}
+		
 		public static function getTexture(textureName:String):Texture
 		{
 			if (!_textureAtlas)
@@ -153,6 +188,20 @@ package resources
 				trace("getTexture : Not registered texture name.");
 			}
 			return texture;
+		}
+		
+		public static function getUserPicture():Texture
+		{
+			return _userPicture;
+		}
+		
+		public static function removeUserPicture():void
+		{
+			if (_userPicture)
+			{
+				_userPicture.dispose();
+				_userPicture = null;
+			}
 		}
 		
 		public static function getSound(name:String):Sound
@@ -220,6 +269,28 @@ package resources
 			event.currentTarget.removeEventListener(IOErrorEvent.IO_ERROR, onFailedLoadingSound);
 			
 			trace("failed to load sound.");
+		}
+
+		private static function onLoadedFromURL(event:Event):void
+		{
+			var urlLoader:URLLoader = event.currentTarget as URLLoader;
+			urlLoader.removeEventListener(flash.events.Event.COMPLETE, onLoadedFromURL);
+			
+			var byteArray:ByteArray = urlLoader.data;
+			var loader:Loader = new Loader();
+			loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, onLoadedByteArray);
+			loader.loadBytes(byteArray);
+		}
+		
+		private static function onLoadedByteArray(event:Event):void
+		{
+			var loaderInfo:LoaderInfo = event.currentTarget as LoaderInfo;
+			loaderInfo.removeEventListener(flash.events.Event.COMPLETE, onLoadedByteArray);
+						
+			var bitmap:Bitmap = loaderInfo.loader.content as Bitmap;
+			_userPicture = Texture.fromBitmap(bitmap);
+			
+			Resources.current.dispatchEvent(new starling.events.Event(Resources.USER_PICTURE_READY));
 		}
 	}
 }

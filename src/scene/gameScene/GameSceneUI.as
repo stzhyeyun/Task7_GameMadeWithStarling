@@ -7,6 +7,7 @@ package scene.gameScene
 	import resources.Resources;
 	import resources.TextureName;
 	
+	import starling.core.Starling;
 	import starling.display.Button;
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -20,14 +21,18 @@ package scene.gameScene
 	import ui.popup.PopupManager;
 	import ui.popup.PopupName;
 	
+	import user.LoginManager;
+	
 	import util.Color;
 
 	public class GameSceneUI extends Sprite
 	{
-		private const HEADER_HEIGHT_FACTOR:Number = 10;
-		
+		private var _userPic:Image;
 		private var _bestScore:SpriteNumber;
 		private var _currentScore:SpriteNumber;
+		
+		private var _headerWidth:Number;
+		private var _headerHeight:Number;
 		
 		
 		public function GameSceneUI()
@@ -46,9 +51,23 @@ package scene.gameScene
 		{
 			// Header
 			var bitmapData:BitmapData =
-				new BitmapData(int(stageWidth), int(stageHeight / HEADER_HEIGHT_FACTOR), false, Color.HEADER);
+				new BitmapData(int(stageWidth), int(stageHeight / 10), false, Color.HEADER);
 			var header:Image = new Image(Texture.fromBitmapData(bitmapData));
+			_headerWidth = header.width;
+			_headerHeight = header.height;
 			addChild(header);
+			
+			// User picture
+			//_userPic = new Image(Resources.getTexture(TextureName.DEFAULT_PICTURE));
+			_userPic = new Image(null); // temp
+			_userPic.height = header.height * 0.8;
+			_userPic.width = _userPic.height;
+			_userPic.pivotX = _userPic.width / 2;
+			_userPic.pivotY = _userPic.height / 2;
+			_userPic.x = header.width * 0.1;
+			_userPic.y = header.height / 2;
+			_userPic.visible = false;
+			addChild(_userPic);
 			
 			// Pause
 			var pauseScale:Number = 0.8;
@@ -66,12 +85,12 @@ package scene.gameScene
 			setScore(stageWidth, stageHeight, bestScore, currentScore);
 			
 			DataManager.current.addEventListener(DataManager.UPDATE, onUpdateCurrentScore);
+			Resources.current.addEventListener(Resources.USER_PICTURE_READY, onUserPictureReady);
+			LoginManager.current.addEventListener(LoginManager.LOG_OUT, onLogOut);
 		}
 		
 		public function setScore(stageWidth:Number, stageHeight:Number, bestScore:int, currentScore:int):void
 		{
-			var headerHeight:Number = stageHeight / HEADER_HEIGHT_FACTOR;
-			
 			// Best score
 			if (_bestScore)
 			{
@@ -79,7 +98,7 @@ package scene.gameScene
 				_bestScore = null;
 			}
 			_bestScore = new SpriteNumber(bestScore, Color.BEST_SCORE);
-			var bestScoreScale:Number = headerHeight * 0.25 / _bestScore.height;
+			var bestScoreScale:Number = _headerHeight * 0.25 / _bestScore.height;
 			_bestScore.height *= bestScoreScale;
 			_bestScore.width *= bestScoreScale; 
 			_bestScore.x = stageWidth / 2;
@@ -93,7 +112,7 @@ package scene.gameScene
 				_currentScore = null;
 			}
 			_currentScore = new SpriteNumber(currentScore, Color.CURRENT_SCORE);
-			var currentScoreScale:Number = headerHeight * 0.4 / _currentScore.height;
+			var currentScoreScale:Number = _headerHeight * 0.4 / _currentScore.height;
 			_currentScore.height *= currentScoreScale;
 			_currentScore.width *= currentScoreScale; 
 			_currentScore.x = stageWidth / 2;
@@ -116,6 +135,24 @@ package scene.gameScene
 		private function onUpdateCurrentScore(event:Event):void
 		{
 			_currentScore.update(int(event.data));
+		}
+		
+		private function onUserPictureReady(event:Event):void
+		{
+			_userPic.texture = Resources.getUserPicture();
+//			_userPic.height = _headerHeight * 0.8;
+//			_userPic.width = _userPic.height;
+//			_userPic.pivotX = _userPic.width / 2;
+//			_userPic.pivotY = _userPic.height / 2;
+//			_userPic.x = _headerWidth * 0.1;
+//			_userPic.y = _headerHeight / 2;
+			_userPic.visible = true;
+		}
+		
+		private function onLogOut(event:Event):void
+		{
+			//_userPic.texture = Resources.getTexture(TextureName.DEFAULT_PICTURE);
+			_userPic.visible = false; // temp
 		}
 	}
 }

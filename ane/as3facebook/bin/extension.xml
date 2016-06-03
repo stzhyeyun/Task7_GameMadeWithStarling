@@ -1,0 +1,13 @@
+<extension xmlns="http://ns.adobe.com/air/extension/21.0"> 
+    <id>com.bamkie.FacebookExtension</id> 
+    <versionNumber>0.0.1</versionNumber> 
+    <platforms> 
+        <platform name="Android-ARM"> 
+            <applicationDeployment> 
+                <nativeLibrary>facebookEX.jar</nativeLibrary> 
+                <initializer>com.facebook.extension.air.FacebookExtension</initializer>
+				<finalizer>com.facebook.extension.air.FacebookExtension</finalizer> 
+            </applicationDeployment> 
+        </platform> 
+    </platforms> 
+</extension>

@@ -1,8 +1,5 @@
 package
 {
-	import com.facebook.graph.Facebook;
-	
-	import flash.external.ExternalInterface;
 	import flash.filesystem.File;
 	
 	import gamedata.DataManager;
@@ -21,6 +18,8 @@ package
 	import starling.display.Sprite;
 	
 	import ui.popup.PopupManager;
+	
+	import user.LoginManager;
 
 	public class Main extends Sprite
 	{
@@ -49,15 +48,12 @@ package
 		{
 			_current = this;
 			
+			Resources.initialize();
 			Resources.onReadyToUseResources = onCompleteLoad;
-			Resources.load(File.applicationDirectory.resolvePath("resources/res"));
+			Resources.loadFromDisk(File.applicationDirectory.resolvePath("resources/res"));
 			
 			DataManager.initialize();
-			
-//			if (ExternalInterface.available)
-//			{
-//				Facebook.init(FACEBOOK_APP_ID, handleLogin);
-//			}
+			LoginManager.initialize();
 		}
 		
 		public override function dispose():void

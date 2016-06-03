@@ -1,5 +1,7 @@
 package scene.titleScene
 {
+	import com.bamkie.FacebookExtension;
+	
 	import resources.Resources;
 	import resources.TextureName;
 	
@@ -16,6 +18,8 @@ package scene.titleScene
 	
 	import ui.popup.PopupManager;
 	import ui.popup.PopupName;
+	
+	import user.LoginManager;
 
 	public class TitleSceneUI extends Sprite
 	{
@@ -67,8 +71,11 @@ package scene.titleScene
 			
 			// Facebook button
 			var facebook:Button = new Button(Resources.getTexture(TextureName.BTN_FACEBOOK));
+			facebook.width = play.width / 2;
+			facebook.height = play.height / 2;
 			facebook.x = play.x + facebook.width * 1.5;
 			facebook.y = play.y;
+			facebook.addEventListener(TouchEvent.TOUCH, onEndedFacebookButton);
 			addChild(facebook);	
 		}
 		
@@ -99,6 +106,16 @@ package scene.titleScene
 			if (touch)
 			{
 				PopupManager.showPopup(this, PopupName.SETTING);	
+			}	
+		}
+		
+		private function onEndedFacebookButton(event:TouchEvent):void
+		{
+			var touch:Touch = event.getTouch(event.currentTarget as DisplayObject, TouchPhase.ENDED);
+			
+			if (touch)
+			{
+				LoginManager.logIn();
 			}	
 		}
 	}
