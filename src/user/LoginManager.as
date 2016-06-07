@@ -92,6 +92,7 @@ package user
 			}
 			
 			_facebookExtension.logOut();
+			_loggedIn = false;
 			
 			LogInManager.current.dispatchEvent(new Event(LogInManager.LOG_OUT));
 		}
