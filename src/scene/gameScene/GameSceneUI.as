@@ -7,7 +7,6 @@ package scene.gameScene
 	import resources.Resources;
 	import resources.TextureName;
 	
-	import starling.core.Starling;
 	import starling.display.Button;
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -21,7 +20,7 @@ package scene.gameScene
 	import ui.popup.PopupManager;
 	import ui.popup.PopupName;
 	
-	import user.LoginManager;
+	import user.LogInManager;
 	
 	import util.Color;
 
@@ -86,7 +85,7 @@ package scene.gameScene
 			
 			DataManager.current.addEventListener(DataManager.UPDATE, onUpdateCurrentScore);
 			Resources.current.addEventListener(Resources.USER_PICTURE_READY, onUserPictureReady);
-			LoginManager.current.addEventListener(LoginManager.LOG_OUT, onLogOut);
+			LogInManager.current.addEventListener(LogInManager.LOG_OUT, onLogOut);
 		}
 		
 		public function setScore(stageWidth:Number, stageHeight:Number, bestScore:int, currentScore:int):void
@@ -140,12 +139,6 @@ package scene.gameScene
 		private function onUserPictureReady(event:Event):void
 		{
 			_userPic.texture = Resources.getUserPicture();
-//			_userPic.height = _headerHeight * 0.8;
-//			_userPic.width = _userPic.height;
-//			_userPic.pivotX = _userPic.width / 2;
-//			_userPic.pivotY = _userPic.height / 2;
-//			_userPic.x = _headerWidth * 0.1;
-//			_userPic.y = _headerHeight / 2;
 			_userPic.visible = true;
 		}
 		

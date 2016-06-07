@@ -55,6 +55,12 @@ package core
 			var dx:Number = globalCenterA.x - globalCenterB.x;
 			var dy:Number = globalCenterA.y - globalCenterB.y;
 			
+			// debug
+			var dist:Number = Math.sqrt(dx * dx + dy * dy);
+			trace("[getDistance] globalCenterA : " + globalCenterA.toString() + 
+				", globalBoundB : " + globalBoundB.toString() + 
+				", dist : " + dist.toString()); 
+			
 			globalBoundA = null;
 			globalBoundB = null;
 			globalCenterA = null;

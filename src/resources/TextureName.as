@@ -18,7 +18,7 @@ package resources
 		public static const BTN_PLAY:String = "btn_play";
 		public static const BTN_RANK:String = "btn_rank";
 		public static const BTN_SETTING:String = "btn_setting";
-		public static const BTN_FACEBOOK:String = "btn_facebook";
+		public static const BTN_LOG_IN:String = "btn_logIn";
 		public static const BTN_SHOP:String = "btn_shop";
 		
 		public static const BTN_PAUSE:String = "btn_pause";
@@ -28,6 +28,7 @@ package resources
 		
 		public static const BTN_BGM:String = "btn_bgm";
 		public static const BTN_SOUND:String = "btn_sound";
+		public static const BTN_LOG_OUT:String = "btn_logOut";
 		
 		public static const BTN_SHARE:String = "btn_share";
 		public static const BTN_CONFIRM:String = "btn_confirm";

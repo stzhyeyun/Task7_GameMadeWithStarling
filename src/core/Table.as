@@ -61,6 +61,11 @@ package core
 		{
 			_data = tableData;
 			
+			_history = new Vector.<TableData>();
+			var initialTableData:TableData = new TableData();
+			initialTableData.data = _data.data;
+			_history.push(initialTableData);
+			
 			// Create tiles
 			var data:Vector.<Vector.<TileData>> = _data.data;
 			var tileData:TileData;
@@ -188,6 +193,15 @@ package core
 		
 		private function onUpdate(updatedDataIndices:Vector.<Index2D>):void
 		{
+			// 테이블 히스토리화
+			var currTableData:TableData = new TableData();
+			currTableData.data = _data.data;
+			if (_history.length >= 5)
+			{
+				_history.shift();
+			}
+			_history.push(currTableData);
+			
 			// 업데이트 된 타일 텍스처 변경
 			var tileData:Vector.<Vector.<TileData>> = _data.data;
 			var updatedCol:int;

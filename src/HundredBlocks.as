@@ -5,8 +5,6 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
-	import core.BlockDispenser;
-	
 	import gamedata.DataManager;
 	
 	import media.SoundManager;
@@ -18,6 +16,8 @@ package
 	import starling.core.Starling;
 	
 	import ui.popup.PopupManager;
+	
+	import user.LogInManager;
 	
 	[SWF(width="720", height="960", frameRate="60")]
 	
@@ -47,6 +47,7 @@ package
 			PopupManager.dispose();
 			SceneManager.dispose();
 			DataManager.dispose();
+			LogInManager.dispose();
 			SoundManager.dispose();
 			Resources.dispose();
 		}
@@ -60,6 +61,7 @@ package
 		{
 			SoundManager.stopAll();
 			DataManager.export();
+			LogInManager.export();
 		}
 	}
 }

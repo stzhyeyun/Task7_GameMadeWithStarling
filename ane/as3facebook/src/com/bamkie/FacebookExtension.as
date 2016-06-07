@@ -49,6 +49,11 @@ package com.bamkie
 			_userInfoCallback = userInfoCallback;
 		}
 		
+		public function checkLogIn():void
+		{
+			_context.call("checkLogIn");
+		}
+		
 		public function logInWithReadPermissions(permissions:Array):void
 		{
 			_context.call("logInWithReadPermissions", permissions);

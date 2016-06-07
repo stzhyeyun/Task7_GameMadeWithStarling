@@ -6,7 +6,7 @@ package gamedata
 	
 	import starling.events.Event;
 	import starling.events.EventDispatcher;
-
+	
 	public class DataManager extends EventDispatcher
 	{
 		public static const UPDATE:String = "update";
@@ -41,8 +41,8 @@ package gamedata
 		{
 			export();
 			
-			_playData = null;
-			_settingData = null;
+//			_playData = null;
+//			_settingData = null;
 		}
 
 		public static function initialize():void

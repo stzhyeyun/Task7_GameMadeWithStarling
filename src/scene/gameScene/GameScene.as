@@ -53,13 +53,13 @@ package scene.gameScene
 		
 		public override function dispose():void
 		{
-			if (_table)
-			{
-				_table.dispose();
-			}
-			_table = null;
-			
-			_blocks = null;
+//			if (_table)
+//			{
+//				_table.dispose();
+//			}
+//			_table = null;
+//			
+//			_blocks = null;
 			
 			if (_ui)
 			{
@@ -174,6 +174,7 @@ package scene.gameScene
 				else if (blocksData && !blocksData[i])
 				{
 					block.initialize(null);
+					block.visible = false;
 				}
 				block.x = _table.x + (_blockAreaSize / 2) + _blockAreaSize * i;  
 				block.y = _table.y + _table.height + (_blockAreaSize / 2);
@@ -193,12 +194,6 @@ package scene.gameScene
 				touchArea.addEventListener(TouchEvent.TOUCH, onTouchBlock);
 				addChild(touchArea);
 			}
-		}
-		
-		private function setBlocks():void
-		{
-			// get blocksData from DataManager
-			// set blocks
 		}
 			
 		private function refreshBlocks(restart:Boolean = false):void

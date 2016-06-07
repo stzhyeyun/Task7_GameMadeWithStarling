@@ -1,7 +1,5 @@
 package scene.titleScene
 {
-	import com.bamkie.FacebookExtension;
-	
 	import resources.Resources;
 	import resources.TextureName;
 	
@@ -12,6 +10,7 @@ package scene.titleScene
 	import starling.display.DisplayObject;
 	import starling.display.Image;
 	import starling.display.Sprite;
+	import starling.events.Event;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
@@ -19,13 +18,28 @@ package scene.titleScene
 	import ui.popup.PopupManager;
 	import ui.popup.PopupName;
 	
-	import user.LoginManager;
+	import user.LogInManager;
 
 	public class TitleSceneUI extends Sprite
 	{
+		private var _logInButton:Button;
+		private var _logOutButton:Button;
+		
+		
 		public function TitleSceneUI()
 		{
 
+		}
+		
+		public override function dispose():void
+		{
+			LogInManager.current.removeEventListener(LogInManager.LOG_IN, onLogIn);
+			LogInManager.current.removeEventListener(LogInManager.LOG_OUT, onLogOut);
+			
+			_logInButton = null;
+			_logOutButton = null;
+			
+			super.dispose();
 		}
 		
 		public function initialize(stageWidth:Number, stageHeight:Number):void
@@ -69,14 +83,32 @@ package scene.titleScene
 			setting.addEventListener(TouchEvent.TOUCH, onEndedSettingButton);
 			addChild(setting);
 			
-			// Facebook button
-			var facebook:Button = new Button(Resources.getTexture(TextureName.BTN_FACEBOOK));
-			facebook.width = play.width / 2;
-			facebook.height = play.height / 2;
-			facebook.x = play.x + facebook.width * 1.5;
-			facebook.y = play.y;
-			facebook.addEventListener(TouchEvent.TOUCH, onEndedFacebookButton);
-			addChild(facebook);	
+			// LogIn
+			_logInButton = new Button(Resources.getTexture(TextureName.BTN_LOG_IN));
+			_logInButton.width = play.width / 2;
+			_logInButton.height = play.height / 2;
+			_logInButton.x = play.x + _logInButton.width * 1.5;
+			_logInButton.y = play.y;
+			_logInButton.addEventListener(TouchEvent.TOUCH, onEndedLogInButton);
+			if (LogInManager.loggedIn)
+			{
+				_logInButton.visible = false;
+			}
+			addChild(_logInButton);
+			
+			// LogOut
+			_logOutButton = new Button(Resources.getTexture(TextureName.BTN_LOG_OUT));
+			_logOutButton.x = (stageWidth / 2 - _logOutButton.width / 2);
+			_logOutButton.y = stageHeight * 0.85;
+			_logOutButton.addEventListener(TouchEvent.TOUCH, onEndedLogOutButton);
+			if (!LogInManager.loggedIn)
+			{
+				_logOutButton.visible = false;
+			}
+			addChild(_logOutButton);
+			
+			LogInManager.current.addEventListener(LogInManager.LOG_IN, onLogIn);
+			LogInManager.current.addEventListener(LogInManager.LOG_OUT, onLogOut);
 		}
 		
 		private function onEndedPlayButton(event:TouchEvent):void
@@ -109,14 +141,50 @@ package scene.titleScene
 			}	
 		}
 		
-		private function onEndedFacebookButton(event:TouchEvent):void
+		private function onEndedLogInButton(event:TouchEvent):void
 		{
 			var touch:Touch = event.getTouch(event.currentTarget as DisplayObject, TouchPhase.ENDED);
 			
 			if (touch)
 			{
-				LoginManager.logIn();
+				LogInManager.logIn();
 			}	
+		}
+		
+		private function onEndedLogOutButton(event:TouchEvent):void
+		{
+			var touch:Touch = event.getTouch(event.currentTarget as DisplayObject, TouchPhase.ENDED);
+			
+			if (touch)
+			{
+				LogInManager.logOut();
+			}	
+		}
+		
+		private function onLogIn(event:Event):void
+		{
+			if (_logInButton)
+			{
+				_logInButton.visible = false;
+			}
+			
+			if (_logOutButton)
+			{
+				_logOutButton.visible = true;
+			}
+		}
+		
+		private function onLogOut(event:Event):void
+		{
+			if (_logInButton)
+			{
+				_logInButton.visible = true;
+			}
+			
+			if (_logOutButton)
+			{
+				_logOutButton.visible = false;
+			}
 		}
 	}
 }

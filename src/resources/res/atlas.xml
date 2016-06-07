@@ -16,7 +16,8 @@
    <SubTexture name="btn_bgm" x="874" y="218" width="69" height="71" />
    <SubTexture name="btn_cancel" x="874" y="291" width="69" height="71" />
    <SubTexture name="btn_confirm" x="802" y="525" width="69" height="71" />
-   <SubTexture name="btn_facebook" x="594" y="771" width="69" height="71" />
+   <SubTexture name="btn_logIn" x="594" y="771" width="69" height="71" />
+   <SubTexture name="btn_logOut" x="208" y="903" width="134" height="44" />
    <SubTexture name="btn_menu" x="873" y="525" width="69" height="71" />
    <SubTexture name="btn_pause" x="802" y="598" width="69" height="71" />
    <SubTexture name="btn_play" x="802" y="414" width="108" height="109" />
