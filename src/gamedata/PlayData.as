@@ -84,7 +84,7 @@ package gamedata
 			if (_tableData)
 			{
 				plainText += ", ";
-				plainText += _tableData.export();
+				plainText += _tableData.toString();
 			}
 			
 			if (_blocksData)
@@ -92,9 +92,16 @@ package gamedata
 				plainText += ",\n\t\"blocksData\" : [";
 				for (var i:int = 0; i < _blocksData.length; i++)
 				{
+					plainText += i.toString() + ", ";
+					
 					if (_blocksData[i])
 					{
-						plainText += _blocksData[i].export(i);
+						plainText += _blocksData[i].toString(i);
+					}
+					
+					if (i != _blocksData.length - 1)
+					{
+						plainText += ", ";
 					}
 				}
 				plainText += "]";

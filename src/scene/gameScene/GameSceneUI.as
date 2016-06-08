@@ -41,7 +41,7 @@ package scene.gameScene
 		
 		public override function dispose():void
 		{
-			DataManager.current.removeEventListener(DataManager.UPDATE, onUpdateCurrentScore);
+			DataManager.current.removeEventListener(DataManager.UPDATE_CURRENT_SCORE, onUpdateCurrentScore);
 			
 			super.dispose();
 		}
@@ -58,14 +58,22 @@ package scene.gameScene
 			
 			// User picture
 			//_userPic = new Image(Resources.getTexture(TextureName.DEFAULT_PICTURE));
-			_userPic = new Image(null); // temp
+			if (LogInManager.loggedIn)
+			{
+				_userPic = new Image(Resources.getCurrentUserPicture());
+				_userPic.visible = true;
+			}
+			else
+			{
+				_userPic = new Image(null);	
+				_userPic.visible = false;
+			}
 			_userPic.height = header.height * 0.8;
 			_userPic.width = _userPic.height;
 			_userPic.pivotX = _userPic.width / 2;
 			_userPic.pivotY = _userPic.height / 2;
 			_userPic.x = header.width * 0.1;
 			_userPic.y = header.height / 2;
-			_userPic.visible = false;
 			addChild(_userPic);
 			
 			// Pause
@@ -83,7 +91,7 @@ package scene.gameScene
 			// Score
 			setScore(stageWidth, stageHeight, bestScore, currentScore);
 			
-			DataManager.current.addEventListener(DataManager.UPDATE, onUpdateCurrentScore);
+			DataManager.current.addEventListener(DataManager.UPDATE_CURRENT_SCORE, onUpdateCurrentScore);
 			Resources.current.addEventListener(Resources.USER_PICTURE_READY, onUserPictureReady);
 			LogInManager.current.addEventListener(LogInManager.LOG_OUT, onLogOut);
 		}
@@ -96,7 +104,7 @@ package scene.gameScene
 				removeChild(_bestScore, true);
 				_bestScore = null;
 			}
-			_bestScore = new SpriteNumber(bestScore, Color.BEST_SCORE);
+			_bestScore = new SpriteNumber(bestScore.toString(), Color.BEST_SCORE);
 			var bestScoreScale:Number = _headerHeight * 0.25 / _bestScore.height;
 			_bestScore.height *= bestScoreScale;
 			_bestScore.width *= bestScoreScale; 
@@ -110,7 +118,7 @@ package scene.gameScene
 				removeChild(_currentScore, true);
 				_currentScore = null;
 			}
-			_currentScore = new SpriteNumber(currentScore, Color.CURRENT_SCORE);
+			_currentScore = new SpriteNumber(currentScore.toString(), Color.CURRENT_SCORE);
 			var currentScoreScale:Number = _headerHeight * 0.4 / _currentScore.height;
 			_currentScore.height *= currentScoreScale;
 			_currentScore.width *= currentScoreScale; 
@@ -133,13 +141,16 @@ package scene.gameScene
 		
 		private function onUpdateCurrentScore(event:Event):void
 		{
-			_currentScore.update(int(event.data));
+			_currentScore.update(String(event.data));
 		}
 		
 		private function onUserPictureReady(event:Event):void
 		{
-			_userPic.texture = Resources.getUserPicture();
-			_userPic.visible = true;
+			if (event.data == Resources.CURRENT_USER)
+			{
+				_userPic.texture = Resources.getCurrentUserPicture();
+				_userPic.visible = true;
+			}
 		}
 		
 		private function onLogOut(event:Event):void

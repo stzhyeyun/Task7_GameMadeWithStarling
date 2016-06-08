@@ -115,6 +115,13 @@ package ui.popup
 			gameOver.height *= gameOverScale;
 			_popups[PopupName.GAME_OVER] = gameOver;
 			
+			// Rank
+			var rank:RankPopup = new RankPopup();
+			rank.initialize();
+			var rankScale:Number =  stageWidth * 0.8 / rank.width;
+			rank.width *= rankScale;
+			rank.height *= rankScale;
+			_popups[PopupName.RANK] = rank;
 		}
 		
 		public static function showPopup(container:DisplayObjectContainer, name:String):void

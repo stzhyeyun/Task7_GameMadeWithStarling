@@ -1,15 +1,10 @@
 package resources
 {
 	import flash.display.Bitmap;
-	import flash.display.Loader;
-	import flash.display.LoaderInfo;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.filesystem.File;
-	import flash.net.URLLoader;
-	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
-	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	
 	import media.Sound;
@@ -18,15 +13,25 @@ package resources
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 	
+	import user.LogInManager;
+	
 	public class Resources extends EventDispatcher
 	{
+		[Embed(
+			source = "res/daumSemiBold.ttf",
+			fontName = "daumSemiBold",			
+			embedAsCFF="false",
+			advancedAntiAliasing = "true")]
+		public static const DaumSemiBold:Class;
+		
 		public static const USER_PICTURE_READY:String = "userPictureReady";
+		public static const CURRENT_USER:String = "currentUser";
 		
 		private static var _current:Resources;
 		
 		private static var _textureAtlas:TextureAtlas;
 		private static var _soundDic:Dictionary;
-		private static var _userPicture:Texture;
+		private static var _userPictureDic:Dictionary;
 		
 		private static var _path:File;
 		private static var _pngList:Array;
@@ -69,6 +74,16 @@ package resources
 				}
 			}
 			_soundDic = null;
+			
+			if (_userPictureDic)
+			{
+				for (key in _userPictureDic)
+				{
+					_userPictureDic[key] = null;
+					delete _userPictureDic[key];
+				}
+			}
+			_userPictureDic = null;
 			
 			_onReadyToUseResources = null;
 		}
@@ -159,18 +174,16 @@ package resources
 			}
 		}
 		
-		public static function loadImageFromURL(url:String):void
+		public static function loadUserPicture(userId:String, isCurrentUser:Boolean = false):void
 		{
-			if (!url)
+			if (!userId)
 			{
-				if (!url) trace("loadImageFromURL : No URL.");
+				if (!userId) trace("loadUserPicture : No userId.");
 				return;
 			}
 			
-			var loader:URLLoader = new URLLoader();
-			loader.dataFormat = URLLoaderDataFormat.BINARY;
-			loader.addEventListener(flash.events.Event.COMPLETE, onLoadedFromURL);
-			loader.load(new URLRequest(url));
+			var loader:UserPictureLoader = new UserPictureLoader(onLoadedUserPicture);
+			loader.load(userId, isCurrentUser);
 		}
 		
 		public static function getTexture(textureName:String):Texture
@@ -190,20 +203,6 @@ package resources
 			return texture;
 		}
 		
-		public static function getUserPicture():Texture
-		{
-			return _userPicture;
-		}
-		
-		public static function removeUserPicture():void
-		{
-			if (_userPicture)
-			{
-				_userPicture.dispose();
-				_userPicture = null;
-			}
-		}
-		
 		public static function getSound(name:String):Sound
 		{
 			if (!_soundDic || !_soundDic[name])
@@ -214,6 +213,20 @@ package resources
 			}
 			
 			return _soundDic[name];
+		}
+		
+		public static function getCurrentUserPicture():Texture
+		{
+			var userId:String = LogInManager.userInfo.id;
+			
+			if (userId && _userPictureDic[userId])
+			{
+				return _userPictureDic[userId];
+			}
+			else
+			{
+				return null;
+			}
 		}
 		
 		private static function checkLoadingProgress():void
@@ -271,26 +284,26 @@ package resources
 			trace("failed to load sound.");
 		}
 
-		private static function onLoadedFromURL(event:Event):void
+		private static function onLoadedUserPicture(userId:String, bitmap:Bitmap, isCurrentUser:Boolean, loader:UserPictureLoader):void
 		{
-			var urlLoader:URLLoader = event.currentTarget as URLLoader;
-			urlLoader.removeEventListener(flash.events.Event.COMPLETE, onLoadedFromURL);
+			if (!_userPictureDic)
+			{
+				_userPictureDic = new Dictionary();
+			}
+			_userPictureDic[userId] = Texture.fromBitmap(bitmap);
+
+			loader.dispose();
 			
-			var byteArray:ByteArray = urlLoader.data;
-			var loader:Loader = new Loader();
-			loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, onLoadedByteArray);
-			loader.loadBytes(byteArray);
-		}
-		
-		private static function onLoadedByteArray(event:Event):void
-		{
-			var loaderInfo:LoaderInfo = event.currentTarget as LoaderInfo;
-			loaderInfo.removeEventListener(flash.events.Event.COMPLETE, onLoadedByteArray);
-						
-			var bitmap:Bitmap = loaderInfo.loader.content as Bitmap;
-			_userPicture = Texture.fromBitmap(bitmap);
-			
-			Resources.current.dispatchEvent(new starling.events.Event(Resources.USER_PICTURE_READY));
+			if (isCurrentUser)
+			{
+				Resources.current.dispatchEvent(
+					new starling.events.Event(Resources.USER_PICTURE_READY, false, CURRENT_USER));
+			}
+			else
+			{
+				Resources.current.dispatchEvent(
+					new starling.events.Event(Resources.USER_PICTURE_READY, false, userId));
+			}
 		}
 	}
 }

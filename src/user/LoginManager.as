@@ -17,13 +17,21 @@ package user
 		private static const TAG:String = "[LoginManager]";	
 		
 		private static var _current:LogInManager;
-		private static var _loggedIn:Boolean;
+		
 		private static var _accessToken:AccessToken;
+		private static var _userInfo:UserInfo;
+		
+		private static var _loggedIn:Boolean;
 		private static var _facebookExtension:FacebookExtension;
 
 		public static function get current():LogInManager
 		{
 			return _current;
+		}
+		
+		public static function get userInfo():UserInfo
+		{
+			return _userInfo;
 		}
 		
 		public static function get loggedIn():Boolean
@@ -39,10 +47,11 @@ package user
 		
 		public static function dispose():void
 		{
-			_accessToken.write();
+			export();
 			
 			_current = null;
 			_accessToken = null;
+			_userInfo = null;
 			_facebookExtension = null;
 		}
 		
@@ -54,8 +63,11 @@ package user
 			
 			_accessToken = new AccessToken(
 				"accessToken", File.applicationStorageDirectory.resolvePath("data"));
-			_accessToken.onReadyToPreset = loadUserPicture;
+			_accessToken.onReadyToPreset = Resources.loadUserPicture;
 			_accessToken.read();
+			
+			_userInfo = new UserInfo();
+			_userInfo.read("userInfo", File.applicationStorageDirectory.resolvePath("data"));
 		}
 		
 		public static function checkLogIn():void
@@ -92,7 +104,10 @@ package user
 			}
 			
 			_facebookExtension.logOut();
+			
 			_loggedIn = false;
+			_accessToken.clean();
+			_userInfo.clean();
 			
 			LogInManager.current.dispatchEvent(new Event(LogInManager.LOG_OUT));
 		}
@@ -103,6 +118,11 @@ package user
 			{
 				_accessToken.write();
 			}
+			
+			if (_userInfo)
+			{
+				_userInfo.write("userInfo", File.applicationStorageDirectory.resolvePath("data"));
+			}
 		}
 		
 		private static function onGotAccessToken(tokenData:String):void
@@ -110,29 +130,15 @@ package user
 			_accessToken.setData(tokenData);
 			_accessToken.write();
 			
-			loadUserPicture();
+			Resources.loadUserPicture(_accessToken.userId, true);
 			
+			_loggedIn = true;
 			LogInManager.current.dispatchEvent(new Event(LogInManager.LOG_IN));
-		}
-		
-		private static function loadUserPicture():void
-		{
-			var url:String = "https://graph.facebook.com/" + _accessToken.userId + "/picture?type=large";
-			
-			if (url)
-			{
-				Resources.loadImageFromURL(url);
-				_loggedIn = true;
-			}
-			else
-			{
-				trace(TAG + " onGotAccessToken : Invalid user picture URL.");
-			}
 		}
 		
 		private static function onGotUserInfo(info:String):void
 		{
-			// to do
+			_userInfo.setInfo(info);
 		}
 	}
 }

@@ -93,8 +93,8 @@ package ui.popup
 		
 		public override function show():void
 		{
-			_bestScore = new SpriteNumber(DataManager.playData.bestScore, Color.RESULT);
-			_currentScore = new SpriteNumber(DataManager.playData.currentScore, Color.RESULT);
+			_bestScore = new SpriteNumber(DataManager.playData.bestScore.toString(), Color.RESULT);
+			_currentScore = new SpriteNumber(DataManager.playData.currentScore.toString(), Color.RESULT);
 
 			_bestScore.x = _panelWidth / 2;
 			_bestScore.y = _panelHeight * 0.55;

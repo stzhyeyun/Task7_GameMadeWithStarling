@@ -6,7 +6,8 @@ package ui.popup
 	{
 		public function Popup()
 		{
-
+			// panel과 title은 Popup에 종속적으로 수정하고
+			// 외부에서도 제어 가능하도록 수정
 		}
 		
 		public function initialize():void

@@ -53,13 +53,13 @@ package scene.gameScene
 		
 		public override function dispose():void
 		{
-//			if (_table)
-//			{
-//				_table.dispose();
-//			}
-//			_table = null;
-//			
-//			_blocks = null;
+			if (_table)
+			{
+				_table.dispose();
+			}
+			_table = null;
+			
+			_blocks = null;
 			
 			if (_ui)
 			{
@@ -302,6 +302,10 @@ package scene.gameScene
 						{
 							if (!_table.isSettable(_blocks[i]))
 							{
+								// 데이터 업데이트
+								DataManager.updateBestScore();
+								DataManager.updateRank();
+								
 								// 종료 팝업 호출
 								PopupManager.showPopup(this, PopupName.GAME_OVER);
 							}

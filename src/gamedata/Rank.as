@@ -12,35 +12,42 @@ package gamedata
 	{
 		private const TAG:String = "[Rank]";
 		
-		private var _rank:Vector.<UserInfo>;
-		
-		public function get rank():Vector.<UserInfo>
-		{
-			return _rank;
-		}
-		
+		private var _data:Vector.<UserInfo>;
+
 		
 		public function Rank(name:String, path:File)
 		{
 			super(name, path);
 			
-			_rank = new Vector.<UserInfo>();
+			_data = new Vector.<UserInfo>();
 		}
 
 		public override function write():void
 		{
-			if (!_name || !_path)
+			if (!_name || !_path || _data.length == 0)
 			{
 				if (!_name) trace(TAG + " write : No name.");
-				if (!_path) trace(TAG + " write : No path.");				
+				if (!_path) trace(TAG + " write : No path.");
+				if (!_data.length == 0) trace(TAG + " write : No rank data.");
 				return;
 			}
 			
-			var plainText:String = "";
-//				"{\n\t\"bestScore\" : "	+	_bestScore.toString()		+	",\n"	+
-//				"\t\"currentScore\" : "	+	_currentScore.toString();
+			var plainText:String = "{\n\t\"rank\" : [";
+
+			for (var i:int = 0; i < _data.length; i++)
+			{
+				plainText += _data[i].toString();
+				
+				if (i != _data.length - 1)
+				{
+					plainText += ", ";
+				}
+			}
 			
-			plainText += "\n}";
+			plainText += "]\n}";
+			
+			trace(TAG + plainText); // debug
+			
 			plainText = AesCrypto.encrypt(plainText, "ahundrendblocksbybamkie");
 			
 			var stream:FileStream = new FileStream();
@@ -66,17 +73,28 @@ package gamedata
 			
 			var plainText:Object = JSON.parse(AesCrypto.decrypt(loader.data, "ahundrendblocksbybamkie"));
 			
-			// to do
+			trace(TAG + plainText); // debug
 			
+			var id:String;
+			var name:String;
+			var score:int;
+			for (var i:int = 0; i < plainText.rank.length; )
+			{
+				id = plainText.rank[i++].id;
+				name = plainText.rank[i++].name;
+				score = plainText.rank[i++].score;
+				
+				_data.push(new UserInfo(id, name, score));
+			}
 		}
 		
-		public function addData(userInfo:UserInfo):void
+		public function addData(userInfo:UserInfo):int
 		{
 			// 추가
 			var index:int = -1;
-			for (var i:int = 0; i < _rank.length; i++)
+			for (var i:int = 0; i < _data.length; i++)
 			{
-				if (_rank[i].id == userInfo.id)
+				if (_data[i].id == userInfo.id)
 				{
 					index = i;
 					break;
@@ -85,36 +103,74 @@ package gamedata
 			
 			if (index != -1)
 			{
-				if (_rank[index].score < userInfo.score)
+				if (_data[index].score < userInfo.score)
 				{
-					_rank[index] = userInfo;
+					_data[index] = userInfo;
 				}
 				else
 				{
 					// 갱신할 필요가 없음
-					return;
+					return 0;
 				}
 			}
 			else
 			{
-				_rank.push(userInfo);
-				index = _rank.length - 1;
+				_data.push(userInfo);
+				index = _data.length - 1;
 			}
 			
 			// 내림차순 정렬
 			for (i = index; i > 0; i--)
 			{
-				if (_rank[i].score > _rank[i - 1].score)
+				if (_data[i].score > _data[i - 1].score)
 				{
-					var temp:UserInfo = _rank[i];
-					_rank[i] = _rank[i - 1];
-					_rank[i - 1] = temp;
+					var temp:UserInfo = _data[i];
+					_data[i] = _data[i - 1];
+					_data[i - 1] = temp;
 				}
 				else
 				{
 					// 정렬 완료
 					break;
 				}
+			}
+			
+			return index + 1;
+		}
+		
+		public function getRank(userInfo:UserInfo):int
+		{
+			for (var i:int = 0; i < _data.length; i++)
+			{
+				if (_data[i].id == userInfo.id)
+				{
+					return i + 1;
+				}
+			}
+			
+			return 0;
+		}
+		
+		public function getUser(rank:int):UserInfo
+		{
+			if (rank <= 0 || rank > _data.length)
+			{
+				trace(TAG + " getUser : Invalid rank.");
+				return null;
+			}
+				
+			return _data[rank - 1];
+		}
+		
+		public function count():int
+		{
+			if (_data)
+			{
+				return _data.length;
+			}
+			else
+			{
+				return 0;
 			}
 		}
 	}

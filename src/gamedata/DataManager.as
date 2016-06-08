@@ -7,15 +7,21 @@ package gamedata
 	import starling.events.Event;
 	import starling.events.EventDispatcher;
 	
+	import user.LogInManager;
+	import user.UserInfo;
+	
 	public class DataManager extends EventDispatcher
 	{
-		public static const UPDATE:String = "update";
+		public static const UPDATE_CURRENT_SCORE:String = "updateCurrentScore";
+		public static const UPDATE_BEST_SCORE:String = "updateBestScore";
+		public static const UPDATE_RANK:String = "updateRank";
 		
 		private static var _current:DataManager;	
 		private static var _path:File;
 		private static var _playData:PlayData;
 		private static var _settingData:SettingData;
-		
+		private static var _rank:Rank;
+
 		public static function get current():DataManager
 		{
 			return _current;
@@ -30,7 +36,12 @@ package gamedata
 		{
 			return _settingData;
 		}
-
+		
+		public static function get rank():Rank
+		{
+			return _rank;
+		}
+		
 		
 		public function DataManager()
 		{
@@ -41,8 +52,9 @@ package gamedata
 		{
 			export();
 			
-//			_playData = null;
-//			_settingData = null;
+			_playData = null;
+			_settingData = null;
+			_rank = null;
 		}
 
 		public static function initialize():void
@@ -56,6 +68,9 @@ package gamedata
 			_settingData = new SettingData("settingData", _path);
 			_settingData.onReadyToPreset = preset;
 			_settingData.read();
+			
+			_rank = new Rank("rank", _path);
+			_rank.read();
 		}
 		
 		public static function updateCurrentScore(numBlockTiles:int, numClearTiles:int = 0):void
@@ -74,7 +89,7 @@ package gamedata
 			
 			_playData.currentScore += obtainedScore;
 			
-			DataManager.current.dispatchEvent(new Event(DataManager.UPDATE, false, _playData.currentScore));	
+			DataManager.current.dispatchEvent(new Event(DataManager.UPDATE_CURRENT_SCORE, false, _playData.currentScore));	
 		}
 		
 		public static function updateBestScore():void
@@ -82,9 +97,25 @@ package gamedata
 			if (_playData.currentScore > _playData.bestScore)
 			{
 				_playData.bestScore = _playData.currentScore;
+				
+				DataManager.current.dispatchEvent(new Event(DataManager.UPDATE_BEST_SCORE, false, _playData.bestScore));
 			}
+		}
+		
+		public static function updateRank():void
+		{
+			var userInfo:UserInfo = LogInManager.userInfo;
 			
-			DataManager.current.dispatchEvent(new Event(DataManager.UPDATE, false, _playData.bestScore));	
+			if (userInfo.id)
+			{
+				userInfo.score = _playData.currentScore;
+				
+				var userRank:int = _rank.addData(userInfo);
+				if (userRank > 0)
+				{
+					DataManager.current.dispatchEvent(new Event(DataManager.UPDATE_RANK, false, userRank));
+				}
+			}
 		}
 		
 		public static function export():void
@@ -97,6 +128,11 @@ package gamedata
 			if (_settingData)
 			{
 				_settingData.write();
+			}
+			
+			if (_rank)
+			{
+				_rank.write();
 			}
 		}
 		

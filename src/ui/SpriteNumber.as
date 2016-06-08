@@ -4,21 +4,23 @@ package ui
 	
 	import starling.display.Image;
 	import starling.display.Sprite;
+	import starling.textures.Texture;
+	import starling.utils.Color;
 
 	public class SpriteNumber extends Sprite
 	{
-		//private var _numbers:Vector.<Image>;
+		private var _numbers:Vector.<Image>;
 		private var _color:uint;
-		
+
 		public function set color(value:uint):void
 		{
 			_color = value;
 		}
-
 		
-		public function SpriteNumber(num:int, color:uint = 0xffffff)
+		
+		public function SpriteNumber(num:String, color:uint = Color.BLACK)
 		{
-			//_numbers = new Vector.<Image>();
+			_numbers = new Vector.<Image>();
 			_color = color;
 			
 			update(num);
@@ -26,46 +28,66 @@ package ui
 		
 		public override function dispose():void
 		{
-			// to do
+			if (_numbers)
+			{
+				for (var i:int = 0; i < _numbers.length; i++)
+				{
+					_numbers[i].dispose();
+					_numbers[i] = null;
+				}
+			}
+			_numbers = null;
 			
 			super.dispose();
 		}
 
-		public function update(num:int):void
+		public function update(num:String):void
 		{
-			// 자릿수가 늘어날 때만 new 하도록 변경할 것
+			var image:Image;
 			
-			removeChildren();
-			
-			var numStr:String = num.toString();
-			var numbers:Vector.<Image> = new Vector.<Image>();
-			var number:Image;
-			var numWidth:Number = 0;
-			for (var i:int = 0; i < numStr.length; i++)
+			if (num.length > _numbers.length)
 			{
-				number = new Image(Resources.getTexture(numStr.charAt(i)));
-				numbers.push(number);
+				var diff:int = num.length - _numbers.length;
 				
-				numWidth += number.width;
+				for (var i:int = 0; i < diff; i++)
+				{
+					image = new Image(null);
+					_numbers.push(image);
+					addChild(image);
+				}
+			}
+			else if (num.length < _numbers.length)
+			{
+				for (i = num.length; i < _numbers.length; i++)
+				{
+					_numbers[i].visible = false;
+				}
 			}
 			
-			var left:Number = -(numWidth / 2);
+			var texture:Texture;
+			var totalWidth:Number = 0;
+			for (i = 0; i < num.length; i++)
+			{
+				texture = Resources.getTexture(num.charAt(i));
+				_numbers[i].width = texture.width;
+				_numbers[i].height = texture.height;
+				_numbers[i].texture = texture;
+				
+				totalWidth += _numbers[i].width;
+			}
+			
+			var left:Number = -(totalWidth / 2);
 			var widthSoFar:Number = 0;
-			for (i = 0; i < numbers.length; i++)
+			for (i = 0; i < num.length; i++)
 			{
-				numbers[i].pivotX = numbers[i].width / 2;
-				numbers[i].pivotY = numbers[i].height / 2;
-				numbers[i].x = left + widthSoFar + numbers[i].width / 2;
-				numbers[i].color = _color;
-				addChild(numbers[i]);
+				_numbers[i].pivotX = _numbers[i].width / 2;
+				_numbers[i].pivotY = _numbers[i].height / 2;
+				_numbers[i].x = left + widthSoFar + _numbers[i].width / 2;
+				_numbers[i].color = _color;
+				_numbers[i].visible = true;
 				
-				widthSoFar += numbers[i].width;
+				widthSoFar += _numbers[i].width;
 			}
-			
-			numStr = null;
-			numbers.splice(0, numbers.length); 
-			numbers = null;
-			number = null;
 		}
 	}
 }

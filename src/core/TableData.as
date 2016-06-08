@@ -103,8 +103,7 @@ package core
 					}
 				}
 			}
-			
-			DataManager.updateBestScore();
+
 			return false;	
 		}
 
@@ -301,7 +300,7 @@ package core
 			tempVec = null;
 		}
 		
-		public function export():String
+		public function toString():String
 		{
 			var dataStr:String = "\n\t\"tableSize\" : " + _size.toString() +
 								 ",\n\t\"tableData\" : [";

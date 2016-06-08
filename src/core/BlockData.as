@@ -44,20 +44,15 @@ package core
 			_data.push(data);
 		}
 		
-		public function export(index:int):String
+		public function toString(index:int):String
 		{
 			var dataStr:String = "";
-			
-			if (index != 0)
-			{
-				dataStr += ", ";
-			}
 			
 			for (var i:int = 0; i < _data.length; i++)
 			{
 				if (i == 0)
 				{
-					dataStr += index.toString() + ", " + _data.length.toString() + ", ";
+					dataStr += _data.length.toString() + ", ";
 				}
 		
 				dataStr += "{\"col\" : " + _data[i].col.toString() + "}, " +

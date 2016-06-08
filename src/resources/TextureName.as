@@ -34,8 +34,15 @@ package resources
 		public static const BTN_CONFIRM:String = "btn_confirm";
 		public static const BTN_CANCEL:String = "btn_cancel";
 		
+		public static const BTN_TOP:String = "btn_top";
+		public static const BTN_UP:String = "btn_up";
+		public static const BTN_DOWN:String = "btn_down";
+		public static const BTN_MY:String = "btn_my";
+		
 		// Image
 		public static const IMG_BAN:String = "img_ban";
+		public static const IMG_PANEL_BROWN:String = "img_panel_brown";
+		public static const IMG_PANEL_GRAY:String = "img_panel_gray";
 		
 		// Popup
 		public static const POPUP:String = "popup";

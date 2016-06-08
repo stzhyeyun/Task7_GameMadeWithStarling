@@ -50,32 +50,38 @@ package user
 		{
 			super(name, path);
 			
+			_userId = null;
+			_token = null;
+			_expires = null;
+			_permissions = new Vector.<String>();
+			
 			if (tokenData)
 			{
 				parseData(tokenData);
 			}
 		}
 		
-		public override function dispose():void
-		{
-			// to do
-			
-			
-			super.dispose();
-		}
-		
 		public override function write():void
 		{
-			if (!_name || !_path || !_userId || !_token)
+			if (!_name || !_path)
 			{
 				if (!_name) trace(TAG + " write : No name.");
 				if (!_path) trace(TAG + " write : No path.");
-				if (!_userId) trace(TAG + " write : No userId.");
-				if (!_token) trace(TAG + " write : No token.");
 				return;
 			}
 			
-			trace(TAG + " write : AccessToken is written.");
+			var file:File = new File(path.resolvePath(name + ".json").url);
+			
+			if (!_userId || !_token) // 토큰이 없을 경우 로컬에 저장된 토큰을 삭제함 (로그인한 유저가 없음)
+			{
+				trace(TAG + " write : No access token.");
+				
+				if (file.exists)
+				{
+					file.deleteFile();
+				}
+				return;
+			}
 			
 			var plainText:String = 
 				"{\n\t\"userId\" : \""	+	_userId	+	"\",\n"	+
@@ -84,7 +90,6 @@ package user
 			plainText = AesCrypto.encrypt(plainText, "ahundrendblocksbybamkie");
 			
 			var stream:FileStream = new FileStream();
-			var file:File = new File(_path.resolvePath(_name + ".json").url);
 			stream.open(file, FileMode.WRITE);
 			stream.writeUTFBytes(plainText);
 			stream.close();
@@ -113,7 +118,7 @@ package user
 			
 			if (_onReadyToPreset)
 			{
-				_onReadyToPreset();
+				_onReadyToPreset(_userId, true);
 			}
 		}
 		
@@ -125,25 +130,27 @@ package user
 			}
 		}
 		
+		public function clean():void
+		{
+			_userId = null;
+			_token = null;
+			_expires = null;
+			_permissions.splice(0, _permissions.length);
+		}
+		
 		private function parseData(tokenData:String):void
 		{
-			var array:Array = tokenData.replace(/[\s]+/gim, '').split("}");
-
-			// User ID					
-			var userId:String = array[0];
-			_userId = userId.substring(userId.indexOf(":") + 1, userId.length);
+			var tokenObj:Object = JSON.parse(tokenData);
 			
-			// Token
-			var token:String = array[1];
-			_token = token.substring(token.indexOf(":") + 1, token.length);
+			_userId = tokenObj.userId;
+			_token = tokenObj.token;
+			_expires = tokenObj.expires;
 			
-			// Expires
-			var expires:String = array[2];
-			_expires = expires.substring(expires.indexOf(":") + 1, expires.length);
-			
-			// Permissions
-						
-			
+			_permissions.splice(0, _permissions.length);
+			for (var i:int = 0; i < tokenObj.permissions.length; i++)
+			{
+				_permissions.push(tokenObj.permissions[i]);
+			}
 		}
 	}
 }
