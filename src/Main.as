@@ -23,8 +23,6 @@ package
 
 	public class Main extends Sprite
 	{
-		//public static const FACEBOOK_APP_ID:String = "943928415704678";
-		
 		private static var _current:Main;
 
 		public static function get current():Main
@@ -41,8 +39,8 @@ package
 			Resources.onReadyToUseResources = onCompleteLoad;
 			Resources.loadFromDisk(File.applicationDirectory.resolvePath("resources/res"));
 			
-			DataManager.initialize();
 			LogInManager.initialize();
+			DataManager.initialize();
 		}
 		
 		public override function dispose():void
@@ -64,8 +62,6 @@ package
 			gameScene.initialize();
 			gameScene.visible = false;
 			SceneManager.addScene(SceneName.GAME, gameScene);
-			
-			LogInManager.checkLogIn();
 			
 			SceneManager.switchScene(SceneName.TITLE);
 			

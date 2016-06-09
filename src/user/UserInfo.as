@@ -17,6 +17,8 @@ package user
 		private var _name:String;
 		private var _score:int;
 
+		private var _onReadyToPreset:Function;
+
 		public function get id():String
 		{
 			return _id;
@@ -37,6 +39,11 @@ package user
 			_score = value;
 		}
 		
+		public function set onReadyToPreset(value:Function):void
+		{
+			_onReadyToPreset = value;
+		}
+
 		
 		public function UserInfo(id:String = null, name:String = null, score:int = 0)
 		{
@@ -161,10 +168,10 @@ package user
 			_id = plainText.id;
 			_name = plainText.name;
 			
-//			if (_onReadyToPreset)
-//			{
-//				_onReadyToPreset();
-//			}
+			if (_onReadyToPreset)
+			{
+				_onReadyToPreset();
+			}
 		}
 	}
 }

@@ -14,8 +14,6 @@ package scene.titleScene
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
-	import starling.text.TextField;
-	import starling.text.TextFormat;
 	
 	import ui.popup.PopupManager;
 	import ui.popup.PopupName;
@@ -111,11 +109,6 @@ package scene.titleScene
 			
 			LogInManager.current.addEventListener(LogInManager.LOG_IN, onLogIn);
 			LogInManager.current.addEventListener(LogInManager.LOG_OUT, onLogOut);
-			
-			// test
-//			var format:TextFormat = new TextFormat("DaumSemiBold", 50);
-//			var textField:TextField = new TextField(200, 200, "테스트", format);
-//			addChild(textField);
 		}
 		
 		private function onEndedPlayButton(event:TouchEvent):void

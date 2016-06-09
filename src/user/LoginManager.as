@@ -63,10 +63,11 @@ package user
 			
 			_accessToken = new AccessToken(
 				"accessToken", File.applicationStorageDirectory.resolvePath("data"));
-			_accessToken.onReadyToPreset = Resources.loadUserPicture;
+			//_accessToken.onReadyToPreset = onReadAccessToken;
 			_accessToken.read();
 			
 			_userInfo = new UserInfo();
+			_userInfo.onReadyToPreset = onReadUserInfo;
 			_userInfo.read("userInfo", File.applicationStorageDirectory.resolvePath("data"));
 		}
 		
@@ -125,20 +126,28 @@ package user
 			}
 		}
 		
+		private static function onReadUserInfo():void
+		{
+			Resources.loadUserPicture(_userInfo.id, true);
+			
+			_loggedIn = true;
+			LogInManager.current.dispatchEvent(new Event(LogInManager.LOG_IN));
+		}
+		
 		private static function onGotAccessToken(tokenData:String):void
 		{
 			_accessToken.setData(tokenData);
 			_accessToken.write();
 			
 			Resources.loadUserPicture(_accessToken.userId, true);
-			
-			_loggedIn = true;
-			LogInManager.current.dispatchEvent(new Event(LogInManager.LOG_IN));
 		}
 		
 		private static function onGotUserInfo(info:String):void
 		{
 			_userInfo.setInfo(info);
+			
+			_loggedIn = true;
+			LogInManager.current.dispatchEvent(new Event(LogInManager.LOG_IN));
 		}
 	}
 }

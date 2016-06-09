@@ -8,7 +8,8 @@ package user
 	
 	import gamedata.AesCrypto;
 	import gamedata.Data;
-
+	
+	
 	public class AccessToken extends Data
 	{
 		private const TAG:String = "[AccessToken]";
@@ -116,10 +117,10 @@ package user
 			_userId = plainText.userId;
 			_token = plainText.token;
 			
-			if (_onReadyToPreset)
-			{
-				_onReadyToPreset(_userId, true);
-			}
+//			if (_onReadyToPreset)
+//			{
+//				_onReadyToPreset();
+//			}
 		}
 		
 		public function setData(tokenData:String):void

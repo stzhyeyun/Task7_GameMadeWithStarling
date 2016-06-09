@@ -43,6 +43,7 @@ package resources
 		public static const IMG_BAN:String = "img_ban";
 		public static const IMG_PANEL_BROWN:String = "img_panel_brown";
 		public static const IMG_PANEL_GRAY:String = "img_panel_gray";
+		public static const IMG_ANONYMOUS:String = "img_anonymous";
 		
 		// Popup
 		public static const POPUP:String = "popup";

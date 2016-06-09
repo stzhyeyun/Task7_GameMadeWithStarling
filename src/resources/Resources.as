@@ -14,6 +14,7 @@ package resources
 	import starling.textures.TextureAtlas;
 	
 	import user.LogInManager;
+	import user.UserInfo;
 	
 	public class Resources extends EventDispatcher
 	{
@@ -182,6 +183,21 @@ package resources
 				return;
 			}
 			
+			if (userId && _userPictureDic && _userPictureDic[userId])
+			{
+				if (isCurrentUser)
+				{
+					Resources.current.dispatchEvent(
+						new starling.events.Event(Resources.USER_PICTURE_READY, false, CURRENT_USER));
+				}
+				else
+				{
+					Resources.current.dispatchEvent(
+						new starling.events.Event(Resources.USER_PICTURE_READY, false, userId));
+				}			
+				return;
+			}
+			
 			var loader:UserPictureLoader = new UserPictureLoader(onLoadedUserPicture);
 			loader.load(userId, isCurrentUser);
 		}
@@ -217,8 +233,26 @@ package resources
 		
 		public static function getCurrentUserPicture():Texture
 		{
-			var userId:String = LogInManager.userInfo.id;
+			var userInfo:UserInfo = LogInManager.userInfo;
+			var userId:String = null;
+			if (userInfo)
+			{
+				userId = LogInManager.userInfo.id;
+			}
 			
+			if (userId && _userPictureDic && _userPictureDic[userId])
+			{
+				return _userPictureDic[userId];
+			}
+			else
+			{
+				return null;
+			}
+		}
+		
+		
+		public static function getUserPicture(userId:String):Texture
+		{
 			if (userId && _userPictureDic[userId])
 			{
 				return _userPictureDic[userId];

@@ -69,8 +69,7 @@ package gamedata
 			_settingData.onReadyToPreset = preset;
 			_settingData.read();
 			
-			_rank = new Rank("rank", _path);
-			_rank.read();
+			_rank = new Rank();
 		}
 		
 		public static function updateCurrentScore(numBlockTiles:int, numClearTiles:int = 0):void
@@ -110,11 +109,8 @@ package gamedata
 			{
 				userInfo.score = _playData.currentScore;
 				
-				var userRank:int = _rank.addData(userInfo);
-				if (userRank > 0)
-				{
-					DataManager.current.dispatchEvent(new Event(DataManager.UPDATE_RANK, false, userRank));
-				}
+				_rank.addEventListener(Rank.ADD, onUpdateRank);
+				_rank.addData(userInfo);
 			}
 		}
 		
@@ -128,11 +124,6 @@ package gamedata
 			if (_settingData)
 			{
 				_settingData.write();
-			}
-			
-			if (_rank)
-			{
-				_rank.write();
 			}
 		}
 		
@@ -148,6 +139,17 @@ package gamedata
 			{
 				SoundManager.isSoundEffectActive = false;	
 				SoundManager.stopSoundEffect();
+			}
+		}
+		
+		private static function onUpdateRank(event:Event):void
+		{
+			_rank.removeEventListener(Rank.ADD, onUpdateRank);
+			
+			var userRank:int = int(event.data);
+			if (userRank > 0)
+			{
+				DataManager.current.dispatchEvent(new Event(DataManager.UPDATE_RANK, false, userRank));
 			}
 		}
 	}

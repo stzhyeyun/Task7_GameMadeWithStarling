@@ -1,27 +1,45 @@
 package ui.popup
 {
+	import flash.text.TextFormatAlign;
+	import flash.utils.Dictionary;
+	
 	import gamedata.DataManager;
+	import gamedata.Rank;
 	
 	import resources.Resources;
 	import resources.TextureName;
 	
 	import starling.display.Button;
 	import starling.display.Image;
+	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
+	import starling.text.TextField;
+	import starling.text.TextFormat;
+	import starling.textures.Texture;
+	
+	import ui.SpriteNumber;
 	
 	import user.LogInManager;
 	import user.UserInfo;
+	
+	import util.Color;
 
 	public class RankPopup extends Popup
 	{
+		private const TAG:String = "[RankPopup]";
 		private const RANK_PER_PAGE:int = 5;
+		
+		private var _userRankButton:Button;
+		private var _rankerPanels:Vector.<Sprite>;
 		
 		private var _userRank:int;
 		private var _prevTop:int;
 		private var _currTop:int;
+		private var _numLoadRequest:int;
+		private var _needToSetPicIndices:Dictionary;		
 		
 		
 		public function RankPopup()
@@ -44,8 +62,8 @@ package ui.popup
 			var title:Image = new Image(Resources.getTexture(TextureName.TITLE_RANK));
 			var top:Button = new Button(Resources.getTexture(TextureName.BTN_TOP));
 			var up:Button = new Button(Resources.getTexture(TextureName.BTN_UP));
-			var userRank:Button = new Button(Resources.getTexture(TextureName.BTN_MY));
 			var down:Button = new Button(Resources.getTexture(TextureName.BTN_DOWN));
+			_userRankButton = new Button(Resources.getTexture(TextureName.BTN_MY));
 			
 			title.pivotX = title.width / 2;
 			title.pivotY = title.height / 2;
@@ -56,45 +74,124 @@ package ui.popup
 			top.addEventListener(TouchEvent.TOUCH, onEndedTopButton);
 			
 			up.x = panel.width * 0.8;
-			up.y = panel.height * 0.4;
+			up.y = panel.height * 0.38;
 			up.addEventListener(TouchEvent.TOUCH, onEndedUpButton);
 			
-			userRank.x = panel.width * 0.8;
-			userRank.y = panel.height * 0.55;
-			userRank.addEventListener(TouchEvent.TOUCH, onEndedUserButton);
+			_userRankButton.x = panel.width * 0.8;
+			_userRankButton.y = panel.height * 0.53;
+			_userRankButton.addEventListener(TouchEvent.TOUCH, onEndedUserButton);
+			if (!LogInManager.loggedIn)
+			{
+				_userRankButton.touchable = false;
+				_userRankButton.color = Color.INACTIVE;		
+			}
 			
 			down.x = panel.width * 0.8;
-			down.y = panel.height * 0.7;
+			down.y = panel.height * 0.68;
 			down.addEventListener(TouchEvent.TOUCH, onEndedDownButton);
 			
 			addChild(panel);
 			addChild(title);
 			addChild(top);
 			addChild(up);
-			addChild(userRank);
+			addChild(_userRankButton);
 			addChild(down);
 			
+			// Ranker panels
+			_rankerPanels = new Vector.<Sprite>();
+			var ranker:Sprite;
+			var rankerPanel:Image;
+			var picture:Image;
+			var rank:SpriteNumber;
+			var score:SpriteNumber;
+			var name:TextField;
+			var rankScale:Number;
+			var scoreScale:Number;
+			var format:TextFormat = new TextFormat("DaumSemiBold", 50, Color.RANKER, TextFormatAlign.LEFT);
+			for (var i:int = 0; i < RANK_PER_PAGE; i++)
+			{
+				ranker = new Sprite();
+				ranker.x = panel.width * 0.1;
+				ranker.y = panel.width * 0.15 * (i + 1);
+
+				rankerPanel = new Image(Resources.getTexture(TextureName.IMG_PANEL_GRAY));
+				rankerPanel.name = "panel";
+				rankerPanel.width = panel.width * 0.65;
+				rankerPanel.height = panel.height * 0.15;
+				
+				picture = new Image(Resources.getTexture(TextureName.IMG_ANONYMOUS));
+				picture.name = "picture";
+				picture.height = rankerPanel.height * 0.75;
+				picture.width = picture.height;
+				picture.x = rankerPanel.width * 0.2;
+				picture.y = (rankerPanel.height / 2) - (picture.height / 2);
+				
+				rank = new SpriteNumber("123", Color.RANKER);
+				rank.name = "rank";
+				rankScale = rankerPanel.width * 0.1 / rank.width;
+				rank.width *= rankScale;
+				rank.height *= rankScale;
+				rank.pivotX = rank.width / 2;
+				rank.x = picture.x - (rank.width / 2 + rank.width / 4);
+				rank.y = (rankerPanel.height - rank.height) / 2;
+				
+				name = new TextField(int(rankerPanel.width * 0.5), int(rankerPanel.height * 0.3), "Null", format);
+				name.name = "name";
+				name.autoScale = true;
+				name.x = rankerPanel.width * 0.4;
+				name.y = rankerPanel.height * 0.2;
+				
+				score = new SpriteNumber("123456", Color.RANKER);
+				score.name = "score";
+				scoreScale = rankerPanel.height * 0.3 / score.height;
+				score.width *= scoreScale;
+				score.height *= scoreScale;
+				score.x = name.x + score.width / 2;
+				score.y = name.y + name.height + score.height / 8;
+				
+				ranker.addChild(rankerPanel);
+				ranker.addChild(rank);
+				ranker.addChild(picture);
+				ranker.addChild(name);
+				ranker.addChild(score);
+				
+				_rankerPanels.push(ranker);
+				addChild(ranker);
+			}
+			
+			// Set ranker
 			_userRank = 0;
-			_prevTop = 1;
+			_prevTop = 0;
 			_currTop = 1;
+			_numLoadRequest = 0;
 			
 			var userInfo:UserInfo = LogInManager.userInfo;
 			if (userInfo.id)
 			{
-				_userRank = DataManager.rank.getRank(userInfo);
-				if (_userRank > 0)
-				{
-					_prevTop = _currTop;
-					_currTop = _userRank - RANK_PER_PAGE / 2;
-				}
+				DataManager.rank.addEventListener(Rank.GET_RANK, onGotRank);
+				DataManager.rank.getRank(userInfo);
 			}
-			setRanker();
+			else
+			{
+				setRanker();
+			}
 			
 			DataManager.current.addEventListener(DataManager.UPDATE_RANK, onUpdateRank);
 			LogInManager.current.addEventListener(LogInManager.LOG_IN, onLogIn);
 			LogInManager.current.addEventListener(LogInManager.LOG_OUT, onLogOut);
 			
 			super.initialize();
+		}
+		
+		public override function close():void
+		{
+			if (_userRank > 0)
+			{
+				_currTop = _userRank - int(RANK_PER_PAGE / 2);
+				setRanker();
+			}
+			
+			super.close();
 		}
 		
 		private function setRanker():void
@@ -104,35 +201,159 @@ package ui.popup
 				_currTop = 1;
 			}
 			
-			var count:int = DataManager.rank.count();
+			if (_currTop == _prevTop)
+			{
+				return;
+			}
 			
+			DataManager.rank.addEventListener(Rank.COUNT, onGotCount);
+			DataManager.rank.count();
+		}
+		
+		private function onGotCount(event:Event):void
+		{
+			DataManager.rank.removeEventListener(Rank.COUNT, onGotCount);
+			
+			var count:int = int(event.data);
 			if (_currTop > count)
 			{
 				_currTop = _prevTop;
+				return;
 			}
 			
-			var userInfo:UserInfo;
-			var top:int = _currTop;
-			for (var i:int = 0; i < RANK_PER_PAGE; i++)
-			{
-				userInfo = DataManager.rank.getUser(top++);
-				
-				if (userInfo)
-				{
-					
-				}
-			}
-			
-			// to do
-			
-			
+			DataManager.rank.addEventListener(Rank.GET_USER, onGotUser);
+			DataManager.rank.getUser(_currTop, RANK_PER_PAGE); 
 		}
 		
+		private function onGotUser(event:Event):void
+		{
+			DataManager.rank.removeEventListener(Rank.GET_USER, onGotUser);
+			
+			var userInfoVec:Vector.<UserInfo> = event.data as Vector.<UserInfo>;
+			if (!userInfoVec)
+			{
+				return;
+			}
+			
+			_numLoadRequest = 0;
+			if (!_needToSetPicIndices)
+			{
+				_needToSetPicIndices = new Dictionary();
+			}
+			var rankValue:int = _currTop;
+			_prevTop = _currTop;
+			
+			Resources.current.addEventListener(Resources.USER_PICTURE_READY, onLoadedUserPicture);
+			
+			var panel:Image;
+			var rank:SpriteNumber;
+			var name:TextField;
+			var score:SpriteNumber;
+			for (var i:int = 0; i < _rankerPanels.length; i++)
+			{
+				if (i < userInfoVec.length)
+				{
+					_rankerPanels[i].visible = true;
+					
+					panel = _rankerPanels[i].getChildByName("panel") as Image;
+					rank = _rankerPanels[i].getChildByName("rank") as SpriteNumber;
+					name = _rankerPanels[i].getChildByName("name") as TextField;
+					score = _rankerPanels[i].getChildByName("score") as SpriteNumber;
+					
+					if (rankValue == _userRank)
+					{
+						panel.texture = Resources.getTexture(TextureName.IMG_PANEL_BROWN);
+						rank.color = Color.RANKER_USER;
+						score.color = Color.RANKER_USER;
+						name.format.color = Color.RANKER_USER;
+					}
+					else
+					{
+						panel.texture = Resources.getTexture(TextureName.IMG_PANEL_GRAY);
+						rank.color = Color.RANKER;
+						score.color = Color.RANKER;
+						name.format.color = Color.RANKER;
+					}
+					
+					rank.update(rankValue.toString());
+					score.update(userInfoVec[i].score.toString());
+					name.text = userInfoVec[i].name;
+					
+					Resources.loadUserPicture(userInfoVec[i].id);
+					
+					_needToSetPicIndices[userInfoVec[i].id] = i;
+					_numLoadRequest++;
+				}
+				else
+				{
+					_rankerPanels[i].visible = false;
+				}
+				
+				rankValue++;
+			} // for (var i:int = 0; i < _rankerPanels.length; i++)
+		}
+		
+		private function onGotRank(event:Event):void
+		{
+			DataManager.rank.removeEventListener(Rank.GET_RANK, onGotRank);
+			_userRank = int(event.data);
+			
+			if (_userRank > 0)
+			{
+				_userRankButton.touchable = true;
+				_userRankButton.color = 0xffffff;
+				
+				_currTop = _userRank - int(RANK_PER_PAGE / 2);
+			}
+			setRanker();
+		}
+		
+		private function onLoadedUserPicture(event:Event):void
+		{
+			if (event.data == Resources.CURRENT_USER)
+			{
+				return;
+			}
+			
+			var userId:String = event.data as String;
+			if (!userId)
+			{
+				trace(TAG + " onLoadedUserPicture : No userId.");
+				return;	
+			}
+			
+			var index:int = _needToSetPicIndices[userId];
+			if (index < 0 || index >= _rankerPanels.length)
+			{
+				trace(TAG + " onLoadedUserPicture : Invalid index.");
+				return;
+			}
+
+			var picture:Image = _rankerPanels[index].getChildByName("picture") as Image;
+			var texture:Texture = Resources.getUserPicture(userId);
+			
+			if (texture)
+			{
+				picture.texture = texture;
+			}
+			else
+			{
+				picture.texture = Resources.getTexture(TextureName.IMG_ANONYMOUS);
+			}
+			
+			_numLoadRequest--;
+			
+			if (_numLoadRequest <= 0)
+			{
+				Resources.current.removeEventListener(Resources.USER_PICTURE_READY, onLoadedUserPicture);
+				_needToSetPicIndices = null;
+			}
+		}
+
 		private function onUpdateRank(event:Event):void
 		{
 			_userRank = int(event.data);
-			_prevTop = _currTop;
-			_currTop = _userRank - RANK_PER_PAGE / 2;
+			_currTop = _userRank - int(RANK_PER_PAGE / 2);
 			setRanker();
 		}
 		
@@ -141,20 +362,17 @@ package ui.popup
 			var userInfo:UserInfo = LogInManager.userInfo;
 			if (userInfo.id)
 			{
-				_userRank = DataManager.rank.getRank(userInfo);
-				if (_userRank > 0)
-				{
-					_prevTop = _currTop;
-					_currTop = _userRank - RANK_PER_PAGE / 2;
-					setRanker();
-				}
+				DataManager.rank.addEventListener(Rank.GET_RANK, onGotRank);
+				DataManager.rank.getRank(userInfo);
 			}
 		}
 		
 		private function onLogOut(event:Event):void
 		{
+			_userRankButton.touchable = false;
+			_userRankButton.color = Color.INACTIVE;
+			
 			_userRank = 0;
-			_prevTop = _currTop;
 			_currTop = 1;
 			setRanker();
 		}
@@ -165,7 +383,6 @@ package ui.popup
 			
 			if (touch)
 			{
-				_prevTop = _currTop;
 				_currTop = 1;
 				setRanker();
 			}
@@ -177,7 +394,6 @@ package ui.popup
 			
 			if (touch)
 			{
-				_prevTop = _currTop;
 				_currTop -= RANK_PER_PAGE;
 				setRanker();
 			}
@@ -191,8 +407,7 @@ package ui.popup
 			{
 				if (_userRank > 0)
 				{
-					_prevTop = _currTop;
-					_currTop = _userRank - RANK_PER_PAGE / 2;
+					_currTop = _userRank - int(RANK_PER_PAGE / 2);
 					setRanker();
 				}
 			}
@@ -204,7 +419,6 @@ package ui.popup
 			
 			if (touch)
 			{
-				_prevTop = _currTop;
 				_currTop += RANK_PER_PAGE;
 				setRanker();
 			}

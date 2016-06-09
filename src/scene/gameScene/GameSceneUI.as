@@ -42,6 +42,7 @@ package scene.gameScene
 		public override function dispose():void
 		{
 			DataManager.current.removeEventListener(DataManager.UPDATE_CURRENT_SCORE, onUpdateCurrentScore);
+			Resources.current.removeEventListener(Resources.USER_PICTURE_READY, onUserPictureReady);
 			
 			super.dispose();
 		}
@@ -57,15 +58,23 @@ package scene.gameScene
 			addChild(header);
 			
 			// User picture
-			//_userPic = new Image(Resources.getTexture(TextureName.DEFAULT_PICTURE));
+			_userPic = new Image(null);
 			if (LogInManager.loggedIn)
 			{
-				_userPic = new Image(Resources.getCurrentUserPicture());
-				_userPic.visible = true;
+				var texture:Texture = Resources.getCurrentUserPicture();
+				
+				if (texture)
+				{
+					_userPic.texture = texture;
+					_userPic.visible = true;
+				}
+				else
+				{
+					_userPic.visible = false;
+				}
 			}
 			else
 			{
-				_userPic = new Image(null);	
 				_userPic.visible = false;
 			}
 			_userPic.height = header.height * 0.8;
@@ -155,8 +164,8 @@ package scene.gameScene
 		
 		private function onLogOut(event:Event):void
 		{
-			//_userPic.texture = Resources.getTexture(TextureName.DEFAULT_PICTURE);
-			_userPic.visible = false; // temp
+			_userPic.texture = Resources.getTexture(TextureName.IMG_ANONYMOUS);
+			_userPic.visible = false;
 		}
 	}
 }
