@@ -164,6 +164,7 @@ package ui.popup
 			_prevTop = 0;
 			_currTop = 1;
 			_numLoadRequest = 0;
+			_needToSetPicIndices = new Dictionary();
 			
 			var userInfo:UserInfo = LogInManager.userInfo;
 			if (userInfo.id)
@@ -235,13 +236,9 @@ package ui.popup
 				return;
 			}
 			
-			_numLoadRequest = 0;
-			if (!_needToSetPicIndices)
-			{
-				_needToSetPicIndices = new Dictionary();
-			}
 			var rankValue:int = _currTop;
 			_prevTop = _currTop;
+			_numLoadRequest = 0;
 			
 			Resources.current.addEventListener(Resources.USER_PICTURE_READY, onLoadedUserPicture);
 			
@@ -279,10 +276,9 @@ package ui.popup
 					score.update(userInfoVec[i].score.toString());
 					name.text = userInfoVec[i].name;
 					
-					Resources.loadUserPicture(userInfoVec[i].id);
-					
-					_needToSetPicIndices[userInfoVec[i].id] = i;
 					_numLoadRequest++;
+					_needToSetPicIndices[userInfoVec[i].id] = i;
+					Resources.loadUserPicture(userInfoVec[i].id);
 				}
 				else
 				{
@@ -323,6 +319,7 @@ package ui.popup
 			}
 			
 			var index:int = _needToSetPicIndices[userId];
+			delete _needToSetPicIndices[userId];
 			if (index < 0 || index >= _rankerPanels.length)
 			{
 				trace(TAG + " onLoadedUserPicture : Invalid index.");
@@ -346,7 +343,6 @@ package ui.popup
 			if (_numLoadRequest <= 0)
 			{
 				Resources.current.removeEventListener(Resources.USER_PICTURE_READY, onLoadedUserPicture);
-				_needToSetPicIndices = null;
 			}
 		}
 

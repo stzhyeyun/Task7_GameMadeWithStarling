@@ -63,7 +63,6 @@ package user
 			
 			_accessToken = new AccessToken(
 				"accessToken", File.applicationStorageDirectory.resolvePath("data"));
-			//_accessToken.onReadyToPreset = onReadAccessToken;
 			_accessToken.read();
 			
 			_userInfo = new UserInfo();

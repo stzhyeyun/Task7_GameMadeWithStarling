@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding ="utf-8"?>
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+  <versions>
+    <swc version="1.2" />
+    <flex version="4.6.0" build="23201" minimumSupportedVersion="3.0.0" />
+  </versions>
+  <features>
+    <feature-script-deps />
+    <feature-files />
+  </features>
+  <libraries>
+    <library path="library.swf">
+      <script name="com/bamkie/ScheduledNotificationExtension" mod="1465529784220" signatureChecksum="407392913" >
+        <def id="com.bamkie:ScheduledNotificationExtension" /> 
+        <dep id="trace" type="e" /> 
+        <dep id="flash.external:ExtensionContext" type="e" /> 
+        <dep id="Error" type="e" /> 
+        <dep id="flash.external:ExtensionContext" type="s" /> 
+        <dep id="Error" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="_0d8b2f29c5f1ebcb95537c0469c6d6af8332f4274e66ae600b69a80a34003008_flash_display_Sprite" mod="1465536578861" signatureChecksum="3921770847" >
+        <def id="_0d8b2f29c5f1ebcb95537c0469c6d6af8332f4274e66ae600b69a80a34003008_flash_display_Sprite" /> 
+        <dep id="flash.system:Security" type="e" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:Sprite" type="i" /> 
+      </script>
+      <digests>
+        <digest type="SHA-256" signed="false" value="de106879c80f4c2e6bddaf99572f723983902ad629e9498aaee654dabb255d37"   />
+      </digests>
+    </library>
+  </libraries>
+  <files>
+  </files>
+</swc>

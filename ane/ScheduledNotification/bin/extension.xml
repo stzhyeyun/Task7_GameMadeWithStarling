@@ -1,0 +1,13 @@
+<extension xmlns="http://ns.adobe.com/air/extension/21.0"> 
+    <id>com.bamkie.ScheduledNotificationExtension</id> 
+    <versionNumber>0.0.1</versionNumber> 
+    <platforms> 
+        <platform name="Android-ARM"> 
+            <applicationDeployment> 
+                <nativeLibrary>ScheduledNotification.jar</nativeLibrary> 
+                <initializer>com.bamkie.ScheduledNotificationExtension</initializer>
+				<finalizer>com.bamkie.ScheduledNotificationExtension</finalizer> 
+            </applicationDeployment> 
+        </platform> 
+    </platforms> 
+</extension>

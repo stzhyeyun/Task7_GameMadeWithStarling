@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding ="utf-8"?>
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+  <versions>
+    <swc version="1.2" />
+    <flex version="4.6.0" build="23201" minimumSupportedVersion="3.0.0" />
+  </versions>
+  <features>
+    <feature-script-deps />
+    <feature-files />
+  </features>
+  <libraries>
+    <library path="library.swf">
+      <script name="_ab73b51013f53f162520cc587abaa3aab7be0a3a9b65af785065042a81855993_flash_display_Sprite" mod="1465354273889" signatureChecksum="11434397" >
+        <def id="_ab73b51013f53f162520cc587abaa3aab7be0a3a9b65af785065042a81855993_flash_display_Sprite" /> 
+        <dep id="flash.system:Security" type="e" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:Sprite" type="i" /> 
+      </script>
+      <script name="com/bamkie/FacebookExtension" mod="1465265302335" signatureChecksum="2618453096" >
+        <def id="com.bamkie:FacebookExtension" /> 
+        <dep id="trace" type="e" /> 
+        <dep id="flash.events:StatusEvent" type="e" /> 
+        <dep id="flash.external:ExtensionContext" type="e" /> 
+        <dep id="Error" type="e" /> 
+        <dep id="flash.events:StatusEvent" type="s" /> 
+        <dep id="flash.external:ExtensionContext" type="s" /> 
+        <dep id="Error" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <digests>
+        <digest type="SHA-256" signed="false" value="3e730788d181936710574aff688add0e9a5b5f96334dc047ed1a15035e643bcb"   />
+      </digests>
+    </library>
+  </libraries>
+  <files>
+  </files>
+</swc>

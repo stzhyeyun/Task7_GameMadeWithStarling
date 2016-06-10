@@ -112,8 +112,6 @@ package user
 				"{\n\t\"id\" : \""	+	_id		+	"\",\n"	+
 				"\t\"name\" : \""	+	_name	+	"\"\n}";
 			
-			trace(TAG + plainText); // debug
-			
 			plainText = AesCrypto.encrypt(plainText, "ahundrendblocksbybamkie");
 			
 			var stream:FileStream = new FileStream();
@@ -162,8 +160,6 @@ package user
 			loader.removeEventListener(Event.COMPLETE, onCompleteLoad);
 			
 			var plainText:Object = JSON.parse(AesCrypto.decrypt(loader.data, "ahundrendblocksbybamkie"));
-			
-			trace(TAG + plainText); // debug
 			
 			_id = plainText.id;
 			_name = plainText.name;

@@ -124,6 +124,38 @@ package ui.popup
 			_popups[PopupName.RANK] = rank;
 		}
 		
+		public static function addPopup(name:String, popup:Popup):void
+		{
+			if (!name || !popup)
+			{
+				if (!name) trace("addPopup : No name.");
+				if (!popup) trace("addPopup : No popup.");
+				return;
+			}
+			
+			if (!_popups)
+			{
+				_popups = new Dictionary();	
+			}
+			_popups[name] = popup;
+		}
+		
+		public static function removePopup(name:String):void
+		{
+			if (!name || !_popups || !_popups[name])
+			{
+				if (!name) trace("removePopup : No name.");
+				if (!_popups) trace("removePopup : No registered pop-up.");
+				if (!_popups[name]) trace("removePopup : Not registered name.");
+				return;
+			}
+			
+			var popup:Popup = _popups[name];
+			popup.dispose();
+			popup = null;
+			delete _popups[name];
+		}
+		
 		public static function showPopup(container:DisplayObjectContainer, name:String):void
 		{
 			if (!container || !name || !_popups[name])

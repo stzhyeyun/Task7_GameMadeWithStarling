@@ -1,0 +1,6 @@
+<platform xmlns="http://ns.adobe.com/air/extension/21.0">
+	<packagedDependencies>
+      <packagedDependency>bolts-android-1.2.1.jar</packagedDependency>
+      <packagedDependency>android-support-v4.jar</packagedDependency>
+  	</packagedDependencies>
+</platform>

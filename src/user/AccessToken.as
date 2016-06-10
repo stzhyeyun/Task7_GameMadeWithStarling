@@ -19,8 +19,6 @@ package user
 		private var _expires:String; // no use
 		private var _permissions:Vector.<String>; // no use
 		
-		private var _onReadyToPreset:Function;
-		
 		public function get userId():String
 		{
 			return _userId;
@@ -40,12 +38,7 @@ package user
 		{
 			_token = value;
 		}
-		
-		public function set onReadyToPreset(value:Function):void
-		{
-			_onReadyToPreset = value;
-		}
-		
+				
 		
 		public function AccessToken(name:String, path:File, tokenData:String = null)
 		{
@@ -116,11 +109,6 @@ package user
 			
 			_userId = plainText.userId;
 			_token = plainText.token;
-			
-//			if (_onReadyToPreset)
-//			{
-//				_onReadyToPreset();
-//			}
 		}
 		
 		public function setData(tokenData:String):void

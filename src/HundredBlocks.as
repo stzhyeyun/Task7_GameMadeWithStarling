@@ -1,5 +1,7 @@
 package
 {
+	import com.bamkie.ScheduledNotificationExtension;
+	
 	import flash.desktop.NativeApplication;
 	import flash.display.Screen;
 	import flash.display.Sprite;
@@ -23,6 +25,8 @@ package
 	
 	public class HundredBlocks extends Sprite
 	{
+		private const DAY:int = 86400;
+		
 		private var _starling:Starling;
 		
 		public function HundredBlocks()
@@ -50,6 +54,9 @@ package
 			LogInManager.dispose();
 			SoundManager.dispose();
 			Resources.dispose();
+			
+			var notification:ScheduledNotificationExtension = new ScheduledNotificationExtension();
+			notification.setNotification("Ding-dong!", "Hundred Blocks", "It's time to take a break!", 5/*temp*/);
 		}
 		
 		private function onActivate(event:Event):void
@@ -62,6 +69,9 @@ package
 			SoundManager.stopAll();
 			DataManager.export();
 			LogInManager.export();
+			
+			var notification:ScheduledNotificationExtension = new ScheduledNotificationExtension();
+			notification.setNotification("Ding-dong!", "Hundred Blocks", "It's time to take a break!", 5/*temp*/);
 		}
 	}
 }
