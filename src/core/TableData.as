@@ -1,8 +1,8 @@
 package core
 {
-	import gamedata.DataManager;
+	import manager.DataManager;
 	
-	import media.SoundManager;
+	import manager.SoundManager;
 	
 	import resources.Resources;
 	import resources.SoundName;
@@ -145,8 +145,8 @@ package core
 			{
 				_data[destTilesIndices[i].col][destTilesIndices[i].row].textureName = blockTiles[i].textureName;
 			}
-			DataManager.playData.tableData = this;
-			SoundManager.play(Resources.getSound(SoundName.SET));
+			DataManager.instance.playData.tableData = this;
+			SoundManager.play(Resources.instance.getSound(SoundName.SET));
 
 			// Update view
 			if (onUpdate)
@@ -277,8 +277,8 @@ package core
 				{
 					_data[totalClearTilesIndices[i].col][totalClearTilesIndices[i].row].textureName = TextureName.TILE_WHITE;
 				}
-				DataManager.playData.tableData = this;
-				SoundManager.play(Resources.getSound(SoundName.CLEAR));
+				DataManager.instance.playData.tableData = this;
+				SoundManager.play(Resources.instance.getSound(SoundName.CLEAR));
 				
 				// Update view
 				if (onUpdate)
@@ -287,11 +287,11 @@ package core
 				}	
 				
 				// Update score
-				DataManager.updateCurrentScore(updatedTilesIndices.length, totalClearTilesIndices.length);
+				DataManager.instance.updateCurrentScore(updatedTilesIndices.length, totalClearTilesIndices.length);
 			}
 			else
 			{
-				DataManager.updateCurrentScore(updatedTilesIndices.length);
+				DataManager.instance.updateCurrentScore(updatedTilesIndices.length);
 			}
 			
 			totalClearTilesIndices = null;

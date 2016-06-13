@@ -1,6 +1,7 @@
 package ui
 {
 	import resources.Resources;
+	import resources.TextureAtlasName;
 	
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -68,7 +69,7 @@ package ui
 			var totalWidth:Number = 0;
 			for (i = 0; i < num.length; i++)
 			{
-				texture = Resources.getTexture(num.charAt(i));
+				texture = Resources.instance.getTexture(TextureAtlasName.MAIN, num.charAt(i));
 				_numbers[i].width = texture.width;
 				_numbers[i].height = texture.height;
 				_numbers[i].texture = texture;

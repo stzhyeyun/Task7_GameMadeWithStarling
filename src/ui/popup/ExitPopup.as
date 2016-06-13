@@ -4,6 +4,7 @@ package ui.popup
 	import flash.events.Event;
 	
 	import resources.Resources;
+	import resources.TextureAtlasName;
 	import resources.TextureName;
 	
 	import starling.display.Button;
@@ -11,6 +12,7 @@ package ui.popup
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
+	import manager.PopupManager;
 
 	public class ExitPopup extends Popup
 	{
@@ -21,9 +23,9 @@ package ui.popup
 		
 		public override function initialize():void
 		{
-			var alert:Image = new Image(Resources.getTexture(TextureName.ALERT));
-			var confirm:Button = new Button(Resources.getTexture(TextureName.BTN_CONFIRM));
-			var cancel:Button = new Button(Resources.getTexture(TextureName.BTN_CANCEL));
+			var alert:Image = new Image(Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.ALERT));
+			var confirm:Button = new Button(Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_CONFIRM));
+			var cancel:Button = new Button(Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_CANCEL));
 			
 			confirm.pivotX = confirm.width / 2;
 			confirm.pivotY = confirm.height / 2;
@@ -62,7 +64,7 @@ package ui.popup
 			
 			if (touch)
 			{
-				PopupManager.closePopup(PopupName.EXIT);
+				PopupManager.instance.closePopup(PopupName.EXIT);
 			}
 		}
 	}

@@ -4,9 +4,15 @@ package gamedata
 	import flash.filesystem.File;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	
+	import starling.events.Event;
+	import starling.events.EventDispatcher;
 
-	public class Data
+	public class Data extends EventDispatcher
 	{
+		public static const SUCCEEDED_READING:String = "loadSucceeded";
+		public static const FAILED_READING:String = "loadFailed";
+		
 		private const TAG:String = "[Data]";
 		
 		protected var _name:String;
@@ -35,13 +41,6 @@ package gamedata
 		
 		public function Data(name:String, path:File)
 		{
-			if (!name || !path)
-			{
-				if (!name) trace(TAG + " ctor : No name.");
-				if (!path) trace(TAG + " ctor : No path.");				
-				return;
-			}
-			
 			_name = name;
 			_path = path;
 		}
@@ -57,7 +56,9 @@ package gamedata
 			if (!_name || !_path)
 			{
 				if (!_name) trace(TAG + " read : No name.");
-				if (!_path) trace(TAG + " read : No path.");				
+				if (!_path) trace(TAG + " read : No path.");
+				
+				this.dispatchEvent(new starling.events.Event(FAILED_READING));
 				return;
 			}
 			
@@ -65,8 +66,12 @@ package gamedata
 			if (file.exists)
 			{
 				var urlLoader:URLLoader = new URLLoader();
-				urlLoader.addEventListener(Event.COMPLETE, onCompleteLoad);
+				urlLoader.addEventListener(flash.events.Event.COMPLETE, onCompleteLoad);
 				urlLoader.load(new URLRequest(file.url));
+			}
+			else
+			{
+				this.dispatchEvent(new starling.events.Event(FAILED_READING));	
 			}
 		}
 		
@@ -76,13 +81,15 @@ package gamedata
 		}
 
 		
-		protected function onCompleteLoad(event:Event):void
+		protected function onCompleteLoad(event:flash.events.Event):void
 		{
 			var loader:URLLoader = event.target as URLLoader;
 			if (loader)
 			{
-				loader.removeEventListener(Event.COMPLETE, onCompleteLoad);
+				loader.removeEventListener(flash.events.Event.COMPLETE, onCompleteLoad);
 			}
+			
+			this.dispatchEvent(new starling.events.Event(SUCCEEDED_READING));
 		}
 	}
 }

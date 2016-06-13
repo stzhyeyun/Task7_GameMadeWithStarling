@@ -1,4 +1,4 @@
-package ui.popup
+package manager
 {
 	import flash.display.BitmapData;
 	import flash.geom.ColorTransform;
@@ -9,25 +9,36 @@ package ui.popup
 	import starling.display.DisplayObjectContainer;
 	import starling.display.Image;
 	import starling.events.Event;
-	import starling.events.EventDispatcher;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.textures.Texture;
+	import ui.popup.ExitPopup;
+	import ui.popup.GameOverPopup;
+	import ui.popup.PausePopup;
+	import ui.popup.Popup;
+	import ui.popup.PopupName;
+	import ui.popup.RankPopup;
+	import ui.popup.SettingPopup;
 	
-	public class PopupManager extends EventDispatcher
+	public class PopupManager extends Manager
 	{
 		public static const SHOW:String = "show";
 		public static const CLOSE:String = "close";
 		
-		private static var _current:PopupManager;
+		private static var _instance:PopupManager;
+		
 		private static var _popups:Dictionary;
 		private static var _stack:Vector.<Popup>;
 		private static var _background:Image;
 		
-		public static function get current():PopupManager
+		public static function get instance():PopupManager
 		{
-			return _current;
+			if (!_instance)
+			{
+				_instance = new PopupManager();
+			}
+			return _instance;
 		}
 		
 		
@@ -36,7 +47,7 @@ package ui.popup
 			
 		}
 
-		public static function dispose():void
+		public override function dispose():void
 		{
 			if (_popups)
 			{
@@ -63,9 +74,9 @@ package ui.popup
 			_background = null;
 		}
 		
-		public static function initialize():void
+		public override function initialize():void
 		{
-			_current = new PopupManager();
+			_instance = new PopupManager();
 			_popups = new Dictionary();
 			_stack = new Vector.<Popup>();
 			
@@ -124,7 +135,7 @@ package ui.popup
 			_popups[PopupName.RANK] = rank;
 		}
 		
-		public static function addPopup(name:String, popup:Popup):void
+		public function addPopup(name:String, popup:Popup):void
 		{
 			if (!name || !popup)
 			{
@@ -140,7 +151,7 @@ package ui.popup
 			_popups[name] = popup;
 		}
 		
-		public static function removePopup(name:String):void
+		public function removePopup(name:String):void
 		{
 			if (!name || !_popups || !_popups[name])
 			{
@@ -156,7 +167,7 @@ package ui.popup
 			delete _popups[name];
 		}
 		
-		public static function showPopup(container:DisplayObjectContainer, name:String):void
+		public function showPopup(container:DisplayObjectContainer, name:String):void
 		{
 			if (!container || !name || !_popups[name])
 			{
@@ -194,10 +205,10 @@ package ui.popup
 
 			_stack.push(_popups[name]);
 			
-			PopupManager.current.dispatchEvent(new Event(PopupManager.SHOW));
+			this.dispatchEvent(new Event(SHOW));
 		}
 		
-		public static function closePopup(name:String):void
+		public function closePopup(name:String):void
 		{
 			if (!name || !_popups[name])
 			{
@@ -230,10 +241,10 @@ package ui.popup
 				_background.visible = false;
 			}
 			
-			PopupManager.current.dispatchEvent(new Event(PopupManager.CLOSE));
+			this.dispatchEvent(new Event(CLOSE));
 		}
 		
-		private static function closeLastPopup():void
+		private function closeLastPopup():void
 		{
 			_stack[_stack.length - 1].close();
 			_stack[_stack.length - 1].removeFromParent();
@@ -245,7 +256,7 @@ package ui.popup
 			}
 		}
 		
-		private static function onEndedBackground(event:TouchEvent):void
+		private function onEndedBackground(event:TouchEvent):void
 		{
 			var touch:Touch = event.getTouch(_background, TouchPhase.ENDED);
 			

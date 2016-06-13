@@ -95,10 +95,6 @@ package user
 		
 		protected override function onCompleteLoad(event:Event):void
 		{
-			trace(TAG + " onCompleteLoad : AccessToken loaded.");
-			
-			super.onCompleteLoad(event);
-			
 			var loader:URLLoader = event.target as URLLoader;
 			if (!loader)
 			{
@@ -109,6 +105,8 @@ package user
 			
 			_userId = plainText.userId;
 			_token = plainText.token;
+			
+			super.onCompleteLoad(event);
 		}
 		
 		public function setData(tokenData:String):void

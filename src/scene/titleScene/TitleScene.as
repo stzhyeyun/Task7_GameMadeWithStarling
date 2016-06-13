@@ -1,26 +1,30 @@
 package scene.titleScene
 {
 	import flash.events.KeyboardEvent;
-	import flash.net.URLLoader;
-	import flash.net.URLRequest;
 	import flash.ui.Keyboard;
 	
-	import gamedata.DataManager;
-	import gamedata.DatabaseURL;
+	import manager.DataManager;
 	
 	import resources.Resources;
+	import resources.TextureAtlasName;
 	import resources.TextureName;
 	
 	import scene.Scene;
 	
+	import manager.NoticeManager;
+	
 	import starling.display.Image;
 	import starling.events.Event;
 	
-	import ui.popup.PopupManager;
+	import manager.PopupManager;
 	import ui.popup.PopupName;
+	
+	import manager.LogInManager;
 	
 	public class TitleScene extends Scene
 	{
+		private var _firstStart:Boolean;
+		
 		public function TitleScene()
 		{
 
@@ -28,8 +32,10 @@ package scene.titleScene
 		
 		public override function initialize():void
 		{
+			_firstStart = true;
+			
 			// Background
-			var background:Image = new Image(Resources.getTexture(TextureName.BACKGROUND_TITLE));
+			var background:Image = new Image(Resources.instance.getTexture(TextureAtlasName.LOADING, TextureName.BACKGROUND_TITLE));
 			background.width = this.nativeStageWidth;
 			background.height = this.nativeStageHeight;
 			addChild(background);
@@ -38,13 +44,21 @@ package scene.titleScene
 			var titleUI:TitleSceneUI = new TitleSceneUI();
 			titleUI.initialize(this.nativeStageWidth, this.nativeStageHeight);
 			addChild(titleUI);
-			
-			notice();
+		}
+		
+		protected override function onStartScene(event:Event):void
+		{
+			if (_firstStart)
+			{
+				notice();
+				_firstStart = false;
+			}
 		}
 		
 		protected override function onEndScene(event:Event):void
 		{
-			DataManager.export();
+			DataManager.instance.export();
+			LogInManager.instance.export();
 		}
 		
 		protected override function onKeyDown(event:KeyboardEvent):void
@@ -57,48 +71,20 @@ package scene.titleScene
 			if (event.keyCode == Keyboard.BACK)
 			{
 				event.preventDefault();
-				PopupManager.showPopup(this, PopupName.EXIT);
+				PopupManager.instance.showPopup(this, PopupName.EXIT);
 			}
 		}
 		
 		private function notice():void
 		{
-			var localNow:Date = new Date();
-			var gmtNow:Date = new Date(
-				localNow.getUTCFullYear(), localNow.getUTCMonth(), localNow.getUTCDate(),
-				localNow.getUTCHours(), localNow.getUTCMinutes(), localNow.getUTCSeconds(), localNow.getUTCMilliseconds());
-			gmtNow.setHours(gmtNow.hours + 9);
-				
-			var url:String =
-				DatabaseURL.NOTICE +
-				"getNoticeToShow.php" +
-				"?now=" + gmtNow;
-			
-			var loader:URLLoader = new URLLoader(new URLRequest(url));
-			loader.addEventListener(flash.events.Event.COMPLETE, onGotNoticeData);
-		}
-		
-		private function onGotNoticeData(event:flash.events.Event):void
-		{
-			var urlLoader:URLLoader = event.currentTarget as URLLoader;
-			urlLoader.removeEventListener(flash.events.Event.COMPLETE, onGotNoticeData);
-			
-			if (urlLoader.data != "[]")
+			if (NoticeManager.instance.isNotice)
 			{
-				var data:Object = JSON.parse(urlLoader.data);
-				
-				for (var i:int = 0; i < data.length; i++)
+				var noticeList:Vector.<String> = NoticeManager.instance.noticeList;
+				for (var i:int = noticeList.length - 1; i >= 0; i--)
 				{
-					// load image from URL
-					//data[i].image
+					PopupManager.instance.showPopup(this, noticeList[i]);
 				}
 			}
-						
-			// create popup
-			// add popup
-			// show popup
-			// close popup
-			// remove popup
 		}
 	}
 }

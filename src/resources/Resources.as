@@ -7,13 +7,15 @@ package resources
 	import flash.net.URLRequest;
 	import flash.utils.Dictionary;
 	
+	import manager.LogInManager;
+	
 	import media.Sound;
 	
+	import starling.events.Event;
 	import starling.events.EventDispatcher;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 	
-	import user.LogInManager;
 	import user.UserInfo;
 	
 	public class Resources extends EventDispatcher
@@ -25,32 +27,31 @@ package resources
 			advancedAntiAliasing = "true")]
 		public static const DaumSemiBold:Class;
 		
+		public static const COMPLETE_LOAD:String = "completeLoad";
+		public static const NOTICE_IMAGE:String = "noticeImage";
+		public static const USER_PICTURE:String = "userPicture";
+		public static const NOTICE_IMAGE_READY:String = "noticeImageReady";
 		public static const USER_PICTURE_READY:String = "userPictureReady";
-		public static const CURRENT_USER:String = "currentUser";
 		
-		private static var _current:Resources;
+		private static var _instance:Resources;
 		
-		private static var _textureAtlas:TextureAtlas;
-		private static var _soundDic:Dictionary;
-		private static var _userPictureDic:Dictionary;
-		private static var _noticeImageDic:Dictionary;
+		private var _textureAtlasDic:Dictionary;
+		private var _soundDic:Dictionary;
+		private var _userPictureDic:Dictionary;
+		private var _noticeImageDic:Dictionary;
 		
-		private static var _path:File;
-		private static var _pngList:Array;
-		private static var _mp3List:Array;
-		private static var _totalResourcesCount:int;
-		private static var _loadedResourcesCount:int;
+		private var _path:File;
+		private var _pngList:Array;
+		private var _mp3List:Array;
+		private var _totalResourcesCount:int;
 		
-		private static var _onReadyToUseResources:Function;
-		
-		public static function get current():Resources
+		public static function get instance():Resources
 		{
-			return _current;
-		}
-		
-		public static function set onReadyToUseResources(value:Function):void
-		{
-			_onReadyToUseResources = value;
+			if (!_instance)
+			{
+				_instance = new Resources();
+			}
+			return _instance;
 		}
 
 		
@@ -59,17 +60,21 @@ package resources
 			
 		}
 		
-		public static function dispose():void
+		public function dispose():void
 		{
-			if (_textureAtlas)
+			if (_textureAtlasDic)
 			{
-				_textureAtlas.dispose();
+				for (var key:Object in _textureAtlasDic)
+				{
+					_textureAtlasDic[key] = null;
+					delete _textureAtlasDic[key];
+				}
 			}
-			_textureAtlas = null;
+			_textureAtlasDic = null;
 			
 			if (_soundDic)
 			{
-				for (var key:Object in _soundDic)
+				for (key in _soundDic)
 				{
 					_soundDic[key] = null;
 					delete _soundDic[key];
@@ -86,16 +91,14 @@ package resources
 				}
 			}
 			_userPictureDic = null;
-			
-			_onReadyToUseResources = null;
 		}
 		
-		public static function initialize():void
+		public function initialize():void
 		{
-			_current = new Resources();
+			_instance = new Resources();
 		}
 		
-		public static function loadFromDisk(path:File):void
+		public function loadFromDisk(path:File):void
 		{
 			if (!path.exists)
 			{
@@ -165,7 +168,7 @@ package resources
 				for (i = 0; i < _mp3List.length; i++)
 				{
 					sound = new Sound();
-					sound.addEventListener(Event.COMPLETE, onLoadedSound);
+					sound.addEventListener(flash.events.Event.COMPLETE, onLoadedSound);
 					sound.addEventListener(IOErrorEvent.IO_ERROR, onFailedLoadingSound);
 					sound.load(new URLRequest(_mp3List[i]));
 				}
@@ -176,42 +179,36 @@ package resources
 			}
 		}
 		
-		public static function loadUserPicture(userId:String, isCurrentUser:Boolean = false):void
+		public function loadFromURL(type:String, key:String):void
 		{
-			if (!userId)
+			if (!type || !key)
 			{
-				if (!userId) trace("loadUserPicture : No userId.");
+				if (!type) trace("loadFromURL : No type.");
+				if (!key) trace("loadFromURL : No key.");
 				return;
 			}
 			
-			if (userId && _userPictureDic && _userPictureDic[userId])
+			if (type == USER_PICTURE && _userPictureDic && _userPictureDic[key])
 			{
-				if (isCurrentUser)
-				{
-					Resources.current.dispatchEvent(
-						new starling.events.Event(Resources.USER_PICTURE_READY, false, CURRENT_USER));
-				}
-				else
-				{
-					Resources.current.dispatchEvent(
-						new starling.events.Event(Resources.USER_PICTURE_READY, false, userId));
-				}			
+				this.dispatchEvent(
+						new starling.events.Event(Resources.USER_PICTURE_READY, false, key));
 				return;
 			}
 			
-			var loader:UserPictureLoader = new UserPictureLoader(onLoadedUserPicture);
-			loader.load(userId, isCurrentUser);
+			var loader:URLBitmapLoader = new URLBitmapLoader(onLoadedFromURL);
+			loader.load(type, key);
 		}
 		
-		public static function getTexture(textureName:String):Texture
+		public function getTexture(textureAtlasName:String, textureName:String):Texture
 		{
-			if (!_textureAtlas)
+			if (!_textureAtlasDic || !_textureAtlasDic[textureAtlasName])
 			{
-				if (!_textureAtlas) trace("getTexture : No texture atlas.");
+				if (!_textureAtlasDic) trace("getTexture : No texture atlas.");
+				if (!_textureAtlasDic[textureAtlasName]) trace("getTexture : Not registered texture atlas name.");
 				return null;
 			}
 			
-			var texture:Texture = _textureAtlas.getTexture(textureName);
+			var texture:Texture = _textureAtlasDic[textureAtlasName].getTexture(textureName);
 			
 			if (!texture)
 			{
@@ -220,7 +217,7 @@ package resources
 			return texture;
 		}
 		
-		public static function getSound(name:String):Sound
+		public function getSound(name:String):Sound
 		{
 			if (!_soundDic || !_soundDic[name])
 			{
@@ -232,13 +229,25 @@ package resources
 			return _soundDic[name];
 		}
 		
-		public static function getCurrentUserPicture():Texture
+		public function getNoticeImage(name:String):Texture
 		{
-			var userInfo:UserInfo = LogInManager.userInfo;
+			if (name && _noticeImageDic[name])
+			{
+				return _noticeImageDic[name];
+			}
+			else
+			{
+				return null;
+			}
+		}
+		
+		public function getCurrentUserPicture():Texture
+		{
+			var userInfo:UserInfo = LogInManager.instance.userInfo;
 			var userId:String = null;
 			if (userInfo)
 			{
-				userId = LogInManager.userInfo.id;
+				userId = LogInManager.instance.userInfo.userId;
 			}
 			
 			if (userId && _userPictureDic && _userPictureDic[userId])
@@ -251,8 +260,7 @@ package resources
 			}
 		}
 		
-		
-		public static function getUserPicture(userId:String):Texture
+		public function getUserPicture(userId:String):Texture
 		{
 			if (userId && _userPictureDic[userId])
 			{
@@ -264,30 +272,31 @@ package resources
 			}
 		}
 		
-		private static function checkLoadingProgress():void
+		private function checkLoadingProgress():void
 		{
-			if (_loadedResourcesCount == _totalResourcesCount)
+			if (_totalResourcesCount == 0)
 			{
 				_path = null;
 				
-				if (_onReadyToUseResources)
-				{
-					_onReadyToUseResources();
-				}
+				this.dispatchEvent(new starling.events.Event(Resources.COMPLETE_LOAD));
 			}
 		}
 		
-		private static function onLoadedTextureAtlas(name:String, bitmap:Bitmap, xml:XML, loader:TextureAtlasLoader):void
+		private function onLoadedTextureAtlas(name:String, bitmap:Bitmap, xml:XML, loader:TextureAtlasLoader):void
 		{
-			_textureAtlas = new TextureAtlas(Texture.fromBitmap(bitmap), xml);
+			if (!_textureAtlasDic)
+			{
+				_textureAtlasDic = new Dictionary();
+			}
+			_textureAtlasDic[name] = new TextureAtlas(Texture.fromBitmap(bitmap), xml);
 			
 			loader.dispose();
 			
-			_loadedResourcesCount += 2;
+			_totalResourcesCount -= 2;
 			checkLoadingProgress();
 		}
 		
-		private static function onLoadedSound(event:Event):void
+		private function onLoadedSound(event:flash.events.Event):void
 		{
 			var sound:Sound = event.currentTarget as Sound;
 			if (!sound)
@@ -296,7 +305,7 @@ package resources
 				return;
 			}
 			
-			sound.removeEventListener(Event.COMPLETE, onLoadedSound);
+			sound.removeEventListener(flash.events.Event.COMPLETE, onLoadedSound);
 			sound.removeEventListener(IOErrorEvent.IO_ERROR, onFailedLoadingSound);
 			
 			var fileName:String = sound.url.replace(_path.url + "/", "").replace(/\.mp3$/i, "");			
@@ -307,38 +316,56 @@ package resources
 			}
 			_soundDic[fileName] = sound;
 			
-			_loadedResourcesCount++;
+			_totalResourcesCount--;
 			checkLoadingProgress();
 		}
 				
-		private static function onFailedLoadingSound(event:IOErrorEvent):void
+		private function onFailedLoadingSound(event:IOErrorEvent):void
 		{
-			event.currentTarget.removeEventListener(Event.COMPLETE, onLoadedSound);
+			event.currentTarget.removeEventListener(flash.events.Event.COMPLETE, onLoadedSound);
 			event.currentTarget.removeEventListener(IOErrorEvent.IO_ERROR, onFailedLoadingSound);
 			
-			trace("failed to load sound.");
+			trace("Failed to load sound.");
+			
+			_totalResourcesCount--;
+			checkLoadingProgress();
 		}
 
-		private static function onLoadedUserPicture(userId:String, bitmap:Bitmap, isCurrentUser:Boolean, loader:UserPictureLoader):void
+		private function onLoadedFromURL(type:String, key:String, bitmap:Bitmap, loader:URLBitmapLoader):void
 		{
-			if (!_userPictureDic)
+			switch (type)
 			{
-				_userPictureDic = new Dictionary();
+				case NOTICE_IMAGE:
+				{
+					if (!_noticeImageDic)
+					{
+						_noticeImageDic = new Dictionary();
+					}
+					_noticeImageDic[key] = Texture.fromBitmap(bitmap);
+					
+					this.dispatchEvent(
+						new starling.events.Event(Resources.NOTICE_IMAGE_READY, false, key));
+				}
+					break;
+				
+				case USER_PICTURE:
+				{
+					if (!_userPictureDic)
+					{
+						_userPictureDic = new Dictionary();
+					}
+					_userPictureDic[key] = Texture.fromBitmap(bitmap);
+					
+					this.dispatchEvent(
+						new starling.events.Event(Resources.USER_PICTURE_READY, false, key));
+				}
+					break;
+				
+				default:
+					return;
 			}
-			_userPictureDic[userId] = Texture.fromBitmap(bitmap);
-
-			loader.dispose();
 			
-			if (isCurrentUser)
-			{
-				Resources.current.dispatchEvent(
-					new starling.events.Event(Resources.USER_PICTURE_READY, false, CURRENT_USER));
-			}
-			else
-			{
-				Resources.current.dispatchEvent(
-					new starling.events.Event(Resources.USER_PICTURE_READY, false, userId));
-			}
+			loader.dispose();
 		}
 	}
 }

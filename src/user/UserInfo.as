@@ -5,28 +5,28 @@ package user
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	import flash.net.URLLoader;
-	import flash.net.URLRequest;
 	
 	import gamedata.AesCrypto;
+	import gamedata.Data;
 
-	public class UserInfo
+	public class UserInfo extends Data
 	{
 		private const TAG:String = "[UserInfo]";
 		
-		private var _id:String;
-		private var _name:String;
+		private var _userId:String;
+		private var _userName:String;
 		private var _score:int;
 
 		private var _onReadyToPreset:Function;
 
-		public function get id():String
+		public function get userId():String
 		{
-			return _id;
+			return _userId;
 		}
 		
-		public function get name():String
+		public function get userName():String
 		{
-			return _name;
+			return _userName;
 		}
 		
 		public function get score():int
@@ -38,26 +38,30 @@ package user
 		{
 			_score = value;
 		}
-		
-		public function set onReadyToPreset(value:Function):void
-		{
-			_onReadyToPreset = value;
-		}
 
 		
-		public function UserInfo(id:String = null, name:String = null, score:int = 0)
+		public function UserInfo(name:String = null, path:File = null)
 		{
-			_id = id;
-			_name = name;
-			_score = score;
+			super(name, path);
+			
+			_userId = null;
+			_userName = null;
+			_score = 0;
 		}
 		
-		public function setInfo(info:String):void
+		public function setData(info:String):void
 		{
 			if (info)
 			{
-				parseInfo(info);
+				parseData(info);
 			}
+		}
+		
+		public function setInfo(userId:String, userName:String, score:int):void
+		{
+			_userId = userId;
+			_userName = userName;
+			_score = score;
 		}
 
 		public function setScore(score:int):void
@@ -68,25 +72,7 @@ package user
 			}
 		}
 		
-		public function read(name:String, path:File):void
-		{
-			if (!name || !path)
-			{
-				if (!name) trace(TAG + " read : No name.");
-				if (!path) trace(TAG + " read : No path.");				
-				return;
-			}
-			
-			var file:File = path.resolvePath(name + ".json");
-			if (file.exists)
-			{
-				var urlLoader:URLLoader = new URLLoader();
-				urlLoader.addEventListener(Event.COMPLETE, onCompleteLoad);
-				urlLoader.load(new URLRequest(file.url));
-			}
-		}
-		
-		public function write(name:String, path:File):void
+		public override function write():void
 		{
 			if (!name || !path)
 			{
@@ -97,7 +83,7 @@ package user
 			
 			var file:File = new File(path.resolvePath(name + ".json").url);
 			
-			if (!_id) // 현재 유저 정보가 없을 경우 로컬에 저장된 유저 정보를 삭제함
+			if (!_userId) // 현재 유저 정보가 없을 경우 로컬에 저장된 유저 정보를 삭제함
 			{
 				trace(TAG + " write : No user info.");
 				
@@ -109,8 +95,8 @@ package user
 			}
 			
 			var plainText:String = 
-				"{\n\t\"id\" : \""	+	_id		+	"\",\n"	+
-				"\t\"name\" : \""	+	_name	+	"\"\n}";
+				"{\n\t\"userId\" : \""	+	_userId		+	"\",\n"	+
+				"\t\"userName\" : \""	+	_userName	+	"\"\n}";
 			
 			plainText = AesCrypto.encrypt(plainText, "ahundrendblocksbybamkie");
 			
@@ -124,50 +110,47 @@ package user
 			file = null;
 		}
 		
-		public function clean():void
-		{
-			_id = null;
-			_name = null;
-			_score = 0;
-		}
-		
-		public function toString():String
-		{
-			var userInfoStr:String =
-				"{\"id\" : \"" + _id + "\"}, " +
-				"{\"name\" : \"" + _name + "\"}, " +
-				"{\"score\" : " + _score.toString() + "}";
-			
-			return userInfoStr;
-		}
-		
-		private function parseInfo(info:String):void
-		{
-			var infoObj:Object = JSON.parse(info);
-			
-			_id = infoObj.id;
-			_name = infoObj.name;
-		}
-		
-		private function onCompleteLoad(event:Event):void
+		protected override function onCompleteLoad(event:Event):void
 		{
 			var loader:URLLoader = event.target as URLLoader;
 			if (!loader)
 			{
 				return;
 			}
-
+			
 			loader.removeEventListener(Event.COMPLETE, onCompleteLoad);
 			
 			var plainText:Object = JSON.parse(AesCrypto.decrypt(loader.data, "ahundrendblocksbybamkie"));
 			
-			_id = plainText.id;
-			_name = plainText.name;
+			_userId = plainText.userId;
+			_userName = plainText.userName;
 			
-			if (_onReadyToPreset)
-			{
-				_onReadyToPreset();
-			}
+			super.onCompleteLoad(event);
+		}
+		
+		public function clean():void
+		{
+			_userId = null;
+			_userName = null;
+			_score = 0;
+		}
+		
+		public function toString():String
+		{
+			var userInfoStr:String =
+				"{\"userId\" : \"" + _userId + "\"}, " +
+				"{\"userName\" : \"" + _userName + "\"}, " +
+				"{\"score\" : " + _score.toString() + "}";
+			
+			return userInfoStr;
+		}
+		
+		private function parseData(info:String):void
+		{
+			var infoObj:Object = JSON.parse(info);
+			
+			_userId = infoObj.id;
+			_userName = infoObj.name;
 		}
 	}
 }

@@ -1,11 +1,12 @@
 package ui.popup
 {
-	import gamedata.DataManager;
+	import manager.DataManager;
 	
-	import media.SoundManager;
+	import manager.SoundManager;
 	
 	import resources.Resources;
 	import resources.SoundName;
+	import resources.TextureAtlasName;
 	import resources.TextureName;
 	
 	import starling.display.Button;
@@ -29,12 +30,18 @@ package ui.popup
 		
 		public override function initialize():void
 		{
-			var panel:Image = new Image(Resources.getTexture(TextureName.POPUP_MINI));
-			var title:Image = new Image(Resources.getTexture(TextureName.TITLE_SETTING));
-			var bgm:Button = new Button(Resources.getTexture(TextureName.BTN_BGM));
-			var sound:Button = new Button(Resources.getTexture(TextureName.BTN_SOUND));
-			_banBgm = new Image(Resources.getTexture(TextureName.IMG_BAN));
-			_banSound = new Image(Resources.getTexture(TextureName.IMG_BAN));
+			var panel:Image = new Image(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.POPUP_MINI));
+			var title:Image = new Image(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.TITLE_SETTING));
+			var bgm:Button = new Button(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_BGM));
+			var sound:Button = new Button(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_SOUND));
+			_banBgm = new Image(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.IMG_BAN));
+			_banSound = new Image(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.IMG_BAN));
 			
 			title.pivotX = title.width / 2;
 			title.pivotY = title.height / 2;
@@ -76,8 +83,8 @@ package ui.popup
 			addChild(_banBgm);
 			addChild(_banSound);
 			
-			_activeBgm = DataManager.settingData.bgm;
-			_activeSound = DataManager.settingData.sound;
+			_activeBgm = DataManager.instance.settingData.bgm;
+			_activeSound = DataManager.instance.settingData.sound;
 			
 			if (!_activeBgm)
 			{
@@ -99,7 +106,7 @@ package ui.popup
 			
 			if (touch)
 			{
-				DataManager.settingData.bgm = false;
+				DataManager.instance.settingData.bgm = false;
 				SoundManager.isBgmActive = false;
 				SoundManager.stopBgm();
 				_banBgm.visible = true;
@@ -112,7 +119,7 @@ package ui.popup
 			
 			if (touch)
 			{
-				DataManager.settingData.sound = false;
+				DataManager.instance.settingData.sound = false;
 				SoundManager.isSoundEffectActive = false;
 				SoundManager.stopSoundEffect();
 				_banSound.visible = true;
@@ -125,9 +132,9 @@ package ui.popup
 			
 			if (touch)
 			{
-				DataManager.settingData.bgm = true;
+				DataManager.instance.settingData.bgm = true;
 				SoundManager.isBgmActive = true;
-				SoundManager.play(Resources.getSound(SoundName.MAIN_THEME));
+				SoundManager.play(Resources.instance.getSound(SoundName.MAIN_THEME));
 				_banBgm.visible = false;
 			}
 		}
@@ -138,7 +145,7 @@ package ui.popup
 			
 			if (touch)
 			{
-				DataManager.settingData.sound = false;
+				DataManager.instance.settingData.sound = false;
 				SoundManager.isSoundEffectActive = true;
 				_banSound.visible = false;
 			}

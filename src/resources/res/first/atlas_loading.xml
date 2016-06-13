@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TextureAtlas imagePath="atlas_loading.png">
+   <SubTexture name="background_title" x="394" y="48" width="200" height="356" />
+   <SubTexture name="img_gauge_bar" x="0" y="244" width="357" height="33" />
+   <SubTexture name="img_gauge_base" x="0" y="0" width="488" height="46" />
+   <SubTexture name="title_game" x="0" y="48" width="392" height="194" />
+</TextureAtlas>

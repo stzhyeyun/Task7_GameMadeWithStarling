@@ -8,32 +8,50 @@ package resources
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
+	
+	import gamedata.DatabaseURL;
 
-	internal class UserPictureLoader
+	internal class URLBitmapLoader
 	{
-		private var _userId:String;
+		private var _type:String;
+		private var _name:String;
 		private var _onCompleteLoad:Function;
-		private var _isCurrentUser:Boolean;
 		
-		public function UserPictureLoader(onCompleteLoad:Function)
+		public function URLBitmapLoader(onCompleteLoad:Function)
 		{
-			_userId = null;
+			_name = null;
 			_onCompleteLoad = onCompleteLoad;
-			_isCurrentUser = false;
 		}
 		
 		public function dispose():void
 		{
-			_userId = null;
+			_name = null;
 			_onCompleteLoad = null;
 		}
 		
-		public function load(userId:String, isCurrentUser:Boolean = false):void
+		public function load(type:String, name:String):void
 		{
-			_userId = userId;
-			_isCurrentUser = isCurrentUser;
+			_type = type;
+			_name = name;
 			
-			var url:String = "https://graph.facebook.com/" + userId + "/picture?type=large";
+			var url:String;
+			switch (_type)
+			{
+				case Resources.NOTICE_IMAGE:
+				{
+					url = DatabaseURL.RESOURCE + name;
+				}
+					break;
+				
+				case Resources.USER_PICTURE:
+				{
+					url = "https://graph.facebook.com/" + name + "/picture?type=large";
+				}
+					break;
+				
+				default:
+					return;
+			}
 			
 			var loader:URLLoader = new URLLoader();
 			loader.dataFormat = URLLoaderDataFormat.BINARY;
@@ -61,7 +79,7 @@ package resources
 
 			if (_onCompleteLoad)
 			{
-				_onCompleteLoad(_userId, bitmap, _isCurrentUser, this);
+				_onCompleteLoad(_type, _name, bitmap, this);
 			}
 		}
 	}

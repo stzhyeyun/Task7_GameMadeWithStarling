@@ -1,6 +1,7 @@
 package core
 {
 	import resources.Resources;
+	import resources.TextureAtlasName;
 	
 	import starling.display.Sprite;
 	
@@ -62,7 +63,7 @@ package core
 				{
 					tile = _tiles[i]
 					tile.data = tileData;
-					tile.texture = Resources.getTexture(tile.data.textureName);
+					tile.texture = Resources.instance.getTexture(TextureAtlasName.MAIN, tile.data.textureName);
 					tile.visible = true;
 				}
 

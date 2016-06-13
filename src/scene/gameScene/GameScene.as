@@ -13,13 +13,16 @@ package scene.gameScene
 	import core.Table;
 	import core.TableData;
 	
-	import gamedata.DataManager;
+	import manager.DataManager;
 	import gamedata.PlayData;
 	
 	import resources.Resources;
+	import resources.TextureAtlasName;
 	import resources.TextureName;
 	
 	import scene.Scene;
+	
+	import manager.NoticeManager;
 	
 	import starling.display.Image;
 	import starling.events.Event;
@@ -28,13 +31,15 @@ package scene.gameScene
 	import starling.events.TouchPhase;
 	import starling.textures.Texture;
 	
-	import ui.popup.PopupManager;
+	import manager.PopupManager;
 	import ui.popup.PopupName;
 	
 	public class GameScene extends Scene
 	{
 		private const TABLE_SIZE:int = 10;
 		private const BLOCK_NUM:int = 3;
+		
+		private var _firstStart:Boolean;
 		
 		private var _table:Table;
 		private var _blocks:Vector.<Block>; // 3 Blocks
@@ -74,10 +79,12 @@ package scene.gameScene
 		
 		public override function initialize():void
 		{
-			var playData:PlayData = DataManager.playData;
+			_firstStart = true;
+			
+			var playData:PlayData = DataManager.instance.playData;
 			
 			// Background
-			var background:Image = new Image(Resources.getTexture(TextureName.BACKGROUND_GAME));
+			var background:Image = new Image(Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BACKGROUND_GAME));
 			background.width = this.nativeStageWidth;
 			background.height = this.nativeStageHeight;
 			addChild(background);
@@ -117,20 +124,29 @@ package scene.gameScene
 			addChild(_ui);
 		}
 		
+		protected override function onStartScene(event:Event):void
+		{
+			if (_firstStart)
+			{
+				NoticeManager.instance.dispose();
+				_firstStart = false;
+			}
+		}
+		
 		protected override function onRestartScene(event:Event):void
 		{
-			DataManager.playData.clean();
+			DataManager.instance.playData.clean();
 			
-			_table.setTableData(DataManager.playData.tableData);
+			_table.setTableData(DataManager.instance.playData.tableData);
 			refreshBlocks(true);
 			_ui.setScore(
 				this.nativeStageWidth, this.nativeStageHeight,
-				DataManager.playData.bestScore, DataManager.playData.currentScore);
+				DataManager.instance.playData.bestScore, DataManager.instance.playData.currentScore);
 		}
 		
 		protected override function onEndScene(event:Event):void
 		{
-			DataManager.export();
+			DataManager.instance.export();
 		}
 		
 		protected override function onKeyDown(event:KeyboardEvent):void
@@ -143,7 +159,7 @@ package scene.gameScene
 			if (event.keyCode == Keyboard.BACK)
 			{
 				event.preventDefault();
-				PopupManager.showPopup(this, PopupName.EXIT);
+				PopupManager.instance.showPopup(this, PopupName.EXIT);
 			}
 		}
 		
@@ -156,7 +172,7 @@ package scene.gameScene
 			ct.alphaMultiplier = 0; 
 			bitmapData.colorTransform(new Rectangle(0, 0, bitmapData.width, bitmapData.height), ct);
 			
-			var blocksData:Vector.<BlockData> = DataManager.playData.blocksData;
+			var blocksData:Vector.<BlockData> = DataManager.instance.playData.blocksData;
 			var block:Block;
 			var touchArea:Image;
 			for (var i:int = 0; i < BLOCK_NUM; i++)
@@ -182,7 +198,7 @@ package scene.gameScene
 				
 				_blocks.insertAt(i, block);
 				_originBlockPosData.push(new Point(block.x, block.y));
-				DataManager.playData.setBlockData(i, block.data);
+				DataManager.instance.playData.setBlockData(i, block.data);
 				
 				// Touch area
 				touchArea = new Image(Texture.fromBitmapData(bitmapData));
@@ -223,7 +239,7 @@ package scene.gameScene
 				_blocks[i].x = _originBlockPosData[i].x;  
 				_blocks[i].y = _originBlockPosData[i].y;
 				_blocks[i].visible = true;
-				DataManager.playData.setBlockData(i, _blocks[i].data);
+				DataManager.instance.playData.setBlockData(i, _blocks[i].data);
 			}
 		}
 		
@@ -280,11 +296,11 @@ package scene.gameScene
 						{
 							if (_blocks[i].visible)
 							{
-								DataManager.playData.setBlockData(i, _blocks[i].data);
+								DataManager.instance.playData.setBlockData(i, _blocks[i].data);
 							}
 							else
 							{
-								DataManager.playData.setBlockData(i);
+								DataManager.instance.playData.setBlockData(i);
 							}
 						}
 					}
@@ -303,11 +319,11 @@ package scene.gameScene
 							if (!_table.isSettable(_blocks[i]))
 							{
 								// 데이터 업데이트
-								DataManager.updateBestScore();
-								DataManager.updateRank();
+								DataManager.instance.updateBestScore();
+								DataManager.instance.updateRank();
 								
 								// 종료 팝업 호출
-								PopupManager.showPopup(this, PopupName.GAME_OVER);
+								PopupManager.instance.showPopup(this, PopupName.GAME_OVER);
 							}
 						}
 					}

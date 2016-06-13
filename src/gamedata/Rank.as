@@ -28,7 +28,7 @@ package gamedata
 			var url:String =
 				DatabaseURL.RANK +
 				"addRankData.php" +
-				"?id=" + userInfo.id +
+				"?id=" + userInfo.userId +
 				"&name=" + userInfo.name +
 				"&score=" + userInfo.score;
 			
@@ -41,7 +41,7 @@ package gamedata
 			var url:String =
 				DatabaseURL.RANK +
 				"getRank.php" +
-				"?id=" + userInfo.id;
+				"?id=" + userInfo.userId;
 			
 			var loader:URLLoader = new URLLoader(new URLRequest(url));
 			loader.addEventListener(Event.COMPLETE, onGotRank);
@@ -96,9 +96,12 @@ package gamedata
 				var data:Object = JSON.parse(urlLoader.data);
 				
 				userInfoVec = new Vector.<UserInfo>();
+				var userInfo:UserInfo;
 				for (var i:int = 0; i < data.length; i++)
 				{
-					userInfoVec.push(new UserInfo(data[i].id, data[i].name, data[i].score));
+					userInfo = new UserInfo();
+					userInfo.setInfo(data[i].id, data[i].name, data[i].score);
+					userInfoVec.push(userInfo);
 				}
 			}
 			

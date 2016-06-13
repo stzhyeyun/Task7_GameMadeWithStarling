@@ -1,6 +1,7 @@
 package core
 {
 	import resources.Resources;
+	import resources.TextureAtlasName;
 	import resources.TextureName;
 	
 	import starling.display.Sprite;
@@ -135,7 +136,7 @@ package core
 				{
 					for (var j:int = 0; j < data[i].length; j++)
 					{
-						_tiles[i][j].texture = Resources.getTexture(data[i][j].textureName);
+						_tiles[i][j].texture = Resources.instance.getTexture(TextureAtlasName.MAIN, data[i][j].textureName);
 					}
 				}
 			}
@@ -147,7 +148,7 @@ package core
 					for (j = 0; j < data[i].length; j++)
 					{
 						data[i][j].textureName = TextureName.TILE_WHITE;
-						_tiles[i][j].texture = Resources.getTexture(data[i][j].textureName);
+						_tiles[i][j].texture = Resources.instance.getTexture(TextureAtlasName.MAIN, data[i][j].textureName);
 					}
 				}
 			}
@@ -212,7 +213,7 @@ package core
 				updatedRow = updatedDataIndices[i].row;
 				
 				_tiles[updatedCol][updatedRow].texture =
-					Resources.getTexture(tileData[updatedCol][updatedRow].textureName);
+					Resources.instance.getTexture(TextureAtlasName.MAIN, tileData[updatedCol][updatedRow].textureName);
 			}
 		}
 	}

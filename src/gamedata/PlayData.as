@@ -123,8 +123,6 @@ package gamedata
 		
 		protected override function onCompleteLoad(event:Event):void
 		{
-			super.onCompleteLoad(event);
-			
 			var loader:URLLoader = event.target as URLLoader;
 			if (!loader)
 			{
@@ -192,6 +190,8 @@ package gamedata
 				
 				var test:int = 0;
 			}
+			
+			super.onCompleteLoad(event);
 		}
 		
 		public function setBlockData(index:int, data:BlockData = null):void

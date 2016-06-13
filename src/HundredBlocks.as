@@ -7,19 +7,19 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
-	import gamedata.DataManager;
+	import manager.DataManager;
 	
-	import media.SoundManager;
+	import manager.SoundManager;
 	
 	import resources.Resources;
 	
-	import scene.SceneManager;
+	import manager.SceneManager;
 	
 	import starling.core.Starling;
 	
-	import ui.popup.PopupManager;
+	import manager.PopupManager;
 	
-	import user.LogInManager;
+	import manager.LogInManager;
 	
 	[SWF(width="720", height="960", frameRate="60")]
 	
@@ -48,12 +48,12 @@ package
 			NativeApplication.nativeApplication.removeEventListener(Event.ACTIVATE, onActivate);
 			NativeApplication.nativeApplication.removeEventListener(Event.DEACTIVATE, onDeactivate);
 			
-			PopupManager.dispose();
+			DataManager.instance.dispose();
+			LogInManager.instance.dispose();
+			PopupManager.instance.dispose();
 			SceneManager.dispose();
-			DataManager.dispose();
-			LogInManager.dispose();
 			SoundManager.dispose();
-			Resources.dispose();
+			Resources.instance.dispose();
 			
 			var notification:ScheduledNotificationExtension = new ScheduledNotificationExtension();
 			notification.setNotification("Ding-dong!", "Hundred Blocks", "It's time to take a break!", 5/*temp*/);
@@ -67,8 +67,8 @@ package
 		private function onDeactivate(event:Event):void
 		{
 			SoundManager.stopAll();
-			DataManager.export();
-			LogInManager.export();
+			DataManager.instance.export();
+			LogInManager.instance.export();
 			
 			var notification:ScheduledNotificationExtension = new ScheduledNotificationExtension();
 			notification.setNotification("Ding-dong!", "Hundred Blocks", "It's time to take a break!", 5/*temp*/);

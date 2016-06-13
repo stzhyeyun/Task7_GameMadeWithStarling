@@ -2,25 +2,17 @@ package
 {
 	import flash.filesystem.File;
 	
-	import gamedata.DataManager;
-	
 	import media.Sound;
-	import media.SoundManager;
 	
 	import resources.Resources;
 	import resources.SoundName;
 	
-	import scene.SceneManager;
+	import manager.SceneManager;
 	import scene.SceneName;
-	import scene.gameScene.GameScene;
-	import scene.titleScene.TitleScene;
+	import scene.loadingScene.LoadingScene;
 	
 	import starling.display.Sprite;
 	
-	import ui.popup.PopupManager;
-	
-	import user.LogInManager;
-
 	public class Main extends Sprite
 	{
 		private static var _current:Main;
@@ -35,12 +27,9 @@ package
 		{
 			_current = this;
 			
-			Resources.initialize();
-			Resources.onReadyToUseResources = onCompleteLoad;
-			Resources.loadFromDisk(File.applicationDirectory.resolvePath("resources/res"));
-			
-			LogInManager.initialize();
-			DataManager.initialize();
+			Resources.instance.initialize();
+			Resources.instance.addEventListener(Resources.COMPLETE_LOAD, onCompleteLoad);
+			Resources.instance.loadFromDisk(File.applicationDirectory.resolvePath("resources/res/first"));
 		}
 		
 		public override function dispose():void
@@ -52,37 +41,19 @@ package
 		
 		private function onCompleteLoad():void
 		{
-			PopupManager.initialize();
-
-			var titleScene:TitleScene = new TitleScene();
-			titleScene.initialize();
-			SceneManager.addScene(SceneName.TITLE, titleScene);
-
-			var gameScene:GameScene = new GameScene();
-			gameScene.initialize();
-			gameScene.visible = false;
-			SceneManager.addScene(SceneName.GAME, gameScene);
+			Resources.instance.removeEventListener(Resources.COMPLETE_LOAD, onCompleteLoad);
 			
-			SceneManager.switchScene(SceneName.TITLE);
+			var loadingScene:LoadingScene = new LoadingScene();
+			loadingScene.initialize();
+			SceneManager.addScene(SceneName.LOADING, loadingScene);
 			
-			var sound:Sound = Resources.getSound(SoundName.MAIN_THEME);
+			var sound:Sound = Resources.instance.getSound(SoundName.MAIN_THEME);
 			if (sound)
 			{
 				sound.loops = Sound.INFINITE;
 			}
-			SoundManager.play(sound);
 			
-			sound = Resources.getSound(SoundName.SET);
-			if (sound)
-			{
-				sound.volume = 0.5;
-			}
-			
-			sound = Resources.getSound(SoundName.CLEAR);
-			if (sound)
-			{
-				sound.volume = 0.5;
-			}
+			SceneManager.switchScene(SceneName.LOADING);
 		}
 	}
 }

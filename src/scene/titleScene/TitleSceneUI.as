@@ -1,9 +1,10 @@
 package scene.titleScene
 {
 	import resources.Resources;
+	import resources.TextureAtlasName;
 	import resources.TextureName;
 	
-	import scene.SceneManager;
+	import manager.SceneManager;
 	import scene.SceneName;
 	
 	import starling.display.Button;
@@ -15,10 +16,10 @@ package scene.titleScene
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	
-	import ui.popup.PopupManager;
+	import manager.PopupManager;
 	import ui.popup.PopupName;
 	
-	import user.LogInManager;
+	import manager.LogInManager;
 
 	public class TitleSceneUI extends Sprite
 	{
@@ -33,8 +34,8 @@ package scene.titleScene
 		
 		public override function dispose():void
 		{
-			LogInManager.current.removeEventListener(LogInManager.LOG_IN, onLogIn);
-			LogInManager.current.removeEventListener(LogInManager.LOG_OUT, onLogOut);
+			LogInManager.instance.removeEventListener(LogInManager.LOG_IN, onLogIn);
+			LogInManager.instance.removeEventListener(LogInManager.LOG_OUT, onLogOut);
 			
 			_logInButton = null;
 			_logOutButton = null;
@@ -45,7 +46,7 @@ package scene.titleScene
 		public function initialize(stageWidth:Number, stageHeight:Number):void
 		{
 			// Title
-			var title:Image = new Image(Resources.getTexture(TextureName.TITLE_GAME));
+			var title:Image = new Image(Resources.instance.getTexture(TextureAtlasName.LOADING, TextureName.TITLE_GAME));
 			var titleScale:Number = stageWidth * 0.8 / title.width;
 			title.width *= titleScale;
 			title.height *= titleScale;
@@ -54,7 +55,7 @@ package scene.titleScene
 			addChild(title);
 			
 			// Play
-			var play:Button = new Button(Resources.getTexture(TextureName.BTN_PLAY));
+			var play:Button = new Button(Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_PLAY));
 			var playScale:Number = stageWidth * 0.3 / play.width;
 			play.width *= playScale;
 			play.height *= playScale;
@@ -65,7 +66,7 @@ package scene.titleScene
 			
 			// Rank
 			var subBtnY:Number = stageHeight * 0.65;
-			var rank:Button = new Button(Resources.getTexture(TextureName.BTN_RANK));
+			var rank:Button = new Button(Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_RANK));
 			var subButtonScale:Number = stageWidth * 0.2 / rank.width;
 			rank.width *= subButtonScale;
 			rank.height *= subButtonScale;
@@ -75,7 +76,7 @@ package scene.titleScene
 			addChild(rank);
 			
 			// Setting
-			var setting:Button = new Button(Resources.getTexture(TextureName.BTN_SETTING));
+			var setting:Button = new Button(Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_SETTING));
 			setting.width *= subButtonScale;
 			setting.height *= subButtonScale;
 			setting.x = (stageWidth / 2) + (setting.width / 2);
@@ -84,31 +85,31 @@ package scene.titleScene
 			addChild(setting);
 			
 			// LogIn
-			_logInButton = new Button(Resources.getTexture(TextureName.BTN_LOG_IN));
+			_logInButton = new Button(Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_LOG_IN));
 			_logInButton.width = play.width / 2;
 			_logInButton.height = play.height / 2;
 			_logInButton.x = play.x + _logInButton.width * 1.5;
 			_logInButton.y = play.y;
 			_logInButton.addEventListener(TouchEvent.TOUCH, onEndedLogInButton);
-			if (LogInManager.loggedIn)
+			if (LogInManager.instance.loggedIn)
 			{
 				_logInButton.visible = false;
 			}
 			addChild(_logInButton);
 			
 			// LogOut
-			_logOutButton = new Button(Resources.getTexture(TextureName.BTN_LOG_OUT));
+			_logOutButton = new Button(Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_LOG_OUT));
 			_logOutButton.x = (stageWidth / 2 - _logOutButton.width / 2);
 			_logOutButton.y = stageHeight * 0.85;
 			_logOutButton.addEventListener(TouchEvent.TOUCH, onEndedLogOutButton);
-			if (!LogInManager.loggedIn)
+			if (!LogInManager.instance.loggedIn)
 			{
 				_logOutButton.visible = false;
 			}
 			addChild(_logOutButton);
 			
-			LogInManager.current.addEventListener(LogInManager.LOG_IN, onLogIn);
-			LogInManager.current.addEventListener(LogInManager.LOG_OUT, onLogOut);
+			LogInManager.instance.addEventListener(LogInManager.LOG_IN, onLogIn);
+			LogInManager.instance.addEventListener(LogInManager.LOG_OUT, onLogOut);
 		}
 		
 		private function onEndedPlayButton(event:TouchEvent):void
@@ -127,7 +128,7 @@ package scene.titleScene
 			
 			if (touch)
 			{
-				PopupManager.showPopup(this, PopupName.RANK);
+				PopupManager.instance.showPopup(this, PopupName.RANK);
 			}	
 		}
 		
@@ -137,7 +138,7 @@ package scene.titleScene
 			
 			if (touch)
 			{
-				PopupManager.showPopup(this, PopupName.SETTING);	
+				PopupManager.instance.showPopup(this, PopupName.SETTING);	
 			}	
 		}
 		
@@ -147,7 +148,7 @@ package scene.titleScene
 			
 			if (touch)
 			{
-				LogInManager.logIn();
+				LogInManager.instance.logIn();
 			}	
 		}
 		
@@ -157,7 +158,7 @@ package scene.titleScene
 			
 			if (touch)
 			{
-				LogInManager.logOut();
+				LogInManager.instance.logOut();
 			}	
 		}
 		

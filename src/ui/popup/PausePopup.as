@@ -1,9 +1,10 @@
 package ui.popup
 {
 	import resources.Resources;
+	import resources.TextureAtlasName;
 	import resources.TextureName;
 	
-	import scene.SceneManager;
+	import manager.SceneManager;
 	import scene.SceneName;
 	
 	import starling.display.Button;
@@ -11,6 +12,7 @@ package ui.popup
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
+	import manager.PopupManager;
 
 	public class PausePopup extends Popup
 	{
@@ -21,11 +23,16 @@ package ui.popup
 		
 		public override function initialize():void
 		{
-			var panel:Image = new Image(Resources.getTexture(TextureName.POPUP_MINI));
-			var title:Image = new Image(Resources.getTexture(TextureName.TITLE_PAUSE));
-			var resume:Button = new Button(Resources.getTexture(TextureName.BTN_RESUME));
-			var replay:Button = new Button(Resources.getTexture(TextureName.BTN_REPLAY));
-			var menu:Button = new Button(Resources.getTexture(TextureName.BTN_MENU));
+			var panel:Image = new Image(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.POPUP_MINI));
+			var title:Image = new Image(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.TITLE_PAUSE));
+			var resume:Button = new Button(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_RESUME));
+			var replay:Button = new Button(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_REPLAY));
+			var menu:Button = new Button
+				(Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_MENU));
 			
 			title.pivotX = title.width / 2;
 			title.pivotY = title.height / 2;
@@ -67,7 +74,7 @@ package ui.popup
 			
 			if (touch)
 			{
-				PopupManager.closePopup(PopupName.PAUSE);
+				PopupManager.instance.closePopup(PopupName.PAUSE);
 			}
 		}
 		
@@ -78,7 +85,7 @@ package ui.popup
 			if (touch)
 			{
 				SceneManager.restartScene();
-				PopupManager.closePopup(PopupName.PAUSE);
+				PopupManager.instance.closePopup(PopupName.PAUSE);
 			}
 		}
 		
@@ -89,7 +96,7 @@ package ui.popup
 			if (touch)
 			{
 				SceneManager.switchScene(SceneName.TITLE);
-				PopupManager.closePopup(PopupName.PAUSE);
+				PopupManager.instance.closePopup(PopupName.PAUSE);
 			}
 		}
 	}

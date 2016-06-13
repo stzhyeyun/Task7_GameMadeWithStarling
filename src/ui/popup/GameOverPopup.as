@@ -1,11 +1,12 @@
 package ui.popup
 {
-	import gamedata.DataManager;
+	import manager.DataManager;
 	
 	import resources.Resources;
+	import resources.TextureAtlasName;
 	import resources.TextureName;
 	
-	import scene.SceneManager;
+	import manager.SceneManager;
 	import scene.SceneName;
 	
 	import starling.display.Button;
@@ -17,6 +18,7 @@ package ui.popup
 	import ui.SpriteNumber;
 	
 	import util.Color;
+	import manager.PopupManager;
 
 	public class GameOverPopup extends Popup
 	{
@@ -34,13 +36,20 @@ package ui.popup
 		
 		public override function initialize():void
 		{
-			var panel:Image = new Image(Resources.getTexture(TextureName.POPUP));
-			var title:Image = new Image(Resources.getTexture(TextureName.TITLE_GAME_OVER));
-//			var share:Button = new Button(Resources.getTexture(TextureName.BTN_SHARE));
-			var replay:Button = new Button(Resources.getTexture(TextureName.BTN_REPLAY));
-			var menu:Button = new Button(Resources.getTexture(TextureName.BTN_MENU));
-			var currScoreText:Image = new Image(Resources.getTexture(TextureName.TEXT_SCORE));
-			var bestScoreText:Image = new Image(Resources.getTexture(TextureName.TEXT_BEST_SCORE));
+			var panel:Image = new Image(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.POPUP));
+			var title:Image = new Image(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.TITLE_GAME_OVER));
+//			var share:Button = new Button(
+//				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_SHARE));
+			var replay:Button = new Button(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_REPLAY));
+			var menu:Button = new Button(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_MENU));
+			var currScoreText:Image = new Image(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.TEXT_SCORE));
+			var bestScoreText:Image = new Image(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.TEXT_BEST_SCORE));
 
 			_panelWidth = panel.width;
 			_panelHeight = panel.height;
@@ -93,8 +102,8 @@ package ui.popup
 		
 		public override function show():void
 		{
-			_bestScore = new SpriteNumber(DataManager.playData.bestScore.toString(), Color.RESULT);
-			_currentScore = new SpriteNumber(DataManager.playData.currentScore.toString(), Color.RESULT);
+			_bestScore = new SpriteNumber(DataManager.instance.playData.bestScore.toString(), Color.RESULT);
+			_currentScore = new SpriteNumber(DataManager.instance.playData.currentScore.toString(), Color.RESULT);
 
 			_bestScore.x = _panelWidth / 2;
 			_bestScore.y = _panelHeight * 0.55;
@@ -134,7 +143,7 @@ package ui.popup
 			if (touch)
 			{
 				SceneManager.restartScene();
-				PopupManager.closePopup(PopupName.GAME_OVER);
+				PopupManager.instance.closePopup(PopupName.GAME_OVER);
 			}
 		}
 		
@@ -146,7 +155,7 @@ package ui.popup
 			{
 				SceneManager.restartScene();
 				SceneManager.switchScene(SceneName.TITLE);
-				PopupManager.closePopup(PopupName.GAME_OVER);
+				PopupManager.instance.closePopup(PopupName.GAME_OVER);
 			}
 		}
 	}

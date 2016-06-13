@@ -1,8 +1,9 @@
-package scene
+package manager
 {
 	import flash.utils.Dictionary;
 	
 	import starling.events.Event;
+	import scene.Scene;
 	
 	public class SceneManager
 	{

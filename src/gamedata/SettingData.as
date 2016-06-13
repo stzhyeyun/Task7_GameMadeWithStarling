@@ -4,7 +4,9 @@ package gamedata
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
+	import flash.globalization.DateTimeFormatter;
 	import flash.net.URLLoader;
+	import flash.utils.Dictionary;
 
 	/**
 	 * 인게임 환경설정 정보입니다. (배경음악, 효과음)
@@ -17,9 +19,8 @@ package gamedata
 		
 		private var _bgm:Boolean;
 		private var _sound:Boolean;
+		private var _bannedPopups:Dictionary;
 
-		private var _onReadyToPreset:Function;
-		
 		public function get bgm():Boolean
 		{
 			return _bgm;
@@ -40,9 +41,9 @@ package gamedata
 			_sound = value;
 		}
 		
-		public function set onReadyToPreset(value:Function):void
+		public function get bannedPopups():Dictionary
 		{
-			_onReadyToPreset = value;
+			return _bannedPopups;
 		}
 
 		
@@ -52,16 +53,9 @@ package gamedata
 			
 			_bgm = true;
 			_sound = true;
-			_onReadyToPreset = null;
+			_bannedPopups = null;
 		}
-		
-		public override function dispose():void
-		{
-			_onReadyToPreset = null;
-			
-			super.dispose();
-		}
-		
+
 		/**
 		 * SettingData를 AES-128로 암호화하여 JSON 파일로 출력합니다.   
 		 * 
@@ -76,7 +70,24 @@ package gamedata
 			}
 			
 			var plainText:String =	"{\n\t\"bgm\" : "	+	_bgm.toString()		+	",\n"	+
-									"\t\"sound\" : "	+	_sound.toString()	+	"\n}";
+									"\t\"sound\" : "	+	_sound.toString();
+			
+			if (_bannedPopups)
+			{
+				var index:int = 0;
+				plainText += ",\n\t\"bannedPopups\" : [";
+				for (var key:String in _bannedPopups)
+				{
+					if (index != 0)
+					{
+						plainText += ", ";
+					}
+					plainText += "\"" + key + "\", \"" + _bannedPopups[key] + "\"";
+					index++;
+				}
+				plainText += "]";
+			}
+			plainText += "\n}";
 			
 			plainText = AesCrypto.encrypt(plainText, "ahundrendblocksbybamkie");
 			
@@ -93,8 +104,6 @@ package gamedata
 		
 		protected override function onCompleteLoad(event:Event):void
 		{
-			super.onCompleteLoad(event);
-			
 			var loader:URLLoader = event.target as URLLoader;
 			if (!loader)
 			{
@@ -106,9 +115,65 @@ package gamedata
 			_bgm = plainText.bgm;
 			_sound = plainText.sound;
 			
-			if (_onReadyToPreset)
+			if (plainText.bannedPopups)
 			{
-				_onReadyToPreset();
+				_bannedPopups = new Dictionary();
+				for (var i:int = 0; i < plainText.bannedPopups.length; i += 2)
+				{
+					_bannedPopups[plainText.bannedPopups[i]] = plainText.bannedPopups[i + 1];
+				}
+			}
+			
+			super.onCompleteLoad(event);
+		}
+		
+		public function addBannedPopup(name:String):void
+		{
+			if (!name)
+			{
+				trace(TAG + " addBannedPopup : No name.");
+				return;
+			}
+			
+			var today:Date = new Date();
+			var formatter:DateTimeFormatter = new DateTimeFormatter("date");
+			formatter.setDateTimePattern("yyyy-MM-dd");
+			
+			if (!_bannedPopups)
+			{
+				_bannedPopups = new Dictionary();
+			}
+			_bannedPopups[name] = formatter.format(today);
+		}
+		
+		public function isBannedPopup(name:String):Boolean
+		{
+			if (_bannedPopups && _bannedPopups[name])
+			{
+				var bannedDateStr:String = _bannedPopups[name];
+				var bannedYear:Number = Number(bannedDateStr.substring(0, bannedDateStr.indexOf("-")));
+				
+				bannedDateStr = bannedDateStr.substring(bannedDateStr.indexOf("-") + 1, bannedDateStr.length);
+				var bannedMonth:Number = Number(bannedDateStr.substring(0, bannedDateStr.indexOf("-")));
+				
+				var bannedDate:Number = Number(bannedDateStr.substring(bannedDateStr.indexOf("-") + 1, bannedDateStr.length));
+				
+				var today:Date = new Date();
+				
+				if (today.getFullYear() == bannedYear &&
+					today.getMonth() + 1 == bannedMonth &&
+					today.getDate() == bannedDate)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				return false;
 			}
 		}
 	}

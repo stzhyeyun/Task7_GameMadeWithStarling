@@ -2,10 +2,6 @@ package resources
 {
 	public final class TextureName
 	{
-		// TextureAtlas
-		public static const ATLAS:String = "atlas";
-		
-		// SubTexture
 		// Tile
 		public static const TILE_WHITE:String = "tile_white";
 		public static const TILE_RED:String = "tile_red";
@@ -39,8 +35,12 @@ package resources
 		public static const BTN_DOWN:String = "btn_down";
 		public static const BTN_MY:String = "btn_my";
 		
+		public static const BTN_CLOSE:String = "btn_close";
+		
 		// Image
 		public static const IMG_BAN:String = "img_ban";
+		public static const IMG_GAUGE_BASE:String = "img_gauge_base";
+		public static const IMG_GAUGE_BAR:String = "img_gauge_bar";
 		public static const IMG_PANEL_BROWN:String = "img_panel_brown";
 		public static const IMG_PANEL_GRAY:String = "img_panel_gray";
 		public static const IMG_ANONYMOUS:String = "img_anonymous";
@@ -60,8 +60,10 @@ package resources
 		// Text
 		public static const TEXT_BEST_SCORE:String = "text_bestScore";
 		public static const TEXT_SCORE:String = "text_score";
+		public static const TEXT_POPUP_MESSAGE:String = "text_popupMessage";
 		
 		// Background
+		public static const BACKGROUND_LOADING:String = "background_loading";
 		public static const BACKGROUND_TITLE:String = "background_title";
 		public static const BACKGROUND_GAME:String = "background_game";
 	}

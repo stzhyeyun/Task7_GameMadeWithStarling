@@ -3,10 +3,11 @@ package ui.popup
 	import flash.text.TextFormatAlign;
 	import flash.utils.Dictionary;
 	
-	import gamedata.DataManager;
+	import manager.DataManager;
 	import gamedata.Rank;
 	
 	import resources.Resources;
+	import resources.TextureAtlasName;
 	import resources.TextureName;
 	
 	import starling.display.Button;
@@ -22,7 +23,7 @@ package ui.popup
 	
 	import ui.SpriteNumber;
 	
-	import user.LogInManager;
+	import manager.LogInManager;
 	import user.UserInfo;
 	
 	import util.Color;
@@ -49,21 +50,27 @@ package ui.popup
 		
 		public override function dispose():void
 		{
-			DataManager.current.removeEventListener(DataManager.UPDATE_RANK, onUpdateRank);
-			LogInManager.current.removeEventListener(LogInManager.LOG_IN, onLogIn);
-			LogInManager.current.removeEventListener(LogInManager.LOG_OUT, onLogOut);
+			DataManager.instance.removeEventListener(DataManager.UPDATE_RANK, onUpdateRank);
+			LogInManager.instance.removeEventListener(LogInManager.LOG_IN, onLogIn);
+			LogInManager.instance.removeEventListener(LogInManager.LOG_OUT, onLogOut);
 						
 			super.dispose();
 		}
 		
 		public override function initialize():void
 		{
-			var panel:Image = new Image(Resources.getTexture(TextureName.POPUP));
-			var title:Image = new Image(Resources.getTexture(TextureName.TITLE_RANK));
-			var top:Button = new Button(Resources.getTexture(TextureName.BTN_TOP));
-			var up:Button = new Button(Resources.getTexture(TextureName.BTN_UP));
-			var down:Button = new Button(Resources.getTexture(TextureName.BTN_DOWN));
-			_userRankButton = new Button(Resources.getTexture(TextureName.BTN_MY));
+			var panel:Image = new Image(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.POPUP));
+			var title:Image = new Image(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.TITLE_RANK));
+			var top:Button = new Button(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_TOP));
+			var up:Button = new Button(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_UP));
+			var down:Button = new Button(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_DOWN));
+			_userRankButton = new Button(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_MY));
 			
 			title.pivotX = title.width / 2;
 			title.pivotY = title.height / 2;
@@ -80,7 +87,7 @@ package ui.popup
 			_userRankButton.x = panel.width * 0.8;
 			_userRankButton.y = panel.height * 0.53;
 			_userRankButton.addEventListener(TouchEvent.TOUCH, onEndedUserButton);
-			if (!LogInManager.loggedIn)
+			if (!LogInManager.instance.loggedIn)
 			{
 				_userRankButton.touchable = false;
 				_userRankButton.color = Color.INACTIVE;		
@@ -114,12 +121,14 @@ package ui.popup
 				ranker.x = panel.width * 0.1;
 				ranker.y = panel.width * 0.15 * (i + 1);
 
-				rankerPanel = new Image(Resources.getTexture(TextureName.IMG_PANEL_GRAY));
+				rankerPanel = new Image(
+					Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.IMG_PANEL_GRAY));
 				rankerPanel.name = "panel";
 				rankerPanel.width = panel.width * 0.65;
 				rankerPanel.height = panel.height * 0.15;
 				
-				picture = new Image(Resources.getTexture(TextureName.IMG_ANONYMOUS));
+				picture = new Image(
+					Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.IMG_ANONYMOUS));
 				picture.name = "picture";
 				picture.height = rankerPanel.height * 0.75;
 				picture.width = picture.height;
@@ -135,7 +144,8 @@ package ui.popup
 				rank.x = picture.x - (rank.width / 2 + rank.width / 4);
 				rank.y = (rankerPanel.height - rank.height) / 2;
 				
-				name = new TextField(int(rankerPanel.width * 0.5), int(rankerPanel.height * 0.3), "Null", format);
+				name = new TextField(
+					int(rankerPanel.width * 0.5), int(rankerPanel.height * 0.3), "Null", format);
 				name.name = "name";
 				name.autoScale = true;
 				name.x = rankerPanel.width * 0.4;
@@ -166,20 +176,20 @@ package ui.popup
 			_numLoadRequest = 0;
 			_needToSetPicIndices = new Dictionary();
 			
-			var userInfo:UserInfo = LogInManager.userInfo;
-			if (userInfo.id)
+			var userInfo:UserInfo = LogInManager.instance.userInfo;
+			if (userInfo.userId)
 			{
-				DataManager.rank.addEventListener(Rank.GET_RANK, onGotRank);
-				DataManager.rank.getRank(userInfo);
+				DataManager.instance.rank.addEventListener(Rank.GET_RANK, onGotRank);
+				DataManager.instance.rank.getRank(userInfo);
 			}
 			else
 			{
 				setRanker();
 			}
 			
-			DataManager.current.addEventListener(DataManager.UPDATE_RANK, onUpdateRank);
-			LogInManager.current.addEventListener(LogInManager.LOG_IN, onLogIn);
-			LogInManager.current.addEventListener(LogInManager.LOG_OUT, onLogOut);
+			DataManager.instance.addEventListener(DataManager.UPDATE_RANK, onUpdateRank);
+			LogInManager.instance.addEventListener(LogInManager.LOG_IN, onLogIn);
+			LogInManager.instance.addEventListener(LogInManager.LOG_OUT, onLogOut);
 			
 			super.initialize();
 		}
@@ -207,13 +217,13 @@ package ui.popup
 				return;
 			}
 			
-			DataManager.rank.addEventListener(Rank.COUNT, onGotCount);
-			DataManager.rank.count();
+			DataManager.instance.rank.addEventListener(Rank.COUNT, onGotCount);
+			DataManager.instance.rank.count();
 		}
 		
 		private function onGotCount(event:Event):void
 		{
-			DataManager.rank.removeEventListener(Rank.COUNT, onGotCount);
+			DataManager.instance.rank.removeEventListener(Rank.COUNT, onGotCount);
 			
 			var count:int = int(event.data);
 			if (_currTop > count)
@@ -222,13 +232,13 @@ package ui.popup
 				return;
 			}
 			
-			DataManager.rank.addEventListener(Rank.GET_USER, onGotUser);
-			DataManager.rank.getUser(_currTop, RANK_PER_PAGE); 
+			DataManager.instance.rank.addEventListener(Rank.GET_USER, onGotUser);
+			DataManager.instance.rank.getUser(_currTop, RANK_PER_PAGE); 
 		}
 		
 		private function onGotUser(event:Event):void
 		{
-			DataManager.rank.removeEventListener(Rank.GET_USER, onGotUser);
+			DataManager.instance.rank.removeEventListener(Rank.GET_USER, onGotUser);
 			
 			var userInfoVec:Vector.<UserInfo> = event.data as Vector.<UserInfo>;
 			if (!userInfoVec)
@@ -240,7 +250,7 @@ package ui.popup
 			_prevTop = _currTop;
 			_numLoadRequest = 0;
 			
-			Resources.current.addEventListener(Resources.USER_PICTURE_READY, onLoadedUserPicture);
+			Resources.instance.addEventListener(Resources.USER_PICTURE_READY, onLoadedUserPicture);
 			
 			var panel:Image;
 			var rank:SpriteNumber;
@@ -259,14 +269,16 @@ package ui.popup
 					
 					if (rankValue == _userRank)
 					{
-						panel.texture = Resources.getTexture(TextureName.IMG_PANEL_BROWN);
+						panel.texture = 
+							Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.IMG_PANEL_BROWN);
 						rank.color = Color.RANKER_USER;
 						score.color = Color.RANKER_USER;
 						name.format.color = Color.RANKER_USER;
 					}
 					else
 					{
-						panel.texture = Resources.getTexture(TextureName.IMG_PANEL_GRAY);
+						panel.texture = 
+							Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.IMG_PANEL_GRAY);
 						rank.color = Color.RANKER;
 						score.color = Color.RANKER;
 						name.format.color = Color.RANKER;
@@ -277,8 +289,8 @@ package ui.popup
 					name.text = userInfoVec[i].name;
 					
 					_numLoadRequest++;
-					_needToSetPicIndices[userInfoVec[i].id] = i;
-					Resources.loadUserPicture(userInfoVec[i].id);
+					_needToSetPicIndices[userInfoVec[i].userId] = i;
+					Resources.instance.loadFromURL(Resources.USER_PICTURE, userInfoVec[i].userId);
 				}
 				else
 				{
@@ -291,7 +303,7 @@ package ui.popup
 		
 		private function onGotRank(event:Event):void
 		{
-			DataManager.rank.removeEventListener(Rank.GET_RANK, onGotRank);
+			DataManager.instance.rank.removeEventListener(Rank.GET_RANK, onGotRank);
 			_userRank = int(event.data);
 			
 			if (_userRank > 0)
@@ -306,15 +318,15 @@ package ui.popup
 		
 		private function onLoadedUserPicture(event:Event):void
 		{
-			if (event.data == Resources.CURRENT_USER)
-			{
-				return;
-			}
-			
 			var userId:String = event.data as String;
-			if (!userId)
+			if (!userId || !_needToSetPicIndices || !_needToSetPicIndices[userId])
 			{
-				trace(TAG + " onLoadedUserPicture : No userId.");
+				if (!userId) 
+					trace(TAG + " onLoadedUserPicture : No userId.");
+				if (!_needToSetPicIndices) 
+					trace(TAG + " onLoadedUserPicture : No need to set picture.");
+				if (!_needToSetPicIndices[userId]) 
+					trace(TAG + " onLoadedUserPicture : Not registered userId.");
 				return;	
 			}
 			
@@ -327,7 +339,7 @@ package ui.popup
 			}
 
 			var picture:Image = _rankerPanels[index].getChildByName("picture") as Image;
-			var texture:Texture = Resources.getUserPicture(userId);
+			var texture:Texture = Resources.instance.getUserPicture(userId);
 			
 			if (texture)
 			{
@@ -335,14 +347,14 @@ package ui.popup
 			}
 			else
 			{
-				picture.texture = Resources.getTexture(TextureName.IMG_ANONYMOUS);
+				picture.texture = Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.IMG_ANONYMOUS);
 			}
 			
 			_numLoadRequest--;
 			
 			if (_numLoadRequest <= 0)
 			{
-				Resources.current.removeEventListener(Resources.USER_PICTURE_READY, onLoadedUserPicture);
+				Resources.instance.removeEventListener(Resources.USER_PICTURE_READY, onLoadedUserPicture);
 			}
 		}
 
@@ -355,11 +367,11 @@ package ui.popup
 		
 		private function onLogIn(event:Event):void
 		{
-			var userInfo:UserInfo = LogInManager.userInfo;
-			if (userInfo.id)
+			var userInfo:UserInfo = LogInManager.instance.userInfo;
+			if (userInfo.userId)
 			{
-				DataManager.rank.addEventListener(Rank.GET_RANK, onGotRank);
-				DataManager.rank.getRank(userInfo);
+				DataManager.instance.rank.addEventListener(Rank.GET_RANK, onGotRank);
+				DataManager.instance.rank.getRank(userInfo);
 			}
 		}
 		

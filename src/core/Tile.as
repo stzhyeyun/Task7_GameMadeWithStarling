@@ -4,6 +4,7 @@ package core
 	import flash.geom.Rectangle;
 	
 	import resources.Resources;
+	import resources.TextureAtlasName;
 	
 	import starling.display.Image;
 
@@ -28,7 +29,7 @@ package core
 		{
 			_data = tileData;
 			
-			super(Resources.getTexture(_data.textureName));
+			super(Resources.instance.getTexture(TextureAtlasName.MAIN, _data.textureName));
 		}
 		
 		public override function dispose():void

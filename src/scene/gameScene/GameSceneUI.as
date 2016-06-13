@@ -2,9 +2,10 @@ package scene.gameScene
 {
 	import flash.display.BitmapData;
 	
-	import gamedata.DataManager;
+	import manager.DataManager;
 	
 	import resources.Resources;
+	import resources.TextureAtlasName;
 	import resources.TextureName;
 	
 	import starling.display.Button;
@@ -17,10 +18,10 @@ package scene.gameScene
 	import starling.textures.Texture;
 	
 	import ui.SpriteNumber;
-	import ui.popup.PopupManager;
+	import manager.PopupManager;
 	import ui.popup.PopupName;
 	
-	import user.LogInManager;
+	import manager.LogInManager;
 	
 	import util.Color;
 
@@ -41,8 +42,8 @@ package scene.gameScene
 		
 		public override function dispose():void
 		{
-			DataManager.current.removeEventListener(DataManager.UPDATE_CURRENT_SCORE, onUpdateCurrentScore);
-			Resources.current.removeEventListener(Resources.USER_PICTURE_READY, onUserPictureReady);
+			DataManager.instance.removeEventListener(DataManager.UPDATE_CURRENT_SCORE, onUpdateCurrentScore);
+			Resources.instance.removeEventListener(Resources.USER_PICTURE_READY, onUserPictureReady);
 			
 			super.dispose();
 		}
@@ -59,9 +60,9 @@ package scene.gameScene
 			
 			// User picture
 			_userPic = new Image(null);
-			if (LogInManager.loggedIn)
+			if (LogInManager.instance.loggedIn)
 			{
-				var texture:Texture = Resources.getCurrentUserPicture();
+				var texture:Texture = Resources.instance.getCurrentUserPicture();
 				
 				if (texture)
 				{
@@ -87,7 +88,7 @@ package scene.gameScene
 			
 			// Pause
 			var pauseScale:Number = 0.8;
-			var pause:Button = new Button(Resources.getTexture(TextureName.BTN_PAUSE));
+			var pause:Button = new Button(Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_PAUSE));
 			pause.height = header.height * 0.8;
 			pause.width = pause.height;
 			pause.pivotX = pause.width / 2;
@@ -100,9 +101,9 @@ package scene.gameScene
 			// Score
 			setScore(stageWidth, stageHeight, bestScore, currentScore);
 			
-			DataManager.current.addEventListener(DataManager.UPDATE_CURRENT_SCORE, onUpdateCurrentScore);
-			Resources.current.addEventListener(Resources.USER_PICTURE_READY, onUserPictureReady);
-			LogInManager.current.addEventListener(LogInManager.LOG_OUT, onLogOut);
+			DataManager.instance.addEventListener(DataManager.UPDATE_CURRENT_SCORE, onUpdateCurrentScore);
+			Resources.instance.addEventListener(Resources.USER_PICTURE_READY, onUserPictureReady);
+			LogInManager.instance.addEventListener(LogInManager.LOG_OUT, onLogOut);
 		}
 		
 		public function setScore(stageWidth:Number, stageHeight:Number, bestScore:int, currentScore:int):void
@@ -145,7 +146,7 @@ package scene.gameScene
 				return;
 			}
 			
-			PopupManager.showPopup(this, PopupName.PAUSE);
+			PopupManager.instance.showPopup(this, PopupName.PAUSE);
 		}
 		
 		private function onUpdateCurrentScore(event:Event):void
@@ -155,16 +156,19 @@ package scene.gameScene
 		
 		private function onUserPictureReady(event:Event):void
 		{
-			if (event.data == Resources.CURRENT_USER)
+			var eventTargetId:String = event.data as String;
+			var userId:String = LogInManager.instance.userInfo.userId;
+			
+			if (eventTargetId && userId && eventTargetId == userId)
 			{
-				_userPic.texture = Resources.getCurrentUserPicture();
+				_userPic.texture = Resources.instance.getCurrentUserPicture();
 				_userPic.visible = true;
 			}
 		}
 		
 		private function onLogOut(event:Event):void
 		{
-			_userPic.texture = Resources.getTexture(TextureName.IMG_ANONYMOUS);
+			_userPic.texture = Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.IMG_ANONYMOUS);
 			_userPic.visible = false;
 		}
 	}
