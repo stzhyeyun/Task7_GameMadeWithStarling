@@ -7,8 +7,6 @@ package resources
 	import flash.net.URLRequest;
 	import flash.utils.Dictionary;
 	
-	import user.UserManager;
-	
 	import media.Sound;
 	
 	import starling.events.Event;
@@ -17,6 +15,7 @@ package resources
 	import starling.textures.TextureAtlas;
 	
 	import user.UserInfo;
+	import user.UserManager;
 	
 	public class Resources extends EventDispatcher
 	{
@@ -30,10 +29,12 @@ package resources
 		public static const COMPLETE_LOAD:String = "completeLoad";
 		public static const NOTICE_IMAGE:String = "noticeImage";
 		public static const USER_PICTURE:String = "userPicture";
-		public static const NOTICE_IMAGE_READY:String = "noticeImageReady";
-		public static const USER_PICTURE_READY:String = "userPictureReady";
+		public static const READY_NOTICE_IMAGE:String = "readyNoticeImage";
+		public static const READY_USER_PICTURE:String = "readyUserPicture";
 		
 		private static var _instance:Resources;
+		
+		private const TAG:String = "[Resources]";
 		
 		private var _textureAtlasDic:Dictionary;
 		private var _soundDic:Dictionary;
@@ -62,6 +63,8 @@ package resources
 		
 		public function dispose():void
 		{
+			_instance = null;
+			
 			if (_textureAtlasDic)
 			{
 				var textureAtlas:TextureAtlas;
@@ -121,16 +124,11 @@ package resources
 			_noticeImageDic = null;
 		}
 		
-		public function initialize():void
-		{
-			_instance = new Resources();
-		}
-		
 		public function loadFromDisk(path:File):void
 		{
 			if (!path.exists)
 			{
-				trace("load : The path does not exist.");
+				trace(TAG + " load : The path does not exist.");
 				return;
 			}
 			
@@ -138,7 +136,7 @@ package resources
 			var resourcesList:Array = _path.getDirectoryListing();
 			if (!resourcesList)
 			{
-				trace("load : No files.");
+				trace(TAG + " load : No files.");
 				return;
 			}
 			
@@ -211,15 +209,15 @@ package resources
 		{
 			if (!type || !key)
 			{
-				if (!type) trace("loadFromURL : No type.");
-				if (!key) trace("loadFromURL : No key.");
+				if (!type) trace(TAG + " loadFromURL : No type.");
+				if (!key) trace(TAG + " loadFromURL : No key.");
 				return;
 			}
 			
 			if (type == USER_PICTURE && _userPictureDic && _userPictureDic[key])
 			{
 				this.dispatchEvent(
-						new starling.events.Event(Resources.USER_PICTURE_READY, false, key));
+						new starling.events.Event(Resources.READY_USER_PICTURE, false, key));
 				return;
 			}
 			
@@ -231,8 +229,8 @@ package resources
 		{
 			if (!_textureAtlasDic || !_textureAtlasDic[textureAtlasName])
 			{
-				if (!_textureAtlasDic) trace("getTexture : No texture atlas.");
-				if (!_textureAtlasDic[textureAtlasName]) trace("getTexture : Not registered texture atlas name.");
+				if (!_textureAtlasDic) trace(TAG + " getTexture : No texture atlas.");
+				if (!_textureAtlasDic[textureAtlasName]) trace(TAG + " getTexture : Not registered texture atlas name.");
 				return null;
 			}
 			
@@ -240,7 +238,7 @@ package resources
 			
 			if (!texture)
 			{
-				trace("getTexture : Not registered texture name.");
+				trace(TAG + " getTexture : Not registered texture name.");
 			}
 			return texture;
 		}
@@ -249,8 +247,8 @@ package resources
 		{
 			if (!_soundDic || !_soundDic[name])
 			{
-				if (!_soundDic) trace("getSound : No sounds.");
-				if (!_soundDic[name]) trace("getSound : Not registered sound name.");
+				if (!_soundDic) trace(TAG + " getSound : No sounds.");
+				if (!_soundDic[name]) trace(TAG + " getSound : Not registered sound name.");
 				return null;
 			}
 			
@@ -348,7 +346,7 @@ package resources
 			var sound:Sound = event.currentTarget as Sound;
 			if (!sound)
 			{
-				trace("onLoadedSound : No sound.");
+				trace(TAG + " onLoadedSound : No sound.");
 				return;
 			}
 			
@@ -372,7 +370,7 @@ package resources
 			event.currentTarget.removeEventListener(flash.events.Event.COMPLETE, onLoadedSound);
 			event.currentTarget.removeEventListener(IOErrorEvent.IO_ERROR, onFailedLoadingSound);
 			
-			trace("Failed to load sound.");
+			trace(TAG + " Failed to load sound.");
 			
 			_totalResourcesCount--;
 			checkLoadingProgress();
@@ -391,7 +389,7 @@ package resources
 					_noticeImageDic[key] = Texture.fromBitmap(bitmap);
 					
 					this.dispatchEvent(
-						new starling.events.Event(Resources.NOTICE_IMAGE_READY, false, key));
+						new starling.events.Event(Resources.READY_NOTICE_IMAGE, false, key));
 				}
 					break;
 				
@@ -404,7 +402,7 @@ package resources
 					_userPictureDic[key] = Texture.fromBitmap(bitmap);
 					
 					this.dispatchEvent(
-						new starling.events.Event(Resources.USER_PICTURE_READY, false, key));
+						new starling.events.Event(Resources.READY_USER_PICTURE, false, key));
 				}
 					break;
 				

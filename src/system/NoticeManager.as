@@ -59,6 +59,8 @@ package system
 		
 		public override function dispose():void
 		{
+			_instance = null;
+			
 			// Popup 제거
 			for (var i:int = 0; i < _noticeList.length; i++)
 			{
@@ -93,7 +95,7 @@ package system
 					if (!DataManager.instance.settingData.isBannedPopup(imageName))
 					{
 						_noticeList.push(imageName);
-						Resources.instance.addEventListener(Resources.NOTICE_IMAGE_READY, onLoadedNoticeImage);
+						Resources.instance.addEventListener(Resources.READY_NOTICE_IMAGE, onLoadedNoticeImage);
 						Resources.instance.loadFromURL(Resources.NOTICE_IMAGE, imageName);
 						
 						needToShow = true;
@@ -131,7 +133,7 @@ package system
 			_numLoad++;
 			if (_numLoad == _noticeList.length)
 			{
-				Resources.instance.removeEventListener(Resources.NOTICE_IMAGE_READY, onLoadedNoticeImage);
+				Resources.instance.removeEventListener(Resources.READY_NOTICE_IMAGE, onLoadedNoticeImage);
 				this.dispatchEvent(new starling.events.Event(Manager.INITIALIZED));
 			}
 		}

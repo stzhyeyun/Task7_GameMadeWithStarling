@@ -13,18 +13,21 @@ package ui.popup
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.textures.Texture;
+	
 	import system.Manager;
 	
 	public class PopupManager extends Manager
 	{
 		public static const SHOW:String = "show";
 		public static const CLOSE:String = "close";
-		
+
 		private static var _instance:PopupManager;
 		
-		private static var _popups:Dictionary;
-		private static var _stack:Vector.<Popup>;
-		private static var _background:Image;
+		private const TAG:String = "[PopupManager]";
+		
+		private var _popups:Dictionary;
+		private var _stack:Vector.<Popup>;
+		private var _background:Image;
 		
 		public static function get instance():PopupManager
 		{
@@ -43,6 +46,8 @@ package ui.popup
 
 		public override function dispose():void
 		{
+			_instance = null;
+			
 			if (_popups)
 			{
 				for (var key:Object in _popups)
@@ -70,7 +75,6 @@ package ui.popup
 		
 		public override function initialize():void
 		{
-			_instance = new PopupManager();
 			_popups = new Dictionary();
 			_stack = new Vector.<Popup>();
 			
@@ -127,14 +131,24 @@ package ui.popup
 			rank.width *= rankScale;
 			rank.height *= rankScale;
 			_popups[PopupName.RANK] = rank;
+			
+			// Reward
+			var reward:RewardPopup = new RewardPopup();
+			reward.initialize();
+			var rewardScale:Number =  stageWidth * 0.8 / reward.width;
+			reward.width *= rewardScale;
+			reward.height *= rewardScale;
+			_popups[PopupName.REWARD] = reward;
+			
+			this.dispatchEvent(new Event(Manager.INITIALIZED));
 		}
 		
 		public function addPopup(name:String, popup:Popup):void
 		{
 			if (!name || !popup)
 			{
-				if (!name) trace("addPopup : No name.");
-				if (!popup) trace("addPopup : No popup.");
+				if (!name) trace(TAG + " addPopup : No name.");
+				if (!popup) trace(TAG + " addPopup : No popup.");
 				return;
 			}
 			
@@ -149,9 +163,9 @@ package ui.popup
 		{
 			if (!name || !_popups || !_popups[name])
 			{
-				if (!name) trace("removePopup : No name.");
-				if (!_popups) trace("removePopup : No registered pop-up.");
-				if (!_popups[name]) trace("removePopup : Not registered name.");
+				if (!name) trace(TAG + " removePopup : No name.");
+				if (!_popups) trace(TAG + " removePopup : No registered pop-up.");
+				if (!_popups[name]) trace(TAG + " removePopup : Not registered name.");
 				return;
 			}
 			
@@ -161,13 +175,26 @@ package ui.popup
 			delete _popups[name];
 		}
 		
+		public function getPopup(name:String):Popup
+		{
+			if (!name || !_popups || !_popups[name])
+			{
+				if (!name) trace(TAG + " getPopup : No name.");
+				if (!_popups) trace(TAG + " getPopup : No registered pop-up.");
+				if (!_popups[name]) trace(TAG + " getPopup : Not registered name.");
+				return null;
+			}
+			
+			return _popups[name];
+		}
+		
 		public function showPopup(container:DisplayObjectContainer, name:String):void
 		{
 			if (!container || !name || !_popups[name])
 			{
-				if (!container) trace("showPopup : No container.");
-				if (!name) trace("showPopup : No name.");
-				if (!_popups[name]) trace("showPopup : Not registered name.");
+				if (!container) trace(TAG + " showPopup : No container.");
+				if (!name) trace(TAG + " showPopup : No name.");
+				if (!_popups[name]) trace(TAG + " showPopup : Not registered name.");
 				return;
 			}
 			
@@ -206,8 +233,8 @@ package ui.popup
 		{
 			if (!name || !_popups[name])
 			{
-				if (!name) trace("closePopup : No name.");
-				if (!_popups[name]) trace("closePopup : Not registered name.");
+				if (!name) trace(TAG + " closePopup : No name.");
+				if (!_popups[name]) trace(TAG + " closePopup : Not registered name.");
 				return;
 			}
 			
@@ -215,7 +242,7 @@ package ui.popup
 			
 			if (index == -1)
 			{
-				trace("closePopup : You named closed Popup.");
+				trace(TAG + " closePopup : You named closed Popup.");
 				return;
 			}
 			

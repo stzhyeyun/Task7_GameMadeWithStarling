@@ -4,8 +4,7 @@ package item
 	{
 		private var _id:int;
 		private var _num:int;
-		private var _normalImgName:String;
-		private var _noneImgName:String;
+		private var _imgName:String;
 		
 		public function get id():int
 		{
@@ -27,39 +26,27 @@ package item
 			_num = value;
 		}
 		
-		public function get normalImgName():String
+		public function get imgName():String
 		{
-			return _normalImgName;
+			return _imgName;
 		}
 		
-		public function set normalImgName(value:String):void
+		public function set imgName(value:String):void
 		{
-			_normalImgName = value;
-		}
-		
-		public function get noneImgName():String
-		{
-			return _noneImgName;
-		}
-		
-		public function set noneImgName(value:String):void
-		{
-			_noneImgName = value;
+			_imgName = value;
 		}
 		
 		
-		public function ItemData(id:int = -1, num:int = 0, normalImgName:String = null, noneImgName:String = null)
+		public function ItemData(id:int = -1, num:int = 0, imgName:String = null)
 		{
 			_id = id;
 			_num = num;
-			_normalImgName = normalImgName;
-			_noneImgName = noneImgName;
+			_imgName = imgName;
 		}
 		
 		public function dispose():void
 		{
-			_noneImgName = null;
-			_normalImgName = null;
+			_imgName = null;
 		}
 	}
 }

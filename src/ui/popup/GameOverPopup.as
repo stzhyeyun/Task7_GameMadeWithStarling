@@ -39,8 +39,6 @@ package ui.popup
 				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.POPUP));
 			var title:Image = new Image(
 				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.TITLE_GAME_OVER));
-//			var share:Button = new Button(
-//				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_SHARE));
 			var replay:Button = new Button(
 				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_REPLAY));
 			var menu:Button = new Button(
@@ -69,11 +67,6 @@ package ui.popup
 			bestScoreText.y = _panelHeight * 0.45;
 			
 			// Button
-//			share.pivotX = share.width / 2;
-//			share.pivotY = share.height / 2;
-//			share.x = _panelWidth / 2;
-//			share.y = _panelHeight * 0.75;
-			
 			replay.pivotX = replay.width / 2;
 			replay.pivotY = replay.height / 2;
 			replay.x = _panelWidth * 0.35;
@@ -84,7 +77,6 @@ package ui.popup
 			menu.x = _panelWidth * 0.65;
 			menu.y = _panelHeight * 0.8;
 			
-//			share.addEventListener(TouchEvent.TOUCH, onEndedShareButton);
 			replay.addEventListener(TouchEvent.TOUCH, onEndedReplayButton);
 			menu.addEventListener(TouchEvent.TOUCH, onEndedMenuButton);
 			
@@ -92,7 +84,6 @@ package ui.popup
 			addChild(title);
 			addChild(currScoreText);
 			addChild(bestScoreText);
-//			addChild(share);
 			addChild(replay);
 			addChild(menu);
 			
@@ -122,17 +113,6 @@ package ui.popup
 			removeChild(_bestScore, true);
 			
 			super.close();
-		}
-		
-		private function onEndedShareButton(event:TouchEvent):void
-		{
-			var touch:Touch = event.getTouch(this, TouchPhase.ENDED);
-			
-			if (touch)
-			{
-				// to do
-				
-			}
 		}
 		
 		private function onEndedReplayButton(event:TouchEvent):void

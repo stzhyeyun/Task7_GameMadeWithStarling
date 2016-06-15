@@ -27,7 +27,6 @@ package
 		{
 			_current = this;
 			
-			Resources.instance.initialize();
 			Resources.instance.addEventListener(Resources.COMPLETE_LOAD, onCompleteLoad);
 			Resources.instance.loadFromDisk(File.applicationDirectory.resolvePath("resources/res/first"));
 		}

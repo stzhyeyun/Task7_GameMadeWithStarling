@@ -10,6 +10,8 @@ package user
 	import gamedata.Data;
 	import gamedata.DatabaseURL;
 	
+	import item.ItemID;
+	
 	import resources.Resources;
 	
 	import starling.events.Event;
@@ -20,6 +22,7 @@ package user
 	{
 		public static const LOG_IN:String = "logIn";
 		public static const LOG_OUT:String = "logOut";
+		public static const GET_USER_DB:String = "getUserDB";
 		
 		private const TAG:String = "[LoginManager]";	
 		
@@ -129,7 +132,7 @@ package user
 			this.dispatchEvent(new starling.events.Event(LOG_OUT));
 		}
 		
-		public function updateItemData(itemId:int, numItem:int):void
+		public function updateItemData(itemId:int, numItem:int, needToUpdateDB:Boolean = false):void
 		{
 			if (!_userInfo)
 			{
@@ -137,22 +140,18 @@ package user
 				return;
 			}
 			
-			var userItems:Vector.<int> = _userInfo.items;
-			if (!userItems || userItems.length <= 0 || !userItems[itemId])
-			{
-				trace(TAG + " updateItemData : Invalid item ID.");
-				return;
-			}
-	
-			userItems[itemId] = numItem;
+			_userInfo.addItem(itemId, numItem);
 			
-			var url:String =
-				DatabaseURL.USER +
-				"updateItemData.php" +
-				"?userId=" + _userInfo.userId +
-				"&itemId=" + itemId +
-				"&numItem=" + numItem;
-			var loader:URLLoader = new URLLoader(new URLRequest(url));
+			if (needToUpdateDB)
+			{
+				var url:String =
+					DatabaseURL.USER +
+					"updateItemData.php" +
+					"?userId=" + _userInfo.userId +
+					"&itemId=" + itemId +
+					"&numItem=" + numItem;
+				var loader:URLLoader = new URLLoader(new URLRequest(url));
+			}
 		}
 		
 		public function export():void
@@ -229,8 +228,6 @@ package user
 		{
 			_accessToken.setData(tokenData);
 			_accessToken.write();
-			
-			
 		}
 		
 		private function onGotUserInfoFromFB(info:String):void
@@ -263,8 +260,12 @@ package user
 				var data:Object = JSON.parse(urlLoader.data);
 				
 				_userInfo.score = data[0].score;
-				_userInfo.items[0] = data[0].numItem0;
-				_userInfo.items[1] = data[0].numItem1;
+				_userInfo.addItem(ItemID.REFRESH_BLOCKS, data[0].numItem0);
+				_userInfo.addItem(ItemID.UNDO, data[0].numItem1);
+				_userInfo.attendance = data[0].attendance;
+				_userInfo.rewarded = (data[0].rewarded == 1)? true : false;
+				
+				this.dispatchEvent(new starling.events.Event(GET_USER_DB));
 			}
 		}
 	}

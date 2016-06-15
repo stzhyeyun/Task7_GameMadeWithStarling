@@ -11,10 +11,11 @@ package scene.titleScene
 	
 	import scene.Scene;
 	
-	import system.NoticeManager;
-	
 	import starling.display.Image;
 	import starling.events.Event;
+	
+	import system.AttendanceManager;
+	import system.NoticeManager;
 	
 	import ui.popup.PopupManager;
 	import ui.popup.PopupName;
@@ -24,6 +25,7 @@ package scene.titleScene
 	public class TitleScene extends Scene
 	{
 		private var _firstStart:Boolean;
+		
 		
 		public function TitleScene()
 		{
@@ -46,17 +48,37 @@ package scene.titleScene
 			addChild(titleUI);
 		}
 		
+		public override function dispose():void
+		{
+			AttendanceManager.instance.removeEventListener(AttendanceManager.READY_TO_REWARD, onReadyToReward);
+			
+			super.dispose();
+		}
+		
 		protected override function onStartScene(event:Event):void
 		{
+			AttendanceManager.instance.addEventListener(AttendanceManager.READY_TO_REWARD, onReadyToReward);
+			
 			if (_firstStart)
 			{
-				notice();
+				// Notice
+				if (NoticeManager.instance.isNotice)
+				{
+					var noticeList:Vector.<String> = NoticeManager.instance.noticeList;
+					for (var i:int = noticeList.length - 1; i >= 0; i--)
+					{
+						PopupManager.instance.showPopup(this, noticeList[i]);
+					}
+				}
+				
 				_firstStart = false;
 			}
 		}
 		
 		protected override function onEndScene(event:Event):void
 		{
+			AttendanceManager.instance.removeEventListener(AttendanceManager.READY_TO_REWARD, onReadyToReward);
+			
 			DataManager.instance.export();
 			UserManager.instance.export();
 		}
@@ -75,16 +97,10 @@ package scene.titleScene
 			}
 		}
 		
-		private function notice():void
+		private function onReadyToReward(event:Event):void
 		{
-			if (NoticeManager.instance.isNotice)
-			{
-				var noticeList:Vector.<String> = NoticeManager.instance.noticeList;
-				for (var i:int = noticeList.length - 1; i >= 0; i--)
-				{
-					PopupManager.instance.showPopup(this, noticeList[i]);
-				}
-			}
+			// Reward
+			PopupManager.instance.showPopup(this, PopupName.REWARD);
 		}
 	}
 }

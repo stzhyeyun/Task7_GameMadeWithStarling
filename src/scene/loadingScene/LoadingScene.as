@@ -22,6 +22,7 @@ package scene.loadingScene
 	import starling.events.EnterFrameEvent;
 	import starling.events.Event;
 	
+	import system.AttendanceManager;
 	import system.Manager;
 	import system.NoticeManager;
 	
@@ -35,6 +36,7 @@ package scene.loadingScene
 		private var _numLoad:int;
 		private var _loadCounter:int;
 		private var _loadingBar:Gauge;
+		
 		
 		public function LoadingScene()
 		{
@@ -59,7 +61,7 @@ package scene.loadingScene
 			title.y = this.nativeStageHeight * 0.2;
 			addChild(title);
 			
-			_numLoad = 4;
+			_numLoad = 5;
 			_loadCounter = 0;
 			// Loading bar
 			var bar:Image = new Image(
@@ -149,8 +151,12 @@ package scene.loadingScene
 				sound.volume = 0.5;
 			}
 
-			// Popup			
+			// Popup
+			PopupManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
 			PopupManager.instance.initialize();
+			
+			// Attendance
+			AttendanceManager.instance.initialize();
 			
 			// Notice
 			NoticeManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
@@ -167,9 +173,10 @@ package scene.loadingScene
 			if (_loadCounter == _numLoad) 
 			{
 				// removeEventListener
-				UserManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
-				DataManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
-				NoticeManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
+				UserManager.instance.removeEventListener(Manager.INITIALIZED, checkLoadingProgress);
+				DataManager.instance.removeEventListener(Manager.INITIALIZED, checkLoadingProgress);
+				PopupManager.instance.removeEventListener(Manager.INITIALIZED, checkLoadingProgress);
+				NoticeManager.instance.removeEventListener(Manager.INITIALIZED, checkLoadingProgress);
 				
 				// Switch scene
 				SceneManager.switchScene(SceneName.TITLE);

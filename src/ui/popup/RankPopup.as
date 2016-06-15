@@ -250,7 +250,7 @@ package ui.popup
 			_prevTop = _currTop;
 			_numLoadRequest = 0;
 			
-			Resources.instance.addEventListener(Resources.USER_PICTURE_READY, onLoadedUserPicture);
+			Resources.instance.addEventListener(Resources.READY_USER_PICTURE, onLoadedUserPicture);
 			
 			var panel:Image;
 			var rank:SpriteNumber;
@@ -354,7 +354,7 @@ package ui.popup
 			
 			if (_numLoadRequest <= 0)
 			{
-				Resources.instance.removeEventListener(Resources.USER_PICTURE_READY, onLoadedUserPicture);
+				Resources.instance.removeEventListener(Resources.READY_USER_PICTURE, onLoadedUserPicture);
 			}
 		}
 

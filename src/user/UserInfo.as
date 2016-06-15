@@ -8,6 +8,8 @@ package user
 	
 	import gamedata.AesCrypto;
 	import gamedata.Data;
+	
+	import item.ItemID;
 
 	public class UserInfo extends Data
 	{
@@ -17,6 +19,8 @@ package user
 		private var _userName:String;
 		private var _score:int;
 		private var _items:Vector.<int>;
+		private var _attendance:int;
+		private var _rewarded:Boolean;
 
 		public function get userId():String
 		{
@@ -35,12 +39,35 @@ package user
 		
 		public function set score(value:int):void
 		{
-			_score = value;
+			if (value > _score)
+			{
+				_score = value;
+			}
 		}
 		
 		public function get items():Vector.<int>
 		{
 			return _items;
+		}
+		
+		public function get attendance():int
+		{
+			return _attendance;
+		}
+		
+		public function set attendance(value:int):void
+		{
+			_attendance = value;
+		}
+		
+		public function get rewarded():Boolean
+		{
+			return _rewarded;
+		}
+		
+		public function set rewarded(value:Boolean):void
+		{
+			_rewarded = value;
 		}
 
 		
@@ -51,30 +78,9 @@ package user
 			_userId = null;
 			_userName = null;
 			_score = 0;
-			_items = new Vector.<int>();
-		}
-		
-		public function setData(info:String):void
-		{
-			if (info)
-			{
-				parseData(info);
-			}
-		}
-		
-		public function setInfo(userId:String, userName:String, score:int):void
-		{
-			_userId = userId;
-			_userName = userName;
-			_score = score;
-		}
-
-		public function setScore(score:int):void
-		{
-			if (score > _score)
-			{
-				_score = score;
-			}
+			_items = new Vector.<int>(ItemID.NUM_ITEM);
+			_attendance = 0;
+			_rewarded = false;
 		}
 		
 		public override function write():void
@@ -102,23 +108,7 @@ package user
 			var plainText:String = 
 				"{\n\t\"userId\" : \""	+	_userId		+	"\",\n"	+
 				"\t\"userName\" : \""	+	_userName	+	"\",\n" +
-				"\t\"score\" : \""		+	_score;
-			
-			if (_items)
-			{
-				plainText += "\t\"items\" : [";
-				for (var i:int = 0; i < _items.length; i++)
-				{
-					plainText += i + ", " + _items[i];
-					
-					if (i != _items.length - 1)
-					{
-						plainText += ", ";
-					}
-				}
-				plainText += "]";
-			}
-			plainText += "\n}";
+				"\t\"score\" : "		+	_score		+	"\n}";
 			
 			plainText = AesCrypto.encrypt(plainText, "ahundrendblocksbybamkie");
 			
@@ -148,16 +138,30 @@ package user
 			_userName = plainText.userName;
 			_score = plainText.score;
 			
-			if (plainText.items)
-			{
-				_items = new Vector.<int>();
-				for (var i:int = 0; i < plainText.items.length; i += 2)
-				{
-					_items.push(plainText.items[i + 1]);
-				}
-			}
-			
 			super.onCompleteLoad(event);
+		}
+		
+		public function setData(info:String):void
+		{
+			if (info)
+			{
+				parseData(info);
+			}
+		}
+		
+		public function setInfo(userId:String, userName:String, score:int):void
+		{
+			_userId = userId;
+			_userName = userName;
+			_score = score;
+		}
+		
+		public function addItem(id:int, num:int):void
+		{
+			if (id >= 0 && id < _items.length)
+			{
+				_items[id] = num;
+			}
 		}
 		
 		public function clean():void
@@ -165,7 +169,14 @@ package user
 			_userId = null;
 			_userName = null;
 			_score = 0;
-			_items.splice(0, _items.length);
+			
+			for (var i:int = 0; i < _items.length; i++)
+			{
+				_items[i] = 0;
+			}
+
+			_attendance = 0;
+			_rewarded = false;
 		}
 		
 		private function parseData(info:String):void

@@ -8,5 +8,6 @@ package ui.popup
 		public static const EXIT:String = "exit";
 		public static const LOGIN:String = "login";
 		public static const RANK:String = "rank";
+		public static const REWARD:String = "reward";
 	}
 }

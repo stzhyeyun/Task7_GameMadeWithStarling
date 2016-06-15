@@ -220,16 +220,9 @@ package scene.gameScene
 		{
 			var userItems:Vector.<int> = UserManager.instance.userInfo.items;
 			
-			if (userItems.length == 0)
+			if (userItems)
 			{
-				for (var i:int = 0; i < _items.length; i++)
-				{
-					_items[i].setQuantity(0);
-				}
-			}
-			else
-			{
-				for (i = 0; i < userItems.length; i++)
+				for (var i:int = 0; i < userItems.length; i++)
 				{
 					_items[i].setQuantity(userItems[i]);
 				}

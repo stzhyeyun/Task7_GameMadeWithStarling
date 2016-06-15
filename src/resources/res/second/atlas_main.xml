@@ -1,57 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TextureAtlas imagePath="atlas_main.png">
-   <SubTexture name="0" x="908" y="49" width="31" height="32" />
-   <SubTexture name="1" x="944" y="0" width="11" height="31" />
-   <SubTexture name="2" x="772" y="448" width="21" height="31" />
-   <SubTexture name="3" x="936" y="151" width="20" height="32" />
-   <SubTexture name="4" x="908" y="115" width="28" height="34" />
-   <SubTexture name="5" x="935" y="186" width="21" height="33" />
-   <SubTexture name="6" x="908" y="186" width="25" height="33" />
-   <SubTexture name="7" x="934" y="221" width="22" height="33" />
-   <SubTexture name="8" x="908" y="221" width="24" height="32" />
-   <SubTexture name="9" x="908" y="151" width="26" height="33" />
-   <SubTexture name="alert" x="480" y="268" width="358" height="178" />
-   <SubTexture name="background_game" x="480" y="509" width="200" height="355" />
-   <SubTexture name="btn_bgm" x="208" y="881" width="69" height="71" />
-   <SubTexture name="btn_cancel" x="279" y="881" width="69" height="71" />
-   <SubTexture name="btn_close" x="908" y="83" width="30" height="30" />
-   <SubTexture name="btn_confirm" x="682" y="543" width="69" height="71" />
-   <SubTexture name="btn_down" x="753" y="543" width="69" height="71" />
-   <SubTexture name="btn_logIn" x="682" y="616" width="69" height="71" />
+   <SubTexture name="0" x="40" y="945" width="31" height="32" />
+   <SubTexture name="1" x="895" y="0" width="11" height="31" />
+   <SubTexture name="2" x="240" y="954" width="21" height="31" />
+   <SubTexture name="3" x="991" y="0" width="20" height="32" />
+   <SubTexture name="4" x="105" y="945" width="28" height="34" />
+   <SubTexture name="5" x="979" y="190" width="21" height="33" />
+   <SubTexture name="6" x="163" y="945" width="25" height="33" />
+   <SubTexture name="7" x="216" y="945" width="22" height="33" />
+   <SubTexture name="8" x="190" y="945" width="24" height="32" />
+   <SubTexture name="9" x="135" y="945" width="26" height="33" />
+   <SubTexture name="alert" x="480" y="417" width="358" height="178" />
+   <SubTexture name="background_game" x="722" y="597" width="200" height="355" />
+   <SubTexture name="btn_bgm" x="908" y="190" width="69" height="71" />
+   <SubTexture name="btn_cancel" x="872" y="379" width="69" height="71" />
+   <SubTexture name="btn_close" x="73" y="945" width="30" height="30" />
+   <SubTexture name="btn_confirm" x="840" y="452" width="69" height="71" />
+   <SubTexture name="btn_down" x="484" y="793" width="69" height="71" />
+   <SubTexture name="btn_logIn" x="450" y="893" width="69" height="71" />
    <SubTexture name="btn_logOut" x="759" y="0" width="134" height="44" />
-   <SubTexture name="btn_menu" x="824" y="474" width="69" height="71" />
-   <SubTexture name="btn_my" x="475" y="866" width="69" height="71" />
-   <SubTexture name="btn_pause" x="753" y="616" width="69" height="71" />
-   <SubTexture name="btn_play" x="840" y="268" width="108" height="109" />
-   <SubTexture name="btn_rank" x="824" y="547" width="69" height="71" />
-   <SubTexture name="btn_replay" x="682" y="689" width="69" height="71" />
-   <SubTexture name="btn_resume" x="546" y="866" width="69" height="71" />
-   <SubTexture name="btn_setting" x="753" y="689" width="69" height="71" />
-   <SubTexture name="btn_shop" x="682" y="762" width="69" height="71" />
-   <SubTexture name="btn_sound" x="824" y="620" width="69" height="71" />
-   <SubTexture name="btn_top" x="617" y="866" width="69" height="71" />
-   <SubTexture name="btn_up" x="753" y="762" width="69" height="71" />
-   <SubTexture name="img_anonymous" x="824" y="693" width="64" height="64" />
-   <SubTexture name="img_ban" x="895" y="0" width="47" height="47" />
+   <SubTexture name="btn_menu" x="555" y="793" width="69" height="71" />
+   <SubTexture name="btn_my" x="911" y="452" width="69" height="71" />
+   <SubTexture name="btn_noticeMessage" x="0" y="0" width="610" height="48" />
+   <SubTexture name="btn_pause" x="634" y="701" width="69" height="71" />
+   <SubTexture name="btn_play" x="872" y="268" width="108" height="109" />
+   <SubTexture name="btn_rank" x="634" y="774" width="69" height="71" />
+   <SubTexture name="btn_replay" x="521" y="866" width="69" height="71" />
+   <SubTexture name="btn_resume" x="592" y="866" width="69" height="71" />
+   <SubTexture name="btn_setting" x="924" y="525" width="69" height="71" />
+   <SubTexture name="btn_sound" x="924" y="598" width="69" height="71" />
+   <SubTexture name="btn_top" x="924" y="671" width="69" height="71" />
+   <SubTexture name="btn_up" x="924" y="744" width="69" height="71" />
+   <SubTexture name="img_anonymous" x="943" y="379" width="64" height="64" />
+   <SubTexture name="img_ban" x="521" y="939" width="47" height="47" />
+   <SubTexture name="img_check" x="0" y="945" width="38" height="34" />
    <SubTexture name="img_panel_brown" x="0" y="50" width="480" height="100" />
    <SubTexture name="img_panel_gray" x="0" y="152" width="480" height="100" />
-   <SubTexture name="item_refresh" x="392" y="827" width="81" height="93" />
-   <SubTexture name="item_refresh_none" x="392" y="732" width="82" height="93" />
-   <SubTexture name="item_undo" x="840" y="379" width="81" height="93" />
-   <SubTexture name="item_undo_none" x="688" y="448" width="82" height="93" />
+   <SubTexture name="img_reward_day1" x="0" y="841" width="240" height="50" />
+   <SubTexture name="img_reward_day2" x="0" y="893" width="240" height="50" />
+   <SubTexture name="img_reward_day3" x="480" y="597" width="240" height="50" />
+   <SubTexture name="img_reward_day4" x="242" y="841" width="240" height="50" />
+   <SubTexture name="img_reward_day5" x="480" y="649" width="240" height="50" />
+   <SubTexture name="item_refresh" x="908" y="0" width="81" height="93" />
+   <SubTexture name="item_undo" x="908" y="95" width="81" height="93" />
    <SubTexture name="popup" x="0" y="254" width="478" height="476" />
-   <SubTexture name="popup_mini" x="0" y="732" width="390" height="147" />
+   <SubTexture name="popup_mini" x="480" y="268" width="390" height="147" />
    <SubTexture name="text_bestScore" x="612" y="0" width="145" height="23" />
-   <SubTexture name="text_popupMessage" x="0" y="0" width="610" height="48" />
    <SubTexture name="text_score" x="612" y="25" width="77" height="23" />
-   <SubTexture name="tile_blue" x="895" y="474" width="55" height="55" />
-   <SubTexture name="tile_green" x="895" y="531" width="55" height="55" />
-   <SubTexture name="tile_orange" x="895" y="588" width="55" height="55" />
-   <SubTexture name="tile_red" x="895" y="645" width="55" height="55" />
-   <SubTexture name="tile_white" x="688" y="835" width="55" height="55" />
-   <SubTexture name="tile_yellow" x="688" y="892" width="55" height="55" />
+   <SubTexture name="tile_blue" x="840" y="525" width="55" height="55" />
+   <SubTexture name="tile_green" x="663" y="847" width="55" height="55" />
+   <SubTexture name="tile_orange" x="663" y="904" width="55" height="55" />
+   <SubTexture name="tile_red" x="924" y="817" width="55" height="55" />
+   <SubTexture name="tile_white" x="924" y="874" width="55" height="55" />
+   <SubTexture name="tile_yellow" x="924" y="931" width="55" height="55" />
    <SubTexture name="title_gameOver" x="482" y="50" width="424" height="107" />
-   <SubTexture name="title_pause" x="0" y="881" width="206" height="59" />
+   <SubTexture name="title_pause" x="242" y="893" width="206" height="59" />
    <SubTexture name="title_rank" x="482" y="159" width="424" height="107" />
-   <SubTexture name="title_setting" x="480" y="448" width="206" height="59" />
+   <SubTexture name="title_reward" x="0" y="732" width="424" height="107" />
+   <SubTexture name="title_setting" x="426" y="732" width="206" height="59" />
 </TextureAtlas>

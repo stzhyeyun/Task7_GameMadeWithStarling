@@ -41,7 +41,7 @@ package scene.gameScene
 		public override function dispose():void
 		{
 			DataManager.instance.removeEventListener(DataManager.UPDATE_CURRENT_SCORE, onUpdateCurrentScore);
-			Resources.instance.removeEventListener(Resources.USER_PICTURE_READY, onUserPictureReady);
+			Resources.instance.removeEventListener(Resources.READY_USER_PICTURE, onUserPictureReady);
 			
 			super.dispose();
 		}
@@ -94,7 +94,7 @@ package scene.gameScene
 			setScore(stageWidth, stageHeight, bestScore, currentScore);
 			
 			DataManager.instance.addEventListener(DataManager.UPDATE_CURRENT_SCORE, onUpdateCurrentScore);
-			Resources.instance.addEventListener(Resources.USER_PICTURE_READY, onUserPictureReady);
+			Resources.instance.addEventListener(Resources.READY_USER_PICTURE, onUserPictureReady);
 			UserManager.instance.addEventListener(UserManager.LOG_OUT, onLogOut);
 		}
 		

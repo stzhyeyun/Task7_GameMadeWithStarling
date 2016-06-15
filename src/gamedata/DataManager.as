@@ -60,6 +60,7 @@ package gamedata
 		{
 			export();
 			
+			_instance = null;
 			_playData = null;
 			_settingData = null;
 			_rank = null;

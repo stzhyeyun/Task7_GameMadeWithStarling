@@ -10,8 +10,8 @@ package item
 	{
 		public function Undo(onUse:Function)
 		{
-			super(new ItemData(ItemID.UNDO, 0,
-				TextureName.ITEM_UNDO,TextureName.ITEM_UNDO_NONE),
+			super(
+				new ItemData(ItemID.UNDO, 0, TextureName.ITEM_UNDO),
 				onUse);
 		}
 		

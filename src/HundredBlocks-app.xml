@@ -339,8 +339,10 @@
 	</iPhone>
 
 
+
 <extensions>
         <extensionID>com.bamkie.FacebookExtension</extensionID>
         <extensionID>com.bamkie.ScheduledNotificationExtension</extensionID>
+    <extensionID>com.bamkie.ToastExtension</extensionID>
     </extensions>
 </application>

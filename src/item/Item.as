@@ -25,11 +25,11 @@ package item
 			_data = data;
 			_onUse = onUse;
 			
-			super(Resources.instance.getTexture(TextureAtlasName.MAIN, _data.normalImgName));
+			super(Resources.instance.getTexture(TextureAtlasName.MAIN, _data.imgName));
 			
 			if (_data.num == 0)
 			{
-				this.upState = Resources.instance.getTexture(TextureAtlasName.MAIN, _data.noneImgName);
+				this.color = Color.INACTIVE;
 				this.touchable = false;
 			}
 			
@@ -67,19 +67,19 @@ package item
 			_data.num = quantity;
 			if (_data.num == 0)
 			{
-				this.upState = Resources.instance.getTexture(TextureAtlasName.MAIN, _data.noneImgName);
+				this.color = Color.INACTIVE;
 				this.touchable = false;	
 			}
 			else
 			{
-				this.upState = Resources.instance.getTexture(TextureAtlasName.MAIN, _data.normalImgName);
+				this.color = Color.ACTIVE;
 				this.touchable = true;
 			}
 			
 			_quantity.update(_data.num.toString());
 			
 			// Update UserInfo & DB
-			UserManager.instance.updateItemData(_data.id, _data.num);
+			UserManager.instance.updateItemData(_data.id, _data.num, true);
 		}
 		
 		protected virtual function onEnded(event:TouchEvent):void

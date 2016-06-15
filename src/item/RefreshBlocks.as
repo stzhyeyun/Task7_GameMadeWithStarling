@@ -10,8 +10,8 @@ package item
 	{
 		public function RefreshBlocks(onUse:Function)
 		{
-			super(new ItemData(ItemID.REFRESH_BLOCKS, 0,
-				TextureName.ITEM_REFRESH, TextureName.ITEM_REFRESH_NONE),
+			super(
+				new ItemData(ItemID.REFRESH_BLOCKS, 0, TextureName.ITEM_REFRESH),
 				onUse);
 		}
 		

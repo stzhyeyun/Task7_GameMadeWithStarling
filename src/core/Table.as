@@ -1,5 +1,7 @@
 package core
 {
+	import com.bamkie.ToastExtension;
+	
 	import gamedata.DataManager;
 	
 	import resources.Resources;
@@ -19,6 +21,7 @@ package core
 		private var _tableHistory:Vector.<TableData>;
 		private var _blockHistory:Vector.<int>;
 		private var _tiles:Vector.<Vector.<Tile>>;
+		private var _toaster:ToastExtension;
 
 		public function get tiles():Vector.<Vector.<Tile>>
 		{
@@ -40,6 +43,9 @@ package core
 		public override function dispose():void
 		{
 			_data = null;
+			_tableHistory = null;
+			_blockHistory = null;
+			_toaster = null;
 			
 			if (_tiles)
 			{
@@ -65,6 +71,7 @@ package core
 		{
 			_tableHistory = new Vector.<TableData>();
 			_blockHistory = new Vector.<int>();
+			_toaster = new ToastExtension();
 			
 			_data = tableData;
 			
@@ -199,6 +206,7 @@ package core
 			if (!_tableHistory || _tableHistory.length <= 0)
 			{
 				trace(TAG + " undo : No previous data.");
+				_toaster.toast("Can not UNDO now!");
 				return false;
 			}
 

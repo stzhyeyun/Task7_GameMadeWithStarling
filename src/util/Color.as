@@ -14,9 +14,12 @@ package util
 		// RankPopup
 		public static const RANKER:uint = 0x004466;
 		public static const RANKER_USER:uint = 0x331a00;
-		public static const INACTIVE:uint = 0x666666;
 		
 		// Item
 		public static const ITEM:uint = 0x372621;
+		
+		// Etc
+		public static const ACTIVE:uint = 0xffffff;
+		public static const INACTIVE:uint = 0x808080;
 	}
 }

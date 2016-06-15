@@ -92,16 +92,14 @@ package gamedata
 				plainText += ",\n\t\"blocksData\" : [";
 				for (var i:int = 0; i < _blocksData.length; i++)
 				{
-					plainText += i.toString() + ", ";
-					
 					if (_blocksData[i])
 					{
-						plainText += _blocksData[i].toString(i);
-					}
-					
-					if (i != _blocksData.length - 1)
-					{
-						plainText += ", ";
+						plainText += i.toString() + ", " + _blocksData[i].toString(i);
+						
+						if (i != _blocksData.length - 1)
+						{
+							plainText += ", ";
+						}
 					}
 				}
 				plainText += "]";
@@ -130,6 +128,7 @@ package gamedata
 			}
 			
 			var plainText:Object = JSON.parse(AesCrypto.decrypt(loader.data, "ahundrendblocksbybamkie"));
+//			var plainText:Object = JSON.parse(loader.data);
 			
 			_bestScore = plainText.bestScore;
 			_currentScore = plainText.currentScore;

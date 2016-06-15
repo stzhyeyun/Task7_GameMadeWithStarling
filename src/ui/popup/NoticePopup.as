@@ -33,7 +33,7 @@ package ui.popup
 			var close:Button = new Button(
 				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_CLOSE));
 			var message:Button = new Button(
-				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.TEXT_POPUP_MESSAGE));
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_NOTICE_MESSAGE));
 			
 			_panelWidth = panel.width;
 			_panelHeight = panel.height;
