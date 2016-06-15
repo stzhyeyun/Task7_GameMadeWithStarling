@@ -71,9 +71,9 @@ package gamedata
 		 */
 		public override function write():void
 		{
-			if (!_name || !_path)
+			if (!_fileName || !_path)
 			{
-				if (!_name) trace(TAG + " write : No name.");
+				if (!_fileName) trace(TAG + " write : No name.");
 				if (!_path) trace(TAG + " write : No path.");				
 				return;
 			}
@@ -111,7 +111,7 @@ package gamedata
 			plainText = AesCrypto.encrypt(plainText, "ahundrendblocksbybamkie");
 			
 			var stream:FileStream = new FileStream();
-			var file:File = new File(_path.resolvePath(_name + ".json").url);
+			var file:File = new File(_path.resolvePath(_fileName + ".json").url);
 			stream.open(file, FileMode.WRITE);
 			stream.writeUTFBytes(plainText);
 			stream.close();
@@ -187,8 +187,6 @@ package gamedata
 					_blocksData[index] = blockData;
 					count = 0;
 				}
-				
-				var test:int = 0;
 			}
 			
 			super.onCompleteLoad(event);

@@ -1,5 +1,7 @@
 package core
 {
+	import gamedata.DataManager;
+	
 	import resources.Resources;
 	import resources.TextureAtlasName;
 	import resources.TextureName;
@@ -14,7 +16,8 @@ package core
 		private const TAG:String = "[Table]";
 		
 		private var _data:TableData;
-		private var _history:Vector.<TableData>; // for Undo item
+		private var _tableHistory:Vector.<TableData>;
+		private var _blockHistory:Vector.<int>;
 		private var _tiles:Vector.<Vector.<Tile>>;
 
 		public function get tiles():Vector.<Vector.<Tile>>
@@ -60,12 +63,10 @@ package core
 
 		public function initialize(tableData:TableData):void
 		{
-			_data = tableData;
+			_tableHistory = new Vector.<TableData>();
+			_blockHistory = new Vector.<int>();
 			
-			_history = new Vector.<TableData>();
-			var initialTableData:TableData = new TableData();
-			initialTableData.data = _data.data;
-			_history.push(initialTableData);
+			_data = tableData;
 			
 			// Create tiles
 			var data:Vector.<Vector.<TileData>> = _data.data;
@@ -142,6 +143,7 @@ package core
 			}
 			else
 			{
+				// 초기화
 				data = _data.data;
 				for (i = 0; i < data.length; i++)
 				{
@@ -189,20 +191,51 @@ package core
 			
 			//_tiles[pivotCol][pivotRow].color = 0x000000; // debug
 			
-			return _data.setBlock(pivotCol, pivotRow, block.data, onUpdate);
+			return _data.setBlock(pivotCol, pivotRow, block.data, makeHistory, onUpdated);
 		}
 		
-		private function onUpdate(updatedDataIndices:Vector.<Index2D>):void
+		public function undo():Boolean
+		{
+			if (!_tableHistory || _tableHistory.length <= 0)
+			{
+				trace(TAG + " undo : No previous data.");
+				return false;
+			}
+
+			setTableData(_tableHistory.pop());
+			DataManager.instance.revertScore(_blockHistory.pop());
+			
+			return true;
+		}
+		
+		private function makeHistory(lineCleared:Boolean = true, tableData:TableData = null, numblock:int = 0):void
 		{
 			// 테이블 히스토리화
-			var currTableData:TableData = new TableData();
-			currTableData.data = _data.data;
-			if (_history.length >= 5)
+			if (lineCleared)
 			{
-				_history.shift();
+				// 클리어 전으로는 Undo 불가능
+				_tableHistory.splice(0, _tableHistory.length);
+				_blockHistory.splice(0, _blockHistory.length);
 			}
-			_history.push(currTableData);
-			
+			else
+			{
+				// 최대 5번 Undo 가능
+				if (_tableHistory.length == 5)
+				{
+					_tableHistory.shift();
+				}
+				
+				if (_blockHistory.length == 5)
+				{
+					_blockHistory.shift();
+				}
+				_tableHistory.push(tableData);
+				_blockHistory.push(numblock);
+			}
+		}
+		
+		private function onUpdated(updatedDataIndices:Vector.<Index2D>):void
+		{
 			// 업데이트 된 타일 텍스처 변경
 			var tileData:Vector.<Vector.<TileData>> = _data.data;
 			var updatedCol:int;

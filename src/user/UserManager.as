@@ -1,26 +1,29 @@
-package manager
+package user
 {
 	import com.bamkie.FacebookExtension;
 	
+	import flash.events.Event;
 	import flash.filesystem.File;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
 	
 	import gamedata.Data;
+	import gamedata.DatabaseURL;
 	
 	import resources.Resources;
 	
 	import starling.events.Event;
 	
-	import user.AccessToken;
-	import user.UserInfo;
+	import system.Manager;
 
-	public class LogInManager extends Manager
+	public class UserManager extends Manager
 	{
 		public static const LOG_IN:String = "logIn";
 		public static const LOG_OUT:String = "logOut";
 		
 		private const TAG:String = "[LoginManager]";	
 		
-		private static var _instance:LogInManager;
+		private static var _instance:UserManager;
 		
 		private var _numLoad:int;
 		private var _path:File;
@@ -31,11 +34,11 @@ package manager
 		private var _loggedIn:Boolean;
 		private var _facebookExtension:FacebookExtension;
 
-		public static function get instance():LogInManager
+		public static function get instance():UserManager
 		{
 			if (!_instance)
 			{
-				_instance = new LogInManager();
+				_instance = new UserManager();
 			}
 			return _instance;
 		}
@@ -51,7 +54,7 @@ package manager
 		}
 		
 				
-		public function LogInManager()
+		public function UserManager()
 		{
 			
 		}
@@ -89,7 +92,7 @@ package manager
 			if (!_facebookExtension)
 			{
 				_facebookExtension = new FacebookExtension();
-				_facebookExtension.initialize(onGotAccessToken, onGotUserInfo);
+				_facebookExtension.initialize(onGotAccessTokenFromFB, onGotUserInfoFromFB);
 			}
 			
 			_facebookExtension.checkLogIn();
@@ -100,7 +103,7 @@ package manager
 			if (!_facebookExtension)
 			{
 				_facebookExtension = new FacebookExtension();
-				_facebookExtension.initialize(onGotAccessToken, onGotUserInfo);
+				_facebookExtension.initialize(onGotAccessTokenFromFB, onGotUserInfoFromFB);
 			}
 			
 			var permissions:Array = new Array();
@@ -114,7 +117,7 @@ package manager
 			if (!_facebookExtension)
 			{
 				_facebookExtension = new FacebookExtension();
-				_facebookExtension.initialize(onGotAccessToken, onGotUserInfo);
+				_facebookExtension.initialize(onGotAccessTokenFromFB, onGotUserInfoFromFB);
 			}
 			
 			_facebookExtension.logOut();
@@ -123,7 +126,33 @@ package manager
 			_accessToken.clean();
 			_userInfo.clean();
 			
-			this.dispatchEvent(new Event(LOG_OUT));
+			this.dispatchEvent(new starling.events.Event(LOG_OUT));
+		}
+		
+		public function updateItemData(itemId:int, numItem:int):void
+		{
+			if (!_userInfo)
+			{
+				trace(TAG + " updateItemData : No userInfo.");
+				return;
+			}
+			
+			var userItems:Vector.<int> = _userInfo.items;
+			if (!userItems || userItems.length <= 0 || !userItems[itemId])
+			{
+				trace(TAG + " updateItemData : Invalid item ID.");
+				return;
+			}
+	
+			userItems[itemId] = numItem;
+			
+			var url:String =
+				DatabaseURL.USER +
+				"updateItemData.php" +
+				"?userId=" + _userInfo.userId +
+				"&itemId=" + itemId +
+				"&numItem=" + numItem;
+			var loader:URLLoader = new URLLoader(new URLRequest(url));
 		}
 		
 		public function export():void
@@ -139,33 +168,44 @@ package manager
 			}
 		}
 		
-		private function onReadAccessToken(event:Event):void
+		private function onReadAccessToken(event:starling.events.Event):void
 		{
 			_numLoad--;
 			checkLoadingProgress();
 		}
 		
-		private function onFailedReadingAccessToken(event:Event):void
+		private function onFailedReadingAccessToken(event:starling.events.Event):void
 		{
 			_numLoad--;
 			checkLoadingProgress();
 		}
 		
-		private function onReadUserInfo(event:Event):void
+		private function onReadUserInfo(event:starling.events.Event):void
 		{
 			Resources.instance.loadFromURL(Resources.USER_PICTURE, _userInfo.userId);
 			
+			// Update DB
+			var url:String =
+				DatabaseURL.USER +
+				"addUser.php" +
+				"?id=" + _userInfo.userId +
+				"&name=" + _userInfo.userName +
+				"&score=" + _userInfo.score;
+			
+			var loader:URLLoader = new URLLoader(new URLRequest(url));
+			loader.addEventListener(flash.events.Event.COMPLETE, onGotUserInfoFromDB);
+			
 			_loggedIn = true;
-			this.dispatchEvent(new Event(LogInManager.LOG_IN));
+			this.dispatchEvent(new starling.events.Event(UserManager.LOG_IN));
 			
 			_numLoad--;
 			checkLoadingProgress();
 		}
 		
-		private function onFailedReadingUserInfo(event:Event):void
+		private function onFailedReadingUserInfo(event:starling.events.Event):void
 		{
 			_loggedIn = false;
-			this.dispatchEvent(new Event(LOG_OUT));
+			this.dispatchEvent(new starling.events.Event(LOG_OUT));
 			
 			_numLoad--;
 			checkLoadingProgress();
@@ -181,24 +221,51 @@ package manager
 				_userInfo.removeEventListener(Data.SUCCEEDED_READING, onReadUserInfo);
 				_userInfo.removeEventListener(Data.FAILED_READING, onFailedReadingUserInfo);
 				
-				this.dispatchEvent(new Event(Manager.INITIALIZED));
+				this.dispatchEvent(new starling.events.Event(Manager.INITIALIZED));
 			}
 		}
 		
-		private function onGotAccessToken(tokenData:String):void
+		private function onGotAccessTokenFromFB(tokenData:String):void
 		{
 			_accessToken.setData(tokenData);
 			_accessToken.write();
 			
-			Resources.instance.loadFromURL(Resources.USER_PICTURE, _accessToken.userId);
+			
 		}
 		
-		private function onGotUserInfo(info:String):void
+		private function onGotUserInfoFromFB(info:String):void
 		{
 			_userInfo.setData(info);
+			Resources.instance.loadFromURL(Resources.USER_PICTURE, _userInfo.userId);
+			
+			// Update DB
+			var url:String =
+				DatabaseURL.USER +
+				"addUser.php" +
+				"?id=" + _userInfo.userId +
+				"&name=" + _userInfo.userName +
+				"&score=" + _userInfo.score;
+			
+			var loader:URLLoader = new URLLoader(new URLRequest(url));
+			loader.addEventListener(flash.events.Event.COMPLETE, onGotUserInfoFromDB);
 			
 			_loggedIn = true;
-			this.dispatchEvent(new Event(LOG_IN));
+			this.dispatchEvent(new starling.events.Event(LOG_IN));
+		}
+		
+		private function onGotUserInfoFromDB(event:flash.events.Event):void
+		{
+			var urlLoader:URLLoader = event.currentTarget as URLLoader;
+			urlLoader.removeEventListener(flash.events.Event.COMPLETE, onGotUserInfoFromDB);
+			
+			if (urlLoader.data != "[]")
+			{
+				var data:Object = JSON.parse(urlLoader.data);
+				
+				_userInfo.score = data[0].score;
+				_userInfo.items[0] = data[0].numItem0;
+				_userInfo.items[1] = data[0].numItem1;
+			}
 		}
 	}
 }

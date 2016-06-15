@@ -1,4 +1,4 @@
-package manager
+package ui.popup
 {
 	import flash.display.BitmapData;
 	import flash.geom.ColorTransform;
@@ -13,13 +13,7 @@ package manager
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.textures.Texture;
-	import ui.popup.ExitPopup;
-	import ui.popup.GameOverPopup;
-	import ui.popup.PausePopup;
-	import ui.popup.Popup;
-	import ui.popup.PopupName;
-	import ui.popup.RankPopup;
-	import ui.popup.SettingPopup;
+	import system.Manager;
 	
 	public class PopupManager extends Manager
 	{

@@ -3,7 +3,7 @@ package scene.titleScene
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
 	
-	import manager.DataManager;
+	import gamedata.DataManager;
 	
 	import resources.Resources;
 	import resources.TextureAtlasName;
@@ -11,15 +11,15 @@ package scene.titleScene
 	
 	import scene.Scene;
 	
-	import manager.NoticeManager;
+	import system.NoticeManager;
 	
 	import starling.display.Image;
 	import starling.events.Event;
 	
-	import manager.PopupManager;
+	import ui.popup.PopupManager;
 	import ui.popup.PopupName;
 	
-	import manager.LogInManager;
+	import user.UserManager;
 	
 	public class TitleScene extends Scene
 	{
@@ -58,7 +58,7 @@ package scene.titleScene
 		protected override function onEndScene(event:Event):void
 		{
 			DataManager.instance.export();
-			LogInManager.instance.export();
+			UserManager.instance.export();
 		}
 		
 		protected override function onKeyDown(event:KeyboardEvent):void

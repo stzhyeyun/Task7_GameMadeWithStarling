@@ -16,8 +16,7 @@ package user
 		private var _userId:String;
 		private var _userName:String;
 		private var _score:int;
-
-		private var _onReadyToPreset:Function;
+		private var _items:Vector.<int>;
 
 		public function get userId():String
 		{
@@ -38,6 +37,11 @@ package user
 		{
 			_score = value;
 		}
+		
+		public function get items():Vector.<int>
+		{
+			return _items;
+		}
 
 		
 		public function UserInfo(name:String = null, path:File = null)
@@ -47,6 +51,7 @@ package user
 			_userId = null;
 			_userName = null;
 			_score = 0;
+			_items = new Vector.<int>();
 		}
 		
 		public function setData(info:String):void
@@ -74,14 +79,14 @@ package user
 		
 		public override function write():void
 		{
-			if (!name || !path)
+			if (!_fileName || !_path)
 			{
-				if (!name) trace(TAG + " write : No name.");
-				if (!path) trace(TAG + " write : No path.");
+				if (!_fileName) trace(TAG + " write : No name.");
+				if (!_path) trace(TAG + " write : No path.");
 				return;
 			}
 			
-			var file:File = new File(path.resolvePath(name + ".json").url);
+			var file:File = new File(_path.resolvePath(_fileName + ".json").url);
 			
 			if (!_userId) // 현재 유저 정보가 없을 경우 로컬에 저장된 유저 정보를 삭제함
 			{
@@ -96,7 +101,24 @@ package user
 			
 			var plainText:String = 
 				"{\n\t\"userId\" : \""	+	_userId		+	"\",\n"	+
-				"\t\"userName\" : \""	+	_userName	+	"\"\n}";
+				"\t\"userName\" : \""	+	_userName	+	"\",\n" +
+				"\t\"score\" : \""		+	_score;
+			
+			if (_items)
+			{
+				plainText += "\t\"items\" : [";
+				for (var i:int = 0; i < _items.length; i++)
+				{
+					plainText += i + ", " + _items[i];
+					
+					if (i != _items.length - 1)
+					{
+						plainText += ", ";
+					}
+				}
+				plainText += "]";
+			}
+			plainText += "\n}";
 			
 			plainText = AesCrypto.encrypt(plainText, "ahundrendblocksbybamkie");
 			
@@ -124,6 +146,16 @@ package user
 			
 			_userId = plainText.userId;
 			_userName = plainText.userName;
+			_score = plainText.score;
+			
+			if (plainText.items)
+			{
+				_items = new Vector.<int>();
+				for (var i:int = 0; i < plainText.items.length; i += 2)
+				{
+					_items.push(plainText.items[i + 1]);
+				}
+			}
 			
 			super.onCompleteLoad(event);
 		}
@@ -133,16 +165,7 @@ package user
 			_userId = null;
 			_userName = null;
 			_score = 0;
-		}
-		
-		public function toString():String
-		{
-			var userInfoStr:String =
-				"{\"userId\" : \"" + _userId + "\"}, " +
-				"{\"userName\" : \"" + _userName + "\"}, " +
-				"{\"score\" : " + _score.toString() + "}";
-			
-			return userInfoStr;
+			_items.splice(0, _items.length);
 		}
 		
 		private function parseData(info:String):void

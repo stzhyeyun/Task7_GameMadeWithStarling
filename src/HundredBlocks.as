@@ -7,21 +7,21 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
-	import manager.DataManager;
+	import gamedata.DataManager;
 	
-	import manager.SoundManager;
+	import media.SoundManager;
 	
 	import resources.Resources;
 	
-	import manager.SceneManager;
+	import scene.SceneManager;
 	
 	import starling.core.Starling;
 	
-	import manager.PopupManager;
+	import ui.popup.PopupManager;
 	
-	import manager.LogInManager;
+	import user.UserManager;
 	
-	[SWF(width="720", height="960", frameRate="60")]
+	[SWF(width="720", height="960", frameRate="60", backgroundColor="#000000")]
 	
 	public class HundredBlocks extends Sprite
 	{
@@ -49,7 +49,7 @@ package
 			NativeApplication.nativeApplication.removeEventListener(Event.DEACTIVATE, onDeactivate);
 			
 			DataManager.instance.dispose();
-			LogInManager.instance.dispose();
+			UserManager.instance.dispose();
 			PopupManager.instance.dispose();
 			SceneManager.dispose();
 			SoundManager.dispose();
@@ -68,7 +68,7 @@ package
 		{
 			SoundManager.stopAll();
 			DataManager.instance.export();
-			LogInManager.instance.export();
+			UserManager.instance.export();
 			
 			var notification:ScheduledNotificationExtension = new ScheduledNotificationExtension();
 			notification.setNotification("Ding-dong!", "Hundred Blocks", "It's time to take a break!", 5/*temp*/);

@@ -26,10 +26,10 @@ package gamedata
 		public function addData(userInfo:UserInfo):void
 		{
 			var url:String =
-				DatabaseURL.RANK +
-				"addRankData.php" +
+				DatabaseURL.USER +
+				"updateScore.php" +
 				"?id=" + userInfo.userId +
-				"&name=" + userInfo.name +
+				"&name=" + userInfo.userName +
 				"&score=" + userInfo.score;
 			
 			var loader:URLLoader = new URLLoader(new URLRequest(url));
@@ -39,7 +39,7 @@ package gamedata
 		public function getRank(userInfo:UserInfo):void
 		{
 			var url:String =
-				DatabaseURL.RANK +
+				DatabaseURL.USER +
 				"getRank.php" +
 				"?id=" + userInfo.userId;
 			
@@ -50,7 +50,7 @@ package gamedata
 		public function getUser(rank:int, numResult:int = 1):void
 		{
 			var url:String =
-				DatabaseURL.RANK +
+				DatabaseURL.USER +
 				"getRankedUser.php" +
 				"?rank=" + rank +
 				"&numResult=" + numResult;
@@ -62,8 +62,8 @@ package gamedata
 		public function count():void
 		{
 			var url:String =
-				DatabaseURL.RANK +
-				"getNumRank.php?";
+				DatabaseURL.USER +
+				"getNumRanker.php?";
 			
 			var loader:URLLoader = new URLLoader(new URLRequest(url));
 			loader.addEventListener(Event.COMPLETE, onGotNumRank);

@@ -1,4 +1,4 @@
-package manager
+package system
 {
 	import flash.events.Event;
 	import flash.net.URLLoader;
@@ -13,6 +13,8 @@ package manager
 	import starling.textures.Texture;
 	
 	import ui.popup.NoticePopup;
+	import gamedata.DataManager;
+	import ui.popup.PopupManager;
 	
 	public class NoticeManager extends Manager
 	{
@@ -58,7 +60,15 @@ package manager
 		public override function dispose():void
 		{
 			// Popup 제거
+			for (var i:int = 0; i < _noticeList.length; i++)
+			{
+				PopupManager.instance.removePopup(_noticeList[i]);
+				_noticeList[i] = null;
+			}
+			_noticeList = null;
+				
 			// Resource 제거
+			Resources.instance.removeNoticeImage();
 		}
 		
 		private function onGotNoticeData(event:flash.events.Event):void

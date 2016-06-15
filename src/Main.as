@@ -7,7 +7,7 @@ package
 	import resources.Resources;
 	import resources.SoundName;
 	
-	import manager.SceneManager;
+	import scene.SceneManager;
 	import scene.SceneName;
 	import scene.loadingScene.LoadingScene;
 	

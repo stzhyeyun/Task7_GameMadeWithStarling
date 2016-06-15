@@ -7,7 +7,7 @@ package resources
 	import flash.net.URLRequest;
 	import flash.utils.Dictionary;
 	
-	import manager.LogInManager;
+	import user.UserManager;
 	
 	import media.Sound;
 	
@@ -64,9 +64,15 @@ package resources
 		{
 			if (_textureAtlasDic)
 			{
+				var textureAtlas:TextureAtlas;
 				for (var key:Object in _textureAtlasDic)
 				{
-					_textureAtlasDic[key] = null;
+					textureAtlas = _textureAtlasDic[key];
+					if (textureAtlas)
+					{
+						textureAtlas.dispose();
+					}
+					textureAtlas = null;
 					delete _textureAtlasDic[key];
 				}
 			}
@@ -84,13 +90,35 @@ package resources
 			
 			if (_userPictureDic)
 			{
+				var texture:Texture;
 				for (key in _userPictureDic)
 				{
-					_userPictureDic[key] = null;
+					texture = _userPictureDic[key];
+					if (texture)
+					{
+						texture.dispose();
+					}
+					texture = null;
 					delete _userPictureDic[key];
 				}
 			}
 			_userPictureDic = null;
+			
+			if (_noticeImageDic)
+			{
+				
+				for (key in _noticeImageDic)
+				{
+					texture = _noticeImageDic[key];
+					if (texture)
+					{
+						texture.dispose();
+					}
+					texture = null;
+					delete _noticeImageDic[key];
+				}
+			}
+			_noticeImageDic = null;
 		}
 		
 		public function initialize():void
@@ -243,11 +271,11 @@ package resources
 		
 		public function getCurrentUserPicture():Texture
 		{
-			var userInfo:UserInfo = LogInManager.instance.userInfo;
+			var userInfo:UserInfo = UserManager.instance.userInfo;
 			var userId:String = null;
 			if (userInfo)
 			{
-				userId = LogInManager.instance.userInfo.userId;
+				userId = UserManager.instance.userInfo.userId;
 			}
 			
 			if (userId && _userPictureDic && _userPictureDic[userId])
@@ -270,6 +298,25 @@ package resources
 			{
 				return null;
 			}
+		}
+		
+		public function removeNoticeImage():void
+		{
+			if (_noticeImageDic)
+			{
+				var texture:Texture;
+				for (var key:Object in _noticeImageDic)
+				{
+					texture = _noticeImageDic[key];
+					if (texture)
+					{
+						texture.dispose();
+					}
+					texture = null;
+					delete _noticeImageDic[key];
+				}
+			}
+			_noticeImageDic = null;
 		}
 		
 		private function checkLoadingProgress():void

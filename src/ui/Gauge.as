@@ -2,7 +2,6 @@ package ui
 {
 	import starling.display.Image;
 	import starling.display.Sprite;
-	import starling.textures.Texture;
 
 	public class Gauge extends Sprite
 	{
@@ -10,9 +9,9 @@ package ui
 		
 		private var _total:int;
 		private var _current:int;
-		private var _base:Image;
 		private var _bar:Image;
-		
+		private var _progress:Image;
+
 		public function get total():int
 		{
 			return _total;
@@ -33,28 +32,41 @@ package ui
 			_current = value;
 		}
 		
-		
-		public function Gauge(width:Number, height:Number, base:Texture, bar:Texture, total:int = 0)
+		public function get bar():Image
 		{
-			if (width == 0 || height == 0 || !base || !bar)
+			return _bar;
+		}
+		
+		public function set bar(value:Image):void
+		{
+			_bar = value;
+		}
+		
+		public function get progress():Image
+		{
+			return _progress;
+		}
+		
+		public function set progress(value:Image):void
+		{
+			_progress = value;
+		}
+		
+		
+		public function Gauge(bar:Image, progress:Image, total:int = 0)
+		{
+			if (!bar || !progress)
 			{
-				if (width == 0 || height == 0) trace(TAG, " ctor : Width and Height can't be zero.");
-				if (!base || !bar) trace(TAG, " ctor : Base and Bar can't be null.");
+				if (!bar || !progress) trace(TAG, " ctor : Bar and Progress can't be null.");
 				return;
 			}
 			
-			_base = new Image(base);
-			_base.width = width;
-			_base.height = height;
-			addChild(_base);
+			_bar = bar;
+			_progress = progress;
 			
-			_bar = new Image(bar);
-			_bar.width = _base.width * 0.95;
-			_bar.height = _base.height * 0.7;
-			_bar.x = _base.width * 0.02;
-			_bar.y = _base.height * 0.15;
-			_bar.scaleX = 0.01;
+			_progress.scaleX = 0.01;
 			addChild(_bar);
+			addChild(_progress);
 			
 			_total = total;
 			_current = 0;
@@ -62,7 +74,7 @@ package ui
 
 		public function update(current:int):void
 		{
-			if (!_bar || current < 0)
+			if (!_progress || current < 0)
 			{
 				return;
 			}
@@ -71,7 +83,7 @@ package ui
 			
 			if (current != 0)
 			{
-				_bar.scaleX = _current / _total;
+				_progress.scaleX = _current / _total;
 			}
 		}
 	}

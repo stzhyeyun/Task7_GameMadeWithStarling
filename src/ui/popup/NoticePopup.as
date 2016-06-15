@@ -1,7 +1,6 @@
 package ui.popup
 {
-	import manager.DataManager;
-	import manager.PopupManager;
+	import gamedata.DataManager;
 	
 	import resources.Resources;
 	import resources.TextureAtlasName;

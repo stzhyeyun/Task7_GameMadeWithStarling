@@ -3,7 +3,7 @@ package ui.popup
 	import flash.text.TextFormatAlign;
 	import flash.utils.Dictionary;
 	
-	import manager.DataManager;
+	import gamedata.DataManager;
 	import gamedata.Rank;
 	
 	import resources.Resources;
@@ -23,7 +23,7 @@ package ui.popup
 	
 	import ui.SpriteNumber;
 	
-	import manager.LogInManager;
+	import user.UserManager;
 	import user.UserInfo;
 	
 	import util.Color;
@@ -51,8 +51,8 @@ package ui.popup
 		public override function dispose():void
 		{
 			DataManager.instance.removeEventListener(DataManager.UPDATE_RANK, onUpdateRank);
-			LogInManager.instance.removeEventListener(LogInManager.LOG_IN, onLogIn);
-			LogInManager.instance.removeEventListener(LogInManager.LOG_OUT, onLogOut);
+			UserManager.instance.removeEventListener(UserManager.LOG_IN, onLogIn);
+			UserManager.instance.removeEventListener(UserManager.LOG_OUT, onLogOut);
 						
 			super.dispose();
 		}
@@ -87,7 +87,7 @@ package ui.popup
 			_userRankButton.x = panel.width * 0.8;
 			_userRankButton.y = panel.height * 0.53;
 			_userRankButton.addEventListener(TouchEvent.TOUCH, onEndedUserButton);
-			if (!LogInManager.instance.loggedIn)
+			if (!UserManager.instance.loggedIn)
 			{
 				_userRankButton.touchable = false;
 				_userRankButton.color = Color.INACTIVE;		
@@ -176,7 +176,7 @@ package ui.popup
 			_numLoadRequest = 0;
 			_needToSetPicIndices = new Dictionary();
 			
-			var userInfo:UserInfo = LogInManager.instance.userInfo;
+			var userInfo:UserInfo = UserManager.instance.userInfo;
 			if (userInfo.userId)
 			{
 				DataManager.instance.rank.addEventListener(Rank.GET_RANK, onGotRank);
@@ -188,8 +188,8 @@ package ui.popup
 			}
 			
 			DataManager.instance.addEventListener(DataManager.UPDATE_RANK, onUpdateRank);
-			LogInManager.instance.addEventListener(LogInManager.LOG_IN, onLogIn);
-			LogInManager.instance.addEventListener(LogInManager.LOG_OUT, onLogOut);
+			UserManager.instance.addEventListener(UserManager.LOG_IN, onLogIn);
+			UserManager.instance.addEventListener(UserManager.LOG_OUT, onLogOut);
 			
 			super.initialize();
 		}
@@ -286,7 +286,7 @@ package ui.popup
 					
 					rank.update(rankValue.toString());
 					score.update(userInfoVec[i].score.toString());
-					name.text = userInfoVec[i].name;
+					name.text = userInfoVec[i].userName;
 					
 					_numLoadRequest++;
 					_needToSetPicIndices[userInfoVec[i].userId] = i;
@@ -367,7 +367,7 @@ package ui.popup
 		
 		private function onLogIn(event:Event):void
 		{
-			var userInfo:UserInfo = LogInManager.instance.userInfo;
+			var userInfo:UserInfo = UserManager.instance.userInfo;
 			if (userInfo.userId)
 			{
 				DataManager.instance.rank.addEventListener(Rank.GET_RANK, onGotRank);

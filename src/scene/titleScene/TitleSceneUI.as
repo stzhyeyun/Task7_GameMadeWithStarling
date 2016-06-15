@@ -4,7 +4,7 @@ package scene.titleScene
 	import resources.TextureAtlasName;
 	import resources.TextureName;
 	
-	import manager.SceneManager;
+	import scene.SceneManager;
 	import scene.SceneName;
 	
 	import starling.display.Button;
@@ -16,10 +16,10 @@ package scene.titleScene
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	
-	import manager.PopupManager;
+	import ui.popup.PopupManager;
 	import ui.popup.PopupName;
 	
-	import manager.LogInManager;
+	import user.UserManager;
 
 	public class TitleSceneUI extends Sprite
 	{
@@ -34,8 +34,8 @@ package scene.titleScene
 		
 		public override function dispose():void
 		{
-			LogInManager.instance.removeEventListener(LogInManager.LOG_IN, onLogIn);
-			LogInManager.instance.removeEventListener(LogInManager.LOG_OUT, onLogOut);
+			UserManager.instance.removeEventListener(UserManager.LOG_IN, onLogIn);
+			UserManager.instance.removeEventListener(UserManager.LOG_OUT, onLogOut);
 			
 			_logInButton = null;
 			_logOutButton = null;
@@ -91,7 +91,7 @@ package scene.titleScene
 			_logInButton.x = play.x + _logInButton.width * 1.5;
 			_logInButton.y = play.y;
 			_logInButton.addEventListener(TouchEvent.TOUCH, onEndedLogInButton);
-			if (LogInManager.instance.loggedIn)
+			if (UserManager.instance.loggedIn)
 			{
 				_logInButton.visible = false;
 			}
@@ -102,14 +102,14 @@ package scene.titleScene
 			_logOutButton.x = (stageWidth / 2 - _logOutButton.width / 2);
 			_logOutButton.y = stageHeight * 0.85;
 			_logOutButton.addEventListener(TouchEvent.TOUCH, onEndedLogOutButton);
-			if (!LogInManager.instance.loggedIn)
+			if (!UserManager.instance.loggedIn)
 			{
 				_logOutButton.visible = false;
 			}
 			addChild(_logOutButton);
 			
-			LogInManager.instance.addEventListener(LogInManager.LOG_IN, onLogIn);
-			LogInManager.instance.addEventListener(LogInManager.LOG_OUT, onLogOut);
+			UserManager.instance.addEventListener(UserManager.LOG_IN, onLogIn);
+			UserManager.instance.addEventListener(UserManager.LOG_OUT, onLogOut);
 		}
 		
 		private function onEndedPlayButton(event:TouchEvent):void
@@ -148,7 +148,7 @@ package scene.titleScene
 			
 			if (touch)
 			{
-				LogInManager.instance.logIn();
+				UserManager.instance.logIn();
 			}	
 		}
 		
@@ -158,7 +158,7 @@ package scene.titleScene
 			
 			if (touch)
 			{
-				LogInManager.instance.logOut();
+				UserManager.instance.logOut();
 			}	
 		}
 		

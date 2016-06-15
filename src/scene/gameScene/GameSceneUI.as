@@ -1,8 +1,6 @@
 package scene.gameScene
 {
-	import flash.display.BitmapData;
-	
-	import manager.DataManager;
+	import gamedata.DataManager;
 	
 	import resources.Resources;
 	import resources.TextureAtlasName;
@@ -18,10 +16,10 @@ package scene.gameScene
 	import starling.textures.Texture;
 	
 	import ui.SpriteNumber;
-	import manager.PopupManager;
+	import ui.popup.PopupManager;
 	import ui.popup.PopupName;
 	
-	import manager.LogInManager;
+	import user.UserManager;
 	
 	import util.Color;
 
@@ -50,17 +48,11 @@ package scene.gameScene
 		
 		public function initialize(stageWidth:Number, stageHeight:Number, bestScore:int, currentScore:int):void
 		{
-			// Header
-			var bitmapData:BitmapData =
-				new BitmapData(int(stageWidth), int(stageHeight / 10), false, Color.HEADER);
-			var header:Image = new Image(Texture.fromBitmapData(bitmapData));
-			_headerWidth = header.width;
-			_headerHeight = header.height;
-			addChild(header);
+			var headerHeight:Number = stageHeight * 0.1;
 			
 			// User picture
 			_userPic = new Image(null);
-			if (LogInManager.instance.loggedIn)
+			if (UserManager.instance.loggedIn)
 			{
 				var texture:Texture = Resources.instance.getCurrentUserPicture();
 				
@@ -78,23 +70,23 @@ package scene.gameScene
 			{
 				_userPic.visible = false;
 			}
-			_userPic.height = header.height * 0.8;
+			_userPic.height = headerHeight * 0.8;
 			_userPic.width = _userPic.height;
 			_userPic.pivotX = _userPic.width / 2;
 			_userPic.pivotY = _userPic.height / 2;
-			_userPic.x = header.width * 0.1;
-			_userPic.y = header.height / 2;
+			_userPic.x = stageWidth * 0.1;
+			_userPic.y = headerHeight / 2;
 			addChild(_userPic);
 			
 			// Pause
 			var pauseScale:Number = 0.8;
 			var pause:Button = new Button(Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_PAUSE));
-			pause.height = header.height * 0.8;
+			pause.height = headerHeight * 0.8;
 			pause.width = pause.height;
 			pause.pivotX = pause.width / 2;
 			pause.pivotY = pause.height / 2;
-			pause.x = header.width * 0.9;
-			pause.y = header.height / 2;
+			pause.x = stageWidth * 0.9;
+			pause.y = headerHeight / 2;
 			pause.addEventListener(TouchEvent.TOUCH, onEndedPauseButton);
 			addChild(pause);
 			
@@ -103,11 +95,13 @@ package scene.gameScene
 			
 			DataManager.instance.addEventListener(DataManager.UPDATE_CURRENT_SCORE, onUpdateCurrentScore);
 			Resources.instance.addEventListener(Resources.USER_PICTURE_READY, onUserPictureReady);
-			LogInManager.instance.addEventListener(LogInManager.LOG_OUT, onLogOut);
+			UserManager.instance.addEventListener(UserManager.LOG_OUT, onLogOut);
 		}
 		
 		public function setScore(stageWidth:Number, stageHeight:Number, bestScore:int, currentScore:int):void
 		{
+			var headerHeight:Number = stageHeight * 0.1;
+			
 			// Best score
 			if (_bestScore)
 			{
@@ -115,11 +109,11 @@ package scene.gameScene
 				_bestScore = null;
 			}
 			_bestScore = new SpriteNumber(bestScore.toString(), Color.BEST_SCORE);
-			var bestScoreScale:Number = _headerHeight * 0.25 / _bestScore.height;
+			var bestScoreScale:Number = headerHeight * 0.25 / _bestScore.height;
 			_bestScore.height *= bestScoreScale;
 			_bestScore.width *= bestScoreScale; 
 			_bestScore.x = stageWidth / 2;
-			_bestScore.y = stageHeight / 4.8;
+			_bestScore.y = stageHeight * 0.2;
 			addChild(_bestScore);
 			
 			// Current score
@@ -129,11 +123,11 @@ package scene.gameScene
 				_currentScore = null;
 			}
 			_currentScore = new SpriteNumber(currentScore.toString(), Color.CURRENT_SCORE);
-			var currentScoreScale:Number = _headerHeight * 0.4 / _currentScore.height;
+			var currentScoreScale:Number = headerHeight * 0.4 / _currentScore.height;
 			_currentScore.height *= currentScoreScale;
 			_currentScore.width *= currentScoreScale; 
 			_currentScore.x = stageWidth / 2;
-			_currentScore.y = stageHeight / 6.5;
+			_currentScore.y = stageHeight * 0.14;
 			addChild(_currentScore);
 		}
 		
@@ -157,7 +151,7 @@ package scene.gameScene
 		private function onUserPictureReady(event:Event):void
 		{
 			var eventTargetId:String = event.data as String;
-			var userId:String = LogInManager.instance.userInfo.userId;
+			var userId:String = UserManager.instance.userInfo.userId;
 			
 			if (eventTargetId && userId && eventTargetId == userId)
 			{

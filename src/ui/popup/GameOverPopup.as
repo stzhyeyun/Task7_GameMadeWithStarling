@@ -1,12 +1,12 @@
 package ui.popup
 {
-	import manager.DataManager;
+	import gamedata.DataManager;
 	
 	import resources.Resources;
 	import resources.TextureAtlasName;
 	import resources.TextureName;
 	
-	import manager.SceneManager;
+	import scene.SceneManager;
 	import scene.SceneName;
 	
 	import starling.display.Button;
@@ -18,7 +18,6 @@ package ui.popup
 	import ui.SpriteNumber;
 	
 	import util.Color;
-	import manager.PopupManager;
 
 	public class GameOverPopup extends Popup
 	{

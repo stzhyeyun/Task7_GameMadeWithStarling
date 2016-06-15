@@ -12,7 +12,6 @@ package ui.popup
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
-	import manager.PopupManager;
 
 	public class ExitPopup extends Popup
 	{

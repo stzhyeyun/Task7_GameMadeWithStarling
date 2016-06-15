@@ -10,8 +10,14 @@ package ui
 
 	public class SpriteNumber extends Sprite
 	{
+		private var _value:int;
 		private var _numbers:Vector.<Image>;
 		private var _color:uint;
+
+		public function get value():int
+		{
+			return _value;
+		}
 
 		public function set color(value:uint):void
 		{
@@ -21,6 +27,7 @@ package ui
 		
 		public function SpriteNumber(num:String, color:uint = Color.BLACK)
 		{
+			_value = int(num);
 			_numbers = new Vector.<Image>();
 			_color = color;
 			
@@ -44,8 +51,9 @@ package ui
 
 		public function update(num:String):void
 		{
+			_value = int(num);
+
 			var image:Image;
-			
 			if (num.length > _numbers.length)
 			{
 				var diff:int = num.length - _numbers.length;

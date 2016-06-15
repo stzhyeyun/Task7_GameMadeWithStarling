@@ -13,16 +13,18 @@ package scene.gameScene
 	import core.Table;
 	import core.TableData;
 	
-	import manager.DataManager;
+	import gamedata.DataManager;
 	import gamedata.PlayData;
+	
+	import item.Item;
+	import item.RefreshBlocks;
+	import item.Undo;
 	
 	import resources.Resources;
 	import resources.TextureAtlasName;
 	import resources.TextureName;
 	
 	import scene.Scene;
-	
-	import manager.NoticeManager;
 	
 	import starling.display.Image;
 	import starling.events.Event;
@@ -31,18 +33,25 @@ package scene.gameScene
 	import starling.events.TouchPhase;
 	import starling.textures.Texture;
 	
-	import manager.PopupManager;
+	import system.NoticeManager;
+	
+	import ui.popup.PopupManager;
 	import ui.popup.PopupName;
+	
+	import user.UserManager;
+	
+	import util.Color;
 	
 	public class GameScene extends Scene
 	{
-		private const TABLE_SIZE:int = 10;
+		public static const TABLE_SIZE:int = 10;
 		private const BLOCK_NUM:int = 3;
 		
 		private var _firstStart:Boolean;
 		
 		private var _table:Table;
 		private var _blocks:Vector.<Block>; // 3 Blocks
+		private var _items:Vector.<Item>; // 2 Items
 		private var _ui:GameSceneUI;
 		
 		private var _tableScale:Number;
@@ -89,6 +98,16 @@ package scene.gameScene
 			background.height = this.nativeStageHeight;
 			addChild(background);
 			
+			// Header & Footer
+			var bitmapData:BitmapData =
+				new BitmapData(int(this.nativeStageWidth), int(this.nativeStageHeight / 10), false, Color.HEADER);
+			var header:Image = new Image(Texture.fromBitmapData(bitmapData));
+			addChild(header);
+			
+			var footer:Image = new Image(Texture.fromBitmapData(bitmapData));
+			footer.y = this.nativeStageHeight - footer.height;
+			addChild(footer);
+			
 			// Table
 			var tableData:TableData;
 			if (playData.tableData)
@@ -108,13 +127,16 @@ package scene.gameScene
 			_table.width *= _tableScale;
 			_table.height *= _tableScale;
 			_table.x = (this.nativeStageWidth / 2) - (_table.width / 2);
-			_table.y = (this.nativeStageHeight / 2) - (_table.height / 2);
+			_table.y = this.nativeStageHeight * 0.25;
 			addChild(_table);
 			
 			_blockAreaSize = _table.width / 3;
 			
 			// Block
 			createBlocks();
+			
+			// Item
+			createItems();
 			
 			// UI
 			_ui = new GameSceneUI();
@@ -131,6 +153,7 @@ package scene.gameScene
 				NoticeManager.instance.dispose();
 				_firstStart = false;
 			}
+			refreshItems();
 		}
 		
 		protected override function onRestartScene(event:Event):void
@@ -139,6 +162,7 @@ package scene.gameScene
 			
 			_table.setTableData(DataManager.instance.playData.tableData);
 			refreshBlocks(true);
+			refreshItems();
 			_ui.setScore(
 				this.nativeStageWidth, this.nativeStageHeight,
 				DataManager.instance.playData.bestScore, DataManager.instance.playData.currentScore);
@@ -160,6 +184,55 @@ package scene.gameScene
 			{
 				event.preventDefault();
 				PopupManager.instance.showPopup(this, PopupName.EXIT);
+			}
+		}
+		
+		private function createItems():void
+		{
+			var itemAreaY:Number = _table.y + _table.height + _blockAreaSize;
+			var itemHeight:Number = (this.nativeStageHeight - itemAreaY) * 0.8;
+			var itemY:Number = itemAreaY + itemHeight * 0.6;
+			
+			var refreshItem:RefreshBlocks = new RefreshBlocks(refreshBlocks);
+			var scale:Number = itemHeight / refreshItem.height;
+			refreshItem.width *= scale;
+			refreshItem.height *= scale;
+			refreshItem.pivotY = refreshItem.height / 2;
+			refreshItem.x = this.nativeStageWidth * 0.1;
+			refreshItem.y = itemY;
+			
+			var undoItem:Undo = new Undo(undo);
+			undoItem.width *= scale;
+			undoItem.height *= scale;
+			undoItem.pivotY = undoItem.height / 2;
+			undoItem.x = refreshItem.x + refreshItem.width + refreshItem.width * 0.3;
+			undoItem.y = itemY;
+			
+			addChild(refreshItem);
+			addChild(undoItem);
+			
+			_items = new Vector.<Item>();
+			_items.push(refreshItem);
+			_items.push(undoItem);
+		}
+		
+		private function refreshItems():void
+		{
+			var userItems:Vector.<int> = UserManager.instance.userInfo.items;
+			
+			if (userItems.length == 0)
+			{
+				for (var i:int = 0; i < _items.length; i++)
+				{
+					_items[i].setQuantity(0);
+				}
+			}
+			else
+			{
+				for (i = 0; i < userItems.length; i++)
+				{
+					_items[i].setQuantity(userItems[i]);
+				}
 			}
 		}
 		
@@ -212,11 +285,11 @@ package scene.gameScene
 			}
 		}
 			
-		private function refreshBlocks(restart:Boolean = false):void
+		private function refreshBlocks(force:Boolean = false):void
 		{
 			var needRefresh:Boolean = true;
 			
-			if (!restart)
+			if (!force)
 			{
 				for (var i:int = 0; i < _blocks.length; i++)
 				{
@@ -251,7 +324,12 @@ package scene.gameScene
 				block.y = touchPos.y - block.height;
 			}
 		}
-			
+		
+		private function undo():Boolean
+		{
+			return _table.undo();
+		}
+					
 		private function onTouchBlock(event:TouchEvent):void
 		{
 			var touch:Touch = event.getTouch(this);

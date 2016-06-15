@@ -2,15 +2,10 @@ package scene.loadingScene
 {
 	import flash.filesystem.File;
 	
-	import manager.DataManager;
-	import manager.LogInManager;
-	import manager.Manager;
-	import manager.NoticeManager;
-	import manager.PopupManager;
-	import manager.SceneManager;
-	import manager.SoundManager;
+	import gamedata.DataManager;
 	
 	import media.Sound;
+	import media.SoundManager;
 	
 	import resources.Resources;
 	import resources.SoundName;
@@ -18,14 +13,22 @@ package scene.loadingScene
 	import resources.TextureName;
 	
 	import scene.Scene;
+	import scene.SceneManager;
 	import scene.SceneName;
 	import scene.gameScene.GameScene;
 	import scene.titleScene.TitleScene;
 	
 	import starling.display.Image;
+	import starling.events.EnterFrameEvent;
 	import starling.events.Event;
 	
+	import system.Manager;
+	import system.NoticeManager;
+	
 	import ui.Gauge;
+	import ui.popup.PopupManager;
+	
+	import user.UserManager;
 
 	public class LoadingScene extends Scene
 	{
@@ -59,16 +62,27 @@ package scene.loadingScene
 			_numLoad = 4;
 			_loadCounter = 0;
 			// Loading bar
-			_loadingBar = new Gauge(
-				background.width * 0.7, background.height * 0.08,
-				Resources.instance.getTexture(TextureAtlasName.LOADING, TextureName.IMG_GAUGE_BASE),
-				Resources.instance.getTexture(TextureAtlasName.LOADING, TextureName.IMG_GAUGE_BAR),
-				_numLoad);
+			var bar:Image = new Image(
+				Resources.instance.getTexture(TextureAtlasName.LOADING, TextureName.IMG_GAUGE_BASE));
+			var progress:Image = new Image( 
+				Resources.instance.getTexture(TextureAtlasName.LOADING, TextureName.IMG_GAUGE_BAR));
+			
+			bar.width = background.width * 0.7;
+			bar.height = background.height * 0.08;
+			progress.width = bar.width * 0.95;
+			progress.height = bar.height * 0.7;
+			progress.x = bar.width * 0.02;
+			progress.y = bar.height * 0.15;
+						
+			_loadingBar = new Gauge(bar, progress, _numLoad);
 			_loadingBar.pivotX = _loadingBar.width / 2;
 			_loadingBar.pivotY = _loadingBar.height / 2;
 			_loadingBar.x = this.nativeStageWidth / 2;
-			_loadingBar.y = this.nativeStageHeight * 0.7;
+			_loadingBar.y = this.nativeStageHeight * 0.65;
 			addChild(_loadingBar);
+			
+			this.alpha = 0;
+			addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
 		}
 		
 		public override function dispose():void
@@ -86,11 +100,21 @@ package scene.loadingScene
 			Resources.instance.addEventListener(Resources.COMPLETE_LOAD, onCompleteResourcesLoad);
 			Resources.instance.loadFromDisk(File.applicationDirectory.resolvePath("resources/res/second"));
 			
-			LogInManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
-			LogInManager.instance.initialize();
+			UserManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
+			UserManager.instance.initialize();
 			
 			DataManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
 			DataManager.instance.initialize();
+		}
+		
+		private function onEnterFrame(event:EnterFrameEvent):void
+		{
+			this.alpha += 0.05;
+			
+			if (this.alpha == 1)
+			{
+				removeEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
+			}
 		}
 		
 		private function onCompleteResourcesLoad():void
@@ -143,7 +167,7 @@ package scene.loadingScene
 			if (_loadCounter == _numLoad) 
 			{
 				// removeEventListener
-				LogInManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
+				UserManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
 				DataManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
 				NoticeManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
 				

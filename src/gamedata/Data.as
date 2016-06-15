@@ -15,17 +15,17 @@ package gamedata
 		
 		private const TAG:String = "[Data]";
 		
-		protected var _name:String;
+		protected var _fileName:String;
 		protected var _path:File;
 		
-		public function get name():String
+		public function get fileName():String
 		{
-			return _name;
+			return _fileName;
 		}
 		
-		public function set name(value:String):void
+		public function set fileName(value:String):void
 		{
-			_name = value;
+			_fileName = value;
 		}
 		
 		public function get path():File
@@ -41,28 +41,28 @@ package gamedata
 		
 		public function Data(name:String, path:File)
 		{
-			_name = name;
+			_fileName = name;
 			_path = path;
 		}
 
 		public function dispose():void
 		{
-			_name = null;
+			_fileName = null;
 			_path = null;
 		}
 			
 		public function read():void
 		{
-			if (!_name || !_path)
+			if (!_fileName || !_path)
 			{
-				if (!_name) trace(TAG + " read : No name.");
+				if (!_fileName) trace(TAG + " read : No name.");
 				if (!_path) trace(TAG + " read : No path.");
 				
 				this.dispatchEvent(new starling.events.Event(FAILED_READING));
 				return;
 			}
 			
-			var file:File = _path.resolvePath(_name + ".json");
+			var file:File = _path.resolvePath(_fileName + ".json");
 			if (file.exists)
 			{
 				var urlLoader:URLLoader = new URLLoader();

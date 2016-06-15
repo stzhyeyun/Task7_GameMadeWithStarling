@@ -1,8 +1,8 @@
 package ui.popup
 {
-	import manager.DataManager;
+	import gamedata.DataManager;
 	
-	import manager.SoundManager;
+	import media.SoundManager;
 	
 	import resources.Resources;
 	import resources.SoundName;

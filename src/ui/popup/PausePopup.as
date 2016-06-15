@@ -4,7 +4,7 @@ package ui.popup
 	import resources.TextureAtlasName;
 	import resources.TextureName;
 	
-	import manager.SceneManager;
+	import scene.SceneManager;
 	import scene.SceneName;
 	
 	import starling.display.Button;
@@ -12,7 +12,6 @@ package ui.popup
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
-	import manager.PopupManager;
 
 	public class PausePopup extends Popup
 	{

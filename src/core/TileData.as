@@ -50,5 +50,10 @@ package core
 		{
 			_textureName = null;
 		}
+		
+		public function clone():TileData
+		{
+			return new TileData(_col, _row, _textureName);
+		}
 	}
 }

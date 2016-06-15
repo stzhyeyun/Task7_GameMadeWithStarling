@@ -57,14 +57,14 @@ package user
 		
 		public override function write():void
 		{
-			if (!_name || !_path)
+			if (!_fileName || !_path)
 			{
-				if (!_name) trace(TAG + " write : No name.");
+				if (!_fileName) trace(TAG + " write : No name.");
 				if (!_path) trace(TAG + " write : No path.");
 				return;
 			}
 			
-			var file:File = new File(path.resolvePath(name + ".json").url);
+			var file:File = new File(path.resolvePath(_fileName + ".json").url);
 			
 			if (!_userId || !_token) // 토큰이 없을 경우 로컬에 저장된 토큰을 삭제함 (로그인한 유저가 없음)
 			{

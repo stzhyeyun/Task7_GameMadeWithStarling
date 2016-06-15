@@ -1,10 +1,9 @@
-package manager
+package media
 {
 	import flash.events.Event;
 	import flash.media.SoundChannel;
 	import flash.media.SoundMixer;
 	import flash.media.SoundTransform;
-	import media.Sound;
 	
 	public class SoundManager
 	{

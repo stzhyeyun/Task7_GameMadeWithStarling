@@ -10,6 +10,12 @@ package resources
 		public static const TILE_GREEN:String = "tile_green";
 		public static const TILE_YELLOW:String = "tile_yellow";
 		
+		// Item
+		public static const ITEM_REFRESH:String = "item_refresh";
+		public static const ITEM_REFRESH_NONE:String = "item_refresh_none";
+		public static const ITEM_UNDO:String = "item_undo";
+		public static const ITEM_UNDO_NONE:String = "item_undo_none";
+		
 		// Button
 		public static const BTN_PLAY:String = "btn_play";
 		public static const BTN_RANK:String = "btn_rank";

@@ -1,18 +1,15 @@
-package manager
+package gamedata
 {
 	import flash.filesystem.File;
 	
-	import gamedata.Data;
-	import gamedata.PlayData;
-	import gamedata.Rank;
-	import gamedata.SettingData;
-	
-	import manager.LogInManager;
-	import manager.SoundManager;
+	import media.SoundManager;
 	
 	import starling.events.Event;
 	
+	import system.Manager;
+	
 	import user.UserInfo;
+	import user.UserManager;
 	
 	public class DataManager extends Manager
 	{
@@ -28,7 +25,7 @@ package manager
 		private var _playData:PlayData;
 		private var _settingData:SettingData;
 		private var _rank:Rank;
-
+		
 		public static function get instance():DataManager
 		{
 			if (!_instance)
@@ -117,7 +114,7 @@ package manager
 		
 		public function updateRank():void
 		{
-			var userInfo:UserInfo = LogInManager.instance.userInfo;
+			var userInfo:UserInfo = UserManager.instance.userInfo;
 			
 			if (userInfo.userId)
 			{
@@ -126,6 +123,13 @@ package manager
 				_rank.addEventListener(Rank.ADD, onUpdateRank);
 				_rank.addData(userInfo);
 			}
+		}
+		
+		public function revertScore(numBlock:int):void
+		{
+			_playData.currentScore -= numBlock;
+			
+			this.dispatchEvent(new Event(UPDATE_CURRENT_SCORE, false, _playData.currentScore));	
 		}
 		
 		public function export():void

@@ -1,8 +1,8 @@
 package core
 {
-	import manager.DataManager;
+	import gamedata.DataManager;
 	
-	import manager.SoundManager;
+	import media.SoundManager;
 	
 	import resources.Resources;
 	import resources.SoundName;
@@ -80,7 +80,7 @@ package core
 					isSettable = true;
 					for (var k:int = 0; k < blockTiles.length; k++)
 					{
-						diffCol = blockTiles[k].col - prevBlockTileCol;
+ 						diffCol = blockTiles[k].col - prevBlockTileCol;
 						diffRow = blockTiles[k].row - prevBlockTileRow;
 						
 						pivotCol += diffCol;
@@ -107,7 +107,7 @@ package core
 			return false;	
 		}
 
-		public function setBlock(pivotCol:int, pivotRow:int, blockData:BlockData, onUpdate:Function):Boolean
+		public function setBlock(pivotCol:int, pivotRow:int, blockData:BlockData, makeHistory:Function, onUpdated:Function):Boolean
 		{
 			var destTilesIndices:Vector.<Index2D> = new Vector.<Index2D>();
 			
@@ -140,6 +140,12 @@ package core
 				prevBlockTileRow = blockTiles[i].row;
 			}
 			
+			// Save current data
+			if (makeHistory)
+			{
+				makeHistory(false, clone(), destTilesIndices.length);
+			}
+			
 			// Update data
 			for (i = 0; i < blockTiles.length; i++)
 			{
@@ -149,18 +155,18 @@ package core
 			SoundManager.play(Resources.instance.getSound(SoundName.SET));
 
 			// Update view
-			if (onUpdate)
+			if (onUpdated)
 			{
-				onUpdate(destTilesIndices);
+				onUpdated(destTilesIndices);
 			}
 			
 			// Clear line
-			clear(destTilesIndices, onUpdate);
+			clear(destTilesIndices, makeHistory, onUpdated);
 			
 			return true;
 		}
 
-		public function clear(updatedTilesIndices:Vector.<Index2D>, onUpdate:Function):void
+		public function clear(updatedTilesIndices:Vector.<Index2D>, makeHistory:Function, onUpdated:Function):void
 		{
 			var totalClearTilesIndices:Vector.<Index2D> = new Vector.<Index2D>();
 			var verticalClearTilesIndices:Vector.<Index2D> = new Vector.<Index2D>();
@@ -272,6 +278,12 @@ package core
 					}
 				}
 			
+				// Save current data
+				if (makeHistory)
+				{
+					makeHistory();
+				}
+				
 				// Update data
 				for (i = 0; i < totalClearTilesIndices.length; i++)
 				{
@@ -281,9 +293,9 @@ package core
 				SoundManager.play(Resources.instance.getSound(SoundName.CLEAR));
 				
 				// Update view
-				if (onUpdate)
+				if (onUpdated)
 				{
-					onUpdate(totalClearTilesIndices);
+					onUpdated(totalClearTilesIndices);
 				}	
 				
 				// Update score
@@ -321,6 +333,20 @@ package core
 			dataStr += "]";
 			
 			return dataStr;
+		}
+		
+		public function clone():TableData
+		{
+			var tableData:TableData = new TableData(_size);
+			for (var i:int = 0; i < _data.length; i++)
+			{
+				for (var j:int = 0; j < _data[i].length; j++)
+				{
+					tableData.data[i][j] = _data[i][j].clone();
+				}
+			}
+			
+			return tableData;
 		}
 	}
 }
