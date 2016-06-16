@@ -108,21 +108,6 @@ package core
 					
 					_tiles[i].push(tile);
 					addChild(tile);
-					
-					// debug
-//					var textField:TextField = new TextField(
-//						tile.width, tile.height, i.toString() + ", " + j.toString());
-//					textField.x = tile.width * i;
-//					textField.y = tile.height * j;
-//					if (i != 0)
-//					{
-//						textField.x -= tile.width / margin * i;
-//					}
-//					if (j != 0)
-//					{
-//						textField.y -= tile.height / margin * j;
-//					}
-//					addChild(textField);
 				}
 			}
 		}
@@ -195,8 +180,6 @@ package core
 					}
 				}
 			}
-			
-			//_tiles[pivotCol][pivotRow].color = 0x000000; // debug
 			
 			return _data.setBlock(pivotCol, pivotRow, block.data, makeHistory, onUpdated);
 		}

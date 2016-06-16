@@ -23,6 +23,8 @@ package user
 		public static const LOG_IN:String = "logIn";
 		public static const LOG_OUT:String = "logOut";
 		public static const GET_USER_DB:String = "getUserDB";
+		public static const SET_ITEM:String = "setItem";
+		public static const ADD_ITEM:String = "addItem";
 		
 		private const TAG:String = "[LoginManager]";	
 		
@@ -35,6 +37,7 @@ package user
 		private var _userInfo:UserInfo;
 		
 		private var _loggedIn:Boolean;
+		private var _initialized:Boolean;
 		private var _facebookExtension:FacebookExtension;
 
 		public static function get instance():UserManager
@@ -75,6 +78,7 @@ package user
 		public override function initialize():void
 		{
 			_loggedIn = false;
+			_initialized = false;
 			
 			_numLoad = 2;
 			_path = File.applicationStorageDirectory.resolvePath("data");
@@ -132,7 +136,7 @@ package user
 			this.dispatchEvent(new starling.events.Event(LOG_OUT));
 		}
 		
-		public function updateItemData(itemId:int, numItem:int, needToUpdateDB:Boolean = false):void
+		public function updateItemData(type:String, itemId:int, numItem:int, needToUpdateDB:Boolean = false):void
 		{
 			if (!_userInfo)
 			{
@@ -140,7 +144,24 @@ package user
 				return;
 			}
 			
-			_userInfo.addItem(itemId, numItem);
+			switch (type)
+			{
+				case SET_ITEM:
+				{
+					_userInfo.setItem(itemId, numItem);
+				}
+					break;
+				
+				case ADD_ITEM:
+				{
+					_userInfo.addItem(itemId, numItem);
+				}
+					break;
+				
+				default:
+					trace(TAG + " updateItemData : Invalid type.");
+					return;
+			}
 			
 			if (needToUpdateDB)
 			{

@@ -79,7 +79,7 @@ package item
 			_quantity.update(_data.num.toString());
 			
 			// Update UserInfo & DB
-			UserManager.instance.updateItemData(_data.id, _data.num, true);
+			UserManager.instance.updateItemData(UserManager.SET_ITEM, _data.id, _data.num, true);
 		}
 		
 		protected virtual function onEnded(event:TouchEvent):void

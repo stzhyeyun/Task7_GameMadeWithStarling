@@ -71,6 +71,12 @@ package scene.titleScene
 					}
 				}
 				
+				// Reward
+				if (!AttendanceManager.instance.rewarded)
+				{
+					PopupManager.instance.showPopup(this, PopupName.REWARD);
+				}
+				
 				_firstStart = false;
 			}
 		}

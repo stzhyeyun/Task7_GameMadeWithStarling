@@ -133,6 +133,7 @@ package user
 			loader.removeEventListener(Event.COMPLETE, onCompleteLoad);
 			
 			var plainText:Object = JSON.parse(AesCrypto.decrypt(loader.data, "ahundrendblocksbybamkie"));
+//			var plainText:Object = JSON.parse(loader.data);
 			
 			_userId = plainText.userId;
 			_userName = plainText.userName;
@@ -156,11 +157,19 @@ package user
 			_score = score;
 		}
 		
-		public function addItem(id:int, num:int):void
+		public function setItem(id:int, num:int):void
 		{
 			if (id >= 0 && id < _items.length)
 			{
 				_items[id] = num;
+			}
+		}
+		
+		public function addItem(id:int, num:int):void
+		{
+			if (id >= 0 && id < _items.length)
+			{
+				_items[id] = _items[id] + num;
 			}
 		}
 		

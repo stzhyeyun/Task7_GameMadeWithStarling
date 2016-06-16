@@ -46,6 +46,7 @@ package scene.gameScene
 	{
 		public static const TABLE_SIZE:int = 10;
 		private const BLOCK_NUM:int = 3;
+		private const BLOCK_ORIGIN_SCALE_RATIO:Number = 0.5;
 		
 		private var _firstStart:Boolean;
 		
@@ -57,6 +58,7 @@ package scene.gameScene
 		private var _tableScale:Number;
 		private var _blockAreaSize:Number;
 		private var _originBlockPosData:Vector.<Point>;
+		
 		
 		public function GameScene()
 		{
@@ -244,7 +246,7 @@ package scene.gameScene
 			for (var i:int = 0; i < BLOCK_NUM; i++)
 			{
 				// Block
-				block = new Block(_tableScale * 0.5);
+				block = new Block(_tableScale * BLOCK_ORIGIN_SCALE_RATIO);
 				if (!blocksData)
 				{
 					block.initialize(BlockDispenser.pop());
@@ -258,6 +260,7 @@ package scene.gameScene
 					block.initialize(null);
 					block.visible = false;
 				}
+				
 				block.x = _table.x + (_blockAreaSize / 2) + _blockAreaSize * i;  
 				block.y = _table.y + _table.height + (_blockAreaSize / 2);
 				addChild(block);
@@ -341,7 +344,7 @@ package scene.gameScene
 				case TouchPhase.BEGAN:
 				{
 					// 블럭 확대
-					block.setSize(_tableScale);
+					block.setScale(_tableScale);
 					
 					moveBlock(block, touch.getLocation(this));
 				}
@@ -355,9 +358,6 @@ package scene.gameScene
 				
 				case TouchPhase.ENDED:
 				{
-					// 블럭 크기 원복
-					block.setSize(_tableScale * 0.5);
-					
 					// 테이블에 블럭 세팅
 					if (_table.setBlock(block))
 					{
@@ -381,6 +381,9 @@ package scene.gameScene
 						block.x = _originBlockPosData[blockIndex].x;
 						block.y = _originBlockPosData[blockIndex].y;
 					}
+					
+					// 블럭 크기 원복
+					block.setScale(_tableScale * BLOCK_ORIGIN_SCALE_RATIO);
 					
 					// 남은 블럭이 테이블에 세팅 가능한지 확인
 					for (i = 0; i < _blocks.length; i++)

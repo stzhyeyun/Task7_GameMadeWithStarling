@@ -33,9 +33,11 @@ package scene.loadingScene
 
 	public class LoadingScene extends Scene
 	{
-		private var _numLoad:int;
-		private var _loadCounter:int;
 		private var _loadingBar:Gauge;
+		
+		private var _numTotalLoad:int;
+		private var _numPhase1Load:int;
+		private var _loadCounter:int;
 		
 		
 		public function LoadingScene()
@@ -61,7 +63,9 @@ package scene.loadingScene
 			title.y = this.nativeStageHeight * 0.2;
 			addChild(title);
 			
-			_numLoad = 5;
+			_numPhase1Load = 3;
+			var numPhase2Load:int = 2;
+			_numTotalLoad = _numPhase1Load + numPhase2Load;
 			_loadCounter = 0;
 			// Loading bar
 			var bar:Image = new Image(
@@ -76,7 +80,7 @@ package scene.loadingScene
 			progress.x = bar.width * 0.02;
 			progress.y = bar.height * 0.15;
 						
-			_loadingBar = new Gauge(bar, progress, _numLoad);
+			_loadingBar = new Gauge(bar, progress, _numTotalLoad);
 			_loadingBar.pivotX = _loadingBar.width / 2;
 			_loadingBar.pivotY = _loadingBar.height / 2;
 			_loadingBar.x = this.nativeStageWidth / 2;
@@ -99,87 +103,91 @@ package scene.loadingScene
 		{
 			SoundManager.play(Resources.instance.getSound(SoundName.MAIN_THEME));
 			
-			Resources.instance.addEventListener(Resources.COMPLETE_LOAD, onCompleteResourcesLoad);
+			Resources.instance.addEventListener(Resources.COMPLETE_LOAD, checkLoadingPhase1Progress);
 			Resources.instance.loadFromDisk(File.applicationDirectory.resolvePath("resources/res/second"));
 			
-			UserManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
+			UserManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingPhase1Progress);
 			UserManager.instance.initialize();
 			
-			DataManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
+			DataManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingPhase1Progress);
 			DataManager.instance.initialize();
+		}
+		
+		private function checkLoadingPhase1Progress():void
+		{
+			if (_loadingBar)
+			{
+				_loadingBar.update(++_loadCounter);
+			}
+			
+			if (_loadCounter == _numPhase1Load) 
+			{
+				// removeEventListener
+				Resources.instance.removeEventListener(Resources.COMPLETE_LOAD, checkLoadingPhase1Progress);
+				UserManager.instance.removeEventListener(Manager.INITIALIZED, checkLoadingPhase1Progress);
+				DataManager.instance.removeEventListener(Manager.INITIALIZED, checkLoadingPhase1Progress);
+				
+				// Scene
+				var titleScene:TitleScene = new TitleScene();
+				titleScene.initialize();
+				SceneManager.addScene(SceneName.TITLE, titleScene);
+				
+				var gameScene:GameScene = new GameScene();
+				gameScene.initialize();
+				gameScene.visible = false;
+				SceneManager.addScene(SceneName.GAME, gameScene);
+				
+				// Sound
+				var sound:Sound = Resources.instance.getSound(SoundName.SET);
+				if (sound)
+				{
+					sound.volume = 0.5;
+				}
+				
+				sound = Resources.instance.getSound(SoundName.CLEAR);
+				if (sound)
+				{
+					sound.volume = 0.5;
+				}
+				
+				// Popup
+				PopupManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingPhase2Progress);
+				PopupManager.instance.initialize();
+				
+				// Notice
+				NoticeManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingPhase2Progress);
+				NoticeManager.instance.initialize();
+				
+				// Attendance
+				AttendanceManager.instance.initialize();
+			}
+		}
+		
+		private function checkLoadingPhase2Progress():void
+		{
+			if (_loadingBar)
+			{
+				_loadingBar.update(++_loadCounter);
+			}
+			
+			if (_loadCounter == _numTotalLoad) 
+			{
+				// removeEventListener
+				PopupManager.instance.removeEventListener(Manager.INITIALIZED, checkLoadingPhase2Progress);
+				NoticeManager.instance.removeEventListener(Manager.INITIALIZED, checkLoadingPhase2Progress);
+				
+				// Switch scene
+				SceneManager.switchScene(SceneName.TITLE);
+			}
 		}
 		
 		private function onEnterFrame(event:EnterFrameEvent):void
 		{
 			this.alpha += 0.05;
 			
-			if (this.alpha == 1)
+			if (this.alpha >= 1)
 			{
 				removeEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
-			}
-		}
-		
-		private function onCompleteResourcesLoad():void
-		{
-			Resources.instance.removeEventListener(Resources.COMPLETE_LOAD, onCompleteResourcesLoad);
-			
-			if (_loadingBar)
-			{
-				_loadingBar.update(++_loadCounter);
-			}
-			
-			// Scene
-			var titleScene:TitleScene = new TitleScene();
-			titleScene.initialize();
-			SceneManager.addScene(SceneName.TITLE, titleScene);
-			
-			var gameScene:GameScene = new GameScene();
-			gameScene.initialize();
-			gameScene.visible = false;
-			SceneManager.addScene(SceneName.GAME, gameScene);
-			
-			// Sound
-			var sound:Sound = Resources.instance.getSound(SoundName.SET);
-			if (sound)
-			{
-				sound.volume = 0.5;
-			}
-			
-			sound = Resources.instance.getSound(SoundName.CLEAR);
-			if (sound)
-			{
-				sound.volume = 0.5;
-			}
-
-			// Popup
-			PopupManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
-			PopupManager.instance.initialize();
-			
-			// Attendance
-			AttendanceManager.instance.initialize();
-			
-			// Notice
-			NoticeManager.instance.addEventListener(Manager.INITIALIZED, checkLoadingProgress);
-			NoticeManager.instance.initialize();
-		}
-		
-		private function checkLoadingProgress():void
-		{
-			if (_loadingBar)
-			{
-				_loadingBar.update(++_loadCounter);
-			}
-			
-			if (_loadCounter == _numLoad) 
-			{
-				// removeEventListener
-				UserManager.instance.removeEventListener(Manager.INITIALIZED, checkLoadingProgress);
-				DataManager.instance.removeEventListener(Manager.INITIALIZED, checkLoadingProgress);
-				PopupManager.instance.removeEventListener(Manager.INITIALIZED, checkLoadingProgress);
-				NoticeManager.instance.removeEventListener(Manager.INITIALIZED, checkLoadingProgress);
-				
-				// Switch scene
-				SceneManager.switchScene(SceneName.TITLE);
 			}
 		}
 	}

@@ -58,7 +58,7 @@ package system
 		public override function initialize():void
 		{
 			var userInfo:UserInfo = UserManager.instance.userInfo;
-			if (userInfo.userId)
+			if (userInfo && userInfo.userId)
 			{
 				_rewarded = userInfo.rewarded;
 				_attendance = userInfo.attendance;
@@ -204,7 +204,7 @@ package system
 				for (var i:int = 0; i < _rewardData[index].length; i++)
 				{
 					UserManager.instance.updateItemData(
-						_rewardData[index][i].id, _rewardData[index][i].num); 	
+						UserManager.ADD_ITEM, _rewardData[index][i].id, _rewardData[index][i].num); 	
 				}
 			}
 		}

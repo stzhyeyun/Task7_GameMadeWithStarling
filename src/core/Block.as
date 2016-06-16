@@ -9,11 +9,16 @@ package core
 
 	public class Block extends Sprite
 	{
+		public static const ORIGIN:String = "origin";
+		public static const EXPAND:String = "expand";
+		
 		private const TAG:String = "[Block]";
 		
 		private var _data:BlockData;
 		private var _tiles:Vector.<Tile>;
-		private var _tileScale:Number;
+		
+		private var _originScale:Number;
+		private var _prevScale:Number;
 		
 		public function get data():BlockData
 		{
@@ -30,7 +35,9 @@ package core
 		{
 			_data = null;
 			_tiles = new Vector.<Tile>();
-			_tileScale = scale;
+			
+			_originScale = scale;
+			_prevScale = _originScale;
 		}
 		
 		public function initialize(blockData:BlockData):void
@@ -56,7 +63,7 @@ package core
 				if (i >= _tiles.length)
 				{
 					tile = new Tile(tileData);
-					tile.scale = _tileScale;
+					tile.scale = _originScale;
 					_tiles.push(tile);
 				}
 				else
@@ -91,7 +98,7 @@ package core
 			this.pivotY = this.height / 2;
 		}
 		
-		public function setSize(scale:Number):void
+		public function setScale(scale:Number):void
 		{
 			var data:Vector.<TileData> = _data.data;
 			var tileData:TileData;
@@ -116,6 +123,8 @@ package core
 					_tiles[i].y -= _tiles[i].height / margin * tileData.row;
 				}
 			}
+			
+			_prevScale = scale;
 		}
 	}
 }

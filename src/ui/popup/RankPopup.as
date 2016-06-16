@@ -177,7 +177,7 @@ package ui.popup
 			_needToSetPicIndices = new Dictionary();
 			
 			var userInfo:UserInfo = UserManager.instance.userInfo;
-			if (userInfo.userId)
+			if (userInfo && userInfo.userId)
 			{
 				DataManager.instance.rank.addEventListener(Rank.GET_RANK, onGotRank);
 				DataManager.instance.rank.getRank(userInfo);
