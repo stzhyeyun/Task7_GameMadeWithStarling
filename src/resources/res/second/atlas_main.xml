@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TextureAtlas imagePath="atlas_main.png">
-   <SubTexture name="0" x="40" y="945" width="31" height="32" />
+   <SubTexture name="0" x="168" y="945" width="31" height="32" />
    <SubTexture name="1" x="895" y="0" width="11" height="31" />
-   <SubTexture name="2" x="240" y="954" width="21" height="31" />
+   <SubTexture name="2" x="450" y="793" width="21" height="31" />
    <SubTexture name="3" x="991" y="0" width="20" height="32" />
-   <SubTexture name="4" x="105" y="945" width="28" height="34" />
-   <SubTexture name="5" x="979" y="190" width="21" height="33" />
-   <SubTexture name="6" x="163" y="945" width="25" height="33" />
-   <SubTexture name="7" x="216" y="945" width="22" height="33" />
-   <SubTexture name="8" x="190" y="945" width="24" height="32" />
-   <SubTexture name="9" x="135" y="945" width="26" height="33" />
+   <SubTexture name="4" x="979" y="190" width="28" height="34" />
+   <SubTexture name="5" x="287" y="954" width="21" height="33" />
+   <SubTexture name="6" x="979" y="226" width="25" height="33" />
+   <SubTexture name="7" x="426" y="793" width="22" height="33" />
+   <SubTexture name="8" x="261" y="954" width="24" height="32" />
+   <SubTexture name="9" x="233" y="954" width="26" height="33" />
    <SubTexture name="alert" x="480" y="417" width="358" height="178" />
    <SubTexture name="background_game" x="722" y="597" width="200" height="355" />
    <SubTexture name="btn_bgm" x="908" y="190" width="69" height="71" />
    <SubTexture name="btn_cancel" x="872" y="379" width="69" height="71" />
-   <SubTexture name="btn_close" x="73" y="945" width="30" height="30" />
+   <SubTexture name="btn_close" x="201" y="945" width="30" height="30" />
    <SubTexture name="btn_confirm" x="840" y="452" width="69" height="71" />
    <SubTexture name="btn_down" x="484" y="793" width="69" height="71" />
    <SubTexture name="btn_logIn" x="450" y="893" width="69" height="71" />
@@ -32,8 +32,8 @@
    <SubTexture name="btn_top" x="924" y="671" width="69" height="71" />
    <SubTexture name="btn_up" x="924" y="744" width="69" height="71" />
    <SubTexture name="img_anonymous" x="943" y="379" width="64" height="64" />
-   <SubTexture name="img_ban" x="521" y="939" width="47" height="47" />
-   <SubTexture name="img_check" x="0" y="945" width="38" height="34" />
+   <SubTexture name="img_ban" x="79" y="945" width="47" height="47" />
+   <SubTexture name="img_check" x="128" y="945" width="38" height="34" />
    <SubTexture name="img_panel_brown" x="0" y="50" width="480" height="100" />
    <SubTexture name="img_panel_gray" x="0" y="152" width="480" height="100" />
    <SubTexture name="img_reward_day1" x="0" y="841" width="240" height="50" />
@@ -46,7 +46,8 @@
    <SubTexture name="popup" x="0" y="254" width="478" height="476" />
    <SubTexture name="popup_mini" x="480" y="268" width="390" height="147" />
    <SubTexture name="text_bestScore" x="612" y="0" width="145" height="23" />
-   <SubTexture name="text_score" x="612" y="25" width="77" height="23" />
+   <SubTexture name="text_noData" x="612" y="25" width="95" height="19" />
+   <SubTexture name="text_score" x="0" y="945" width="77" height="23" />
    <SubTexture name="tile_blue" x="840" y="525" width="55" height="55" />
    <SubTexture name="tile_green" x="663" y="847" width="55" height="55" />
    <SubTexture name="tile_orange" x="663" y="904" width="55" height="55" />

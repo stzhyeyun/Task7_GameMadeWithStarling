@@ -325,6 +325,35 @@ package scene.gameScene
 		{
 			return _table.undo();
 		}
+		
+		private function isGameOver():void
+		{
+			// 남은 블럭이 테이블에 세팅 가능한지 확인
+			var isGameOver:Boolean = true;
+			var checkedCount:int = 0;
+			for (var i:int = 0; i < _blocks.length; i++)
+			{
+				if (_blocks[i].visible)
+				{
+					checkedCount++;
+					if (_table.isSettable(_blocks[i]))
+					{
+						isGameOver = false;
+						break;
+					}
+				}
+			}
+			
+			if (checkedCount != 0 && isGameOver)
+			{
+				// 데이터 업데이트
+				DataManager.instance.updateBestScore();
+				DataManager.instance.updateRank();
+				
+				// 종료 팝업 호출
+				PopupManager.instance.showPopup(this, PopupName.GAME_OVER);
+			}
+		}
 					
 		private function onTouchBlock(event:TouchEvent):void
 		{
@@ -386,21 +415,36 @@ package scene.gameScene
 					block.setScale(_tableScale * BLOCK_ORIGIN_SCALE_RATIO);
 					
 					// 남은 블럭이 테이블에 세팅 가능한지 확인
-					for (i = 0; i < _blocks.length; i++)
-					{
-						if (i != blockIndex && _blocks[i].visible)
-						{
-							if (!_table.isSettable(_blocks[i]))
-							{
-								// 데이터 업데이트
-								DataManager.instance.updateBestScore();
-								DataManager.instance.updateRank();
-								
-								// 종료 팝업 호출
-								PopupManager.instance.showPopup(this, PopupName.GAME_OVER);
-							}
-						}
-					}
+//					var isGameOver:Boolean = true;
+//					for (i = 0; i < _blocks.length; i++)
+//					{
+//						if (i != blockIndex && _blocks[i].visible)
+//						{
+//							if (_table.isSettable(_blocks[i]))
+//							{
+//								isGameOver = false;
+//								break;
+//								
+////								// 데이터 업데이트
+////								DataManager.instance.updateBestScore();
+////								DataManager.instance.updateRank();
+////								
+////								// 종료 팝업 호출
+////								PopupManager.instance.showPopup(this, PopupName.GAME_OVER);
+//							}
+//						}
+//					}
+//					
+//					if (isGameOver)
+//					{
+//						// 데이터 업데이트
+//						DataManager.instance.updateBestScore();
+//						DataManager.instance.updateRank();
+//						
+//						// 종료 팝업 호출
+//						PopupManager.instance.showPopup(this, PopupName.GAME_OVER);
+//					}
+					isGameOver();
 					
 					refreshBlocks();
 				}

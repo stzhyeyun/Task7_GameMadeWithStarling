@@ -47,13 +47,14 @@ package gamedata
 			loader.addEventListener(Event.COMPLETE, onGotRank);
 		}
 		
-		public function getUser(rank:int, numResult:int = 1):void
+		public function getUser(rank:int, numResult:int = 1, currUserId:String = null):void
 		{
 			var url:String =
 				DatabaseURL.USER +
 				"getRankedUser.php" +
 				"?rank=" + rank +
-				"&numResult=" + numResult;
+				"&numResult=" + numResult +
+				"&currUserId=" + currUserId;
 			
 			var loader:URLLoader = new URLLoader(new URLRequest(url));
 			loader.addEventListener(Event.COMPLETE, onGotUser);

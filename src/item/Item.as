@@ -38,8 +38,8 @@ package item
 			var scale:Number = this.height * 0.3 / _quantity.height;
 			_quantity.width *= scale;
 			_quantity.height *= scale;
-			_quantity.x = (this.width / 2) - (_quantity.width / 2);
-			_quantity.y = this.height * 0.85;
+			_quantity.x = (this.width / 2);
+			_quantity.y = this.height;
 			addChild(_quantity);
 			
 			addEventListener(TouchEvent.TOUCH, onEnded);
@@ -77,6 +77,7 @@ package item
 			}
 			
 			_quantity.update(_data.num.toString());
+			_quantity.x = (this.width / 2);
 			
 			// Update UserInfo & DB
 			UserManager.instance.updateItemData(UserManager.SET_ITEM, _data.id, _data.num, true);

@@ -41,9 +41,11 @@ package resources
 		public static const BTN_NOTICE_MESSAGE:String = "btn_noticeMessage";
 	
 		// Image
-		public static const IMG_BAN:String = "img_ban";
 		public static const IMG_GAUGE_BASE:String = "img_gauge_base";
 		public static const IMG_GAUGE_BAR:String = "img_gauge_bar";
+		
+		public static const IMG_BAN:String = "img_ban";
+		
 		public static const IMG_PANEL_BROWN:String = "img_panel_brown";
 		public static const IMG_PANEL_GRAY:String = "img_panel_gray";
 		public static const IMG_ANONYMOUS:String = "img_anonymous";
@@ -53,7 +55,6 @@ package resources
 		public static const IMG_REWARD_DAY3:String = "img_reward_day3";
 		public static const IMG_REWARD_DAY4:String = "img_reward_day4";
 		public static const IMG_REWARD_DAY5:String = "img_reward_day5";
-		
 		public static const IMG_CHECK:String = "img_check";
 		
 		// Popup
@@ -72,6 +73,7 @@ package resources
 		// Text
 		public static const TEXT_BEST_SCORE:String = "text_bestScore";
 		public static const TEXT_SCORE:String = "text_score";
+		public static const TEXT_NO_DATA:String = "text_noData";
 		
 		// Background
 		public static const BACKGROUND_TITLE:String = "background_title";

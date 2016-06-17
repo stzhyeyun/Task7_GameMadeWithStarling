@@ -141,7 +141,7 @@ package system
 			{
 				url +=
 					"&numItem0=0" +
-					"&numItem0=" + _rewardData[index][0].num;
+					"&numItem1=" + _rewardData[index][0].num;
 			}
 			
 			var loader:URLLoader = new URLLoader(new URLRequest(url));

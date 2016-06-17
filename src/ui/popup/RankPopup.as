@@ -23,8 +23,8 @@ package ui.popup
 	
 	import ui.SpriteNumber;
 	
-	import user.UserManager;
 	import user.UserInfo;
+	import user.UserManager;
 	
 	import util.Color;
 
@@ -34,13 +34,15 @@ package ui.popup
 		private const RANK_PER_PAGE:int = 5;
 		
 		private var _userRankButton:Button;
+		private var _message:Image;
 		private var _rankerPanels:Vector.<Sprite>;
 		
 		private var _userRank:int;
 		private var _prevTop:int;
 		private var _currTop:int;
 		private var _numLoadRequest:int;
-		private var _needToSetPicIndices:Dictionary;		
+		private var _needToSetPicIndices:Dictionary;
+		private var _forcedToFocus:Boolean;
 		
 		
 		public function RankPopup()
@@ -69,6 +71,8 @@ package ui.popup
 				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_UP));
 			var down:Button = new Button(
 				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_DOWN));
+			_message = new Image(
+				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.TEXT_NO_DATA));
 			_userRankButton = new Button(
 				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.BTN_MY));
 			
@@ -97,12 +101,19 @@ package ui.popup
 			down.y = panel.height * 0.68;
 			down.addEventListener(TouchEvent.TOUCH, onEndedDownButton);
 			
+			_message.scale = 1.5;
+			_message.pivotX = _message.width / 2;
+			_message.pivotY = _message.height / 2;
+			_message.x = panel.width * 0.5;
+			_message.y = panel.height / 2;
+			
 			addChild(panel);
 			addChild(title);
 			addChild(top);
 			addChild(up);
 			addChild(_userRankButton);
 			addChild(down);
+			addChild(_message);
 			
 			// Ranker panels
 			_rankerPanels = new Vector.<Sprite>();
@@ -165,6 +176,8 @@ package ui.popup
 				ranker.addChild(name);
 				ranker.addChild(score);
 				
+				ranker.visible = false;
+				
 				_rankerPanels.push(ranker);
 				addChild(ranker);
 			}
@@ -175,10 +188,12 @@ package ui.popup
 			_currTop = 1;
 			_numLoadRequest = 0;
 			_needToSetPicIndices = new Dictionary();
+			_forcedToFocus = false;
 			
 			var userInfo:UserInfo = UserManager.instance.userInfo;
 			if (userInfo && userInfo.userId)
 			{
+				_forcedToFocus = true;
 				DataManager.instance.rank.addEventListener(Rank.GET_RANK, onGotRank);
 				DataManager.instance.rank.getRank(userInfo);
 			}
@@ -199,6 +214,7 @@ package ui.popup
 			if (_userRank > 0)
 			{
 				_currTop = _userRank - int(RANK_PER_PAGE / 2);
+				_forcedToFocus = true;
 				setRanker();
 			}
 			
@@ -233,7 +249,17 @@ package ui.popup
 			}
 			
 			DataManager.instance.rank.addEventListener(Rank.GET_USER, onGotUser);
-			DataManager.instance.rank.getUser(_currTop, RANK_PER_PAGE); 
+			
+			if (_forcedToFocus)
+			{
+				DataManager.instance.rank.getUser(
+					_currTop, RANK_PER_PAGE, UserManager.instance.userInfo.userId);
+				_forcedToFocus = false;
+			}
+			else
+			{
+				DataManager.instance.rank.getUser(_currTop, RANK_PER_PAGE);
+			}
 		}
 		
 		private function onGotUser(event:Event):void
@@ -246,11 +272,11 @@ package ui.popup
 				return;
 			}
 			
+			_message.visible = false;
+			
 			var rankValue:int = _currTop;
 			_prevTop = _currTop;
 			_numLoadRequest = 0;
-			
-			Resources.instance.addEventListener(Resources.READY_USER_PICTURE, onLoadedUserPicture);
 			
 			var panel:Image;
 			var rank:SpriteNumber;
@@ -290,6 +316,7 @@ package ui.popup
 					
 					_numLoadRequest++;
 					_needToSetPicIndices[userInfoVec[i].userId] = i;
+					Resources.instance.addEventListener(Resources.READY_USER_PICTURE, onLoadedUserPicture);
 					Resources.instance.loadFromURL(Resources.USER_PICTURE, userInfoVec[i].userId);
 				}
 				else
@@ -319,14 +346,16 @@ package ui.popup
 		private function onLoadedUserPicture(event:Event):void
 		{
 			var userId:String = event.data as String;
-			if (!userId || !_needToSetPicIndices || !_needToSetPicIndices[userId])
+			if (!userId || !_needToSetPicIndices || _needToSetPicIndices[userId] == null)
 			{
 				if (!userId) 
 					trace(TAG + " onLoadedUserPicture : No userId.");
 				if (!_needToSetPicIndices) 
 					trace(TAG + " onLoadedUserPicture : No need to set picture.");
-				if (!_needToSetPicIndices[userId]) 
+				if (_needToSetPicIndices[userId] == null) 
 					trace(TAG + " onLoadedUserPicture : Not registered userId.");
+				
+				_numLoadRequest--;
 				return;	
 			}
 			
@@ -370,6 +399,7 @@ package ui.popup
 			var userInfo:UserInfo = UserManager.instance.userInfo;
 			if (userInfo.userId)
 			{
+				_forcedToFocus = true;
 				DataManager.instance.rank.addEventListener(Rank.GET_RANK, onGotRank);
 				DataManager.instance.rank.getRank(userInfo);
 			}
@@ -416,6 +446,7 @@ package ui.popup
 				if (_userRank > 0)
 				{
 					_currTop = _userRank - int(RANK_PER_PAGE / 2);
+					_forcedToFocus = true;
 					setRanker();
 				}
 			}

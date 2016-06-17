@@ -16,6 +16,7 @@ package core
 	public class Table extends Sprite
 	{
 		private const TAG:String = "[Table]";
+		private const NUM_UNDO:int = 5;
 		
 		private var _data:TableData;
 		private var _tableHistory:Vector.<TableData>;
@@ -189,7 +190,7 @@ package core
 			if (!_tableHistory || _tableHistory.length <= 0)
 			{
 				trace(TAG + " undo : No previous data.");
-				_toaster.toast("Can not UNDO now!");
+				_toaster.toast("Can not UNDO no more!");
 				return false;
 			}
 
@@ -211,12 +212,12 @@ package core
 			else
 			{
 				// 최대 5번 Undo 가능
-				if (_tableHistory.length == 5)
+				if (_tableHistory.length == NUM_UNDO)
 				{
 					_tableHistory.shift();
 				}
 				
-				if (_blockHistory.length == 5)
+				if (_blockHistory.length == NUM_UNDO)
 				{
 					_blockHistory.shift();
 				}

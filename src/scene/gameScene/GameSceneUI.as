@@ -6,6 +6,7 @@ package scene.gameScene
 	import resources.TextureAtlasName;
 	import resources.TextureName;
 	
+	import starling.core.Starling;
 	import starling.display.Button;
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -25,6 +26,8 @@ package scene.gameScene
 
 	public class GameSceneUI extends Sprite
 	{
+		private const HEADER_HEIGHT_RATIO:Number = 0.1;
+		
 		private var _userPic:Image;
 		private var _bestScore:SpriteNumber;
 		private var _currentScore:SpriteNumber;
@@ -48,7 +51,7 @@ package scene.gameScene
 		
 		public function initialize(stageWidth:Number, stageHeight:Number, bestScore:int, currentScore:int):void
 		{
-			var headerHeight:Number = stageHeight * 0.1;
+			var headerHeight:Number = stageHeight * HEADER_HEIGHT_RATIO;
 			
 			// User picture
 			_userPic = new Image(null);
@@ -100,7 +103,7 @@ package scene.gameScene
 		
 		public function setScore(stageWidth:Number, stageHeight:Number, bestScore:int, currentScore:int):void
 		{
-			var headerHeight:Number = stageHeight * 0.1;
+			var headerHeight:Number = stageHeight * HEADER_HEIGHT_RATIO;
 			
 			// Best score
 			if (_bestScore)
@@ -155,7 +158,16 @@ package scene.gameScene
 			
 			if (eventTargetId && userId && eventTargetId == userId)
 			{
+				// test
+				var headerHeight:Number = Starling.current.nativeStage.stageHeight * HEADER_HEIGHT_RATIO;
 				_userPic.texture = Resources.instance.getCurrentUserPicture();
+				_userPic.height = headerHeight * 0.8;
+				_userPic.width = _userPic.height;
+				_userPic.pivotX = _userPic.width / 2;
+				_userPic.pivotY = _userPic.height / 2;
+				_userPic.x = Starling.current.nativeStage.stageWidth * 0.1;
+				_userPic.y = headerHeight / 2;
+				//
 				_userPic.visible = true;
 			}
 		}
