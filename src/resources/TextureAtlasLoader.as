@@ -61,7 +61,7 @@ package resources
 		
 			_bitmap = loaderInfo.loader.content as Bitmap;
 			
-			// Load XMl
+			// XML 로드
 			var loader:URLLoader = new URLLoader();
 			loader.addEventListener(Event.COMPLETE, onLoadedXML);
 			loader.addEventListener(IOErrorEvent.IO_ERROR, onFailedLoadingXML);

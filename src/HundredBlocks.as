@@ -42,6 +42,11 @@ package
 			NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeactivate);
 		}
 
+		/**
+		 * 어플리케이션 종료 시 리소스를 해제하고 푸시 알림을 등록합니다.
+		 * @param event Event.EXITING
+		 * 
+		 */
 		private function onExit(event:Event):void
 		{
 			NativeApplication.nativeApplication.removeEventListener(Event.EXITING, onExit);
@@ -56,14 +61,24 @@ package
 			Resources.instance.dispose();
 			
 			var notification:ScheduledNotificationExtension = new ScheduledNotificationExtension();
-			notification.setNotification("Ding-dong!", "Hundred Blocks", "It's time to take a break!", 5/*temp*/);
+			notification.setNotification("Ding-dong!", "Hundred Blocks", "It's time to take a break!", 5/*DAY*/);
 		}
 		
+		/**
+		 * 어플리케이션이 활성화되면 호출되는 함수입니다. 1. BGM 재생
+		 * @param event Event.ACTIVATE
+		 * 
+		 */
 		private function onActivate(event:Event):void
 		{
 			SoundManager.wakeBgm();
 		}
 		
+		/**
+		 * 어플리케이션이 비활성화되면 호출되는 함수입니다. 1. 사운드 정지 2. 데이터 로컬에 작성 3. 푸시 알림 등록
+		 * @param event Event.DEACTIVATE
+		 * 
+		 */
 		private function onDeactivate(event:Event):void
 		{
 			SoundManager.stopAll();
@@ -71,7 +86,7 @@ package
 			UserManager.instance.export();
 			
 			var notification:ScheduledNotificationExtension = new ScheduledNotificationExtension();
-			notification.setNotification("Ding-dong!", "Hundred Blocks", "It's time to take a break!", 5/*temp*/);
+			notification.setNotification("Ding-dong!", "Hundred Blocks", "It's time to take a break!", 5/*DAY*/);
 		}
 	}
 }

@@ -63,8 +63,8 @@ package scene.loadingScene
 			title.y = this.nativeStageHeight * 0.2;
 			addChild(title);
 			
-			_numPhase1Load = 3;
 			var numPhase2Load:int = 2;
+			_numPhase1Load = 3;
 			_numTotalLoad = _numPhase1Load + numPhase2Load;
 			_loadCounter = 0;
 			// Loading bar
@@ -88,7 +88,6 @@ package scene.loadingScene
 			addChild(_loadingBar);
 			
 			this.alpha = 0;
-			addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
 		}
 		
 		public override function dispose():void
@@ -101,6 +100,8 @@ package scene.loadingScene
 		
 		protected override function onStartScene(event:Event):void
 		{
+			addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
+			
 			SoundManager.play(Resources.instance.getSound(SoundName.MAIN_THEME));
 			
 			Resources.instance.addEventListener(Resources.COMPLETE_LOAD, checkLoadingPhase1Progress);

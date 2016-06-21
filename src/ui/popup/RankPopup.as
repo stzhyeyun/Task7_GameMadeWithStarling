@@ -211,6 +211,7 @@ package ui.popup
 		
 		public override function close():void
 		{
+			// 로그인한 유저가 있다면 해당 유저의 랭크 기준으로 패널 초기화
 			if (_userRank > 0)
 			{
 				_currTop = _userRank - int(RANK_PER_PAGE / 2);
@@ -223,16 +224,19 @@ package ui.popup
 		
 		private function setRanker():void
 		{
+			// 랭크 최소값 확인
 			if (_currTop <= 0)
 			{
 				_currTop = 1;
 			}
 			
+			// 세팅 필요성 확인
 			if (_currTop == _prevTop)
 			{
 				return;
 			}
 			
+			// 총 랭커 수 확인
 			DataManager.instance.rank.addEventListener(Rank.COUNT, onGotCount);
 			DataManager.instance.rank.count();
 		}
@@ -241,6 +245,7 @@ package ui.popup
 		{
 			DataManager.instance.rank.removeEventListener(Rank.COUNT, onGotCount);
 			
+			// 랭크 최대값 확인
 			var count:int = int(event.data);
 			if (_currTop > count)
 			{
@@ -248,6 +253,7 @@ package ui.popup
 				return;
 			}
 			
+			// 팝업에 표시할 유저 정보 가져오기
 			DataManager.instance.rank.addEventListener(Rank.GET_USER, onGotUser);
 			
 			if (_forcedToFocus)
@@ -272,8 +278,10 @@ package ui.popup
 				return;
 			}
 			
+			// 'No Data'
 			_message.visible = false;
 			
+			// 랭크 패널 세팅
 			var rankValue:int = _currTop;
 			_prevTop = _currTop;
 			_numLoadRequest = 0;
@@ -293,6 +301,7 @@ package ui.popup
 					name = _rankerPanels[i].getChildByName("name") as TextField;
 					score = _rankerPanels[i].getChildByName("score") as SpriteNumber;
 					
+					// 현재 유저와 다른 유저의 패널 및 텍스트 색상을 다르게 세팅   
 					if (rankValue == _userRank)
 					{
 						panel.texture = 
@@ -314,6 +323,7 @@ package ui.popup
 					score.update(userInfoVec[i].score.toString());
 					name.text = userInfoVec[i].userName;
 					
+					// 랭커 프로필 사진 로드
 					_numLoadRequest++;
 					_needToSetPicIndices[userInfoVec[i].userId] = i;
 					Resources.instance.addEventListener(Resources.READY_USER_PICTURE, onLoadedUserPicture);
@@ -333,18 +343,23 @@ package ui.popup
 			DataManager.instance.rank.removeEventListener(Rank.GET_RANK, onGotRank);
 			_userRank = int(event.data);
 			
+			// 현재 로그인한 유저가 랭킹에 등록되어 있을 경우
 			if (_userRank > 0)
 			{
+				// 유저 랭크 버튼 활성화
 				_userRankButton.touchable = true;
 				_userRankButton.color = 0xffffff;
 				
 				_currTop = _userRank - int(RANK_PER_PAGE / 2);
 			}
+			
+			// 해당 유저 기준으로 패널 세팅
 			setRanker();
 		}
 		
 		private function onLoadedUserPicture(event:Event):void
 		{
+			// 랭커 프로필 사진 세팅
 			var userId:String = event.data as String;
 			if (!userId || !_needToSetPicIndices || _needToSetPicIndices[userId] == null)
 			{
@@ -389,6 +404,7 @@ package ui.popup
 
 		private function onUpdateRank(event:Event):void
 		{
+			// 현재 유저의 랭크가 업데이트 되었을 경우 랭커 패널도 업데이트
 			_userRank = int(event.data);
 			_currTop = _userRank - int(RANK_PER_PAGE / 2);
 			setRanker();
@@ -396,6 +412,7 @@ package ui.popup
 		
 		private function onLogIn(event:Event):void
 		{
+			// 로그인한 유저의 랭크 기준으로 패널 업데이트
 			var userInfo:UserInfo = UserManager.instance.userInfo;
 			if (userInfo.userId)
 			{
@@ -407,6 +424,7 @@ package ui.popup
 		
 		private function onLogOut(event:Event):void
 		{
+			// 유저가 로그아웃할 경우 랭크 1을 기준으로 패널 세팅
 			_userRankButton.touchable = false;
 			_userRankButton.color = Color.INACTIVE;
 			

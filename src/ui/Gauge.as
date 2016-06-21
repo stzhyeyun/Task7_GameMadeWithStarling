@@ -72,6 +72,11 @@ package ui
 			_current = 0;
 		}
 
+		/**
+		 * 진척도를 업데이트합니다. 
+		 * @param current 설정한 total 대비 현재 진척도입니다.
+		 * 
+		 */
 		public function update(current:int):void
 		{
 			if (!_progress || current < 0)
@@ -81,6 +86,7 @@ package ui
 			
 			_current = current;
 			
+			// progress 크기 조정
 			if (current != 0)
 			{
 				_progress.scaleX = _current / _total;

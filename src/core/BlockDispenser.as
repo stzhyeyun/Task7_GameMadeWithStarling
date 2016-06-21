@@ -13,6 +13,7 @@ package core
 		
 		public static function initialize():void
 		{
+			// 블록 데이터 생성
 			_data = new Vector.<BlockData>();
 			
 			// O
@@ -154,6 +155,11 @@ package core
 			_data.push(threeRightbottomL);
 		}
 		
+		/**
+		 * 랜덤한 BlockData를 반환합니다.
+		 * @return 랜덤한 인덱스의 BlockData입니다.
+		 * 
+		 */
 		public static function pop():BlockData
 		{
 			var index:int = Math.random() * _data.length;

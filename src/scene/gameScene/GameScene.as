@@ -150,18 +150,23 @@ package scene.gameScene
 		
 		protected override function onStartScene(event:Event):void
 		{
+			// 최초 진입일 경우 NoticeManager 제거
 			if (_firstStart)
 			{
 				NoticeManager.instance.dispose();
 				_firstStart = false;
 			}
+			
+			// Item 초기화
 			refreshItems();
 		}
 		
 		protected override function onRestartScene(event:Event):void
 		{
+			// PlayData 초기화
 			DataManager.instance.playData.clean();
 			
+			// 게임 씬 다시 세팅
 			_table.setTableData(DataManager.instance.playData.tableData);
 			refreshBlocks(true);
 			refreshItems();
@@ -182,6 +187,7 @@ package scene.gameScene
 				return;
 			}
 			
+			// 종료 팝업 호출
 			if (event.keyCode == Keyboard.BACK)
 			{
 				event.preventDefault();
@@ -328,7 +334,7 @@ package scene.gameScene
 		
 		private function isGameOver():void
 		{
-			// 남은 블럭이 테이블에 세팅 가능한지 확인
+			// 남은 블록이 테이블에 세팅 가능한지 확인
 			var isGameOver:Boolean = true;
 			var checkedCount:int = 0;
 			for (var i:int = 0; i < _blocks.length; i++)
@@ -372,7 +378,7 @@ package scene.gameScene
 			{
 				case TouchPhase.BEGAN:
 				{
-					// 블럭 확대
+					// 블록 확대
 					block.setScale(_tableScale);
 					
 					moveBlock(block, touch.getLocation(this));
@@ -387,11 +393,12 @@ package scene.gameScene
 				
 				case TouchPhase.ENDED:
 				{
-					// 테이블에 블럭 세팅
+					// 테이블에 블록 세팅
 					if (_table.setBlock(block))
 					{
 						block.visible = false;
 						
+						// 블록 데이터 저장
 						for (var i:int = 0; i < _blocks.length; i++)
 						{
 							if (_blocks[i].visible)
@@ -406,46 +413,18 @@ package scene.gameScene
 					}
 					else
 					{
-						// 블럭 원위치로
+						// 블록 원위치로
 						block.x = _originBlockPosData[blockIndex].x;
 						block.y = _originBlockPosData[blockIndex].y;
 					}
 					
-					// 블럭 크기 원복
+					// 블록 크기 원복
 					block.setScale(_tableScale * BLOCK_ORIGIN_SCALE_RATIO);
 					
-					// 남은 블럭이 테이블에 세팅 가능한지 확인
-//					var isGameOver:Boolean = true;
-//					for (i = 0; i < _blocks.length; i++)
-//					{
-//						if (i != blockIndex && _blocks[i].visible)
-//						{
-//							if (_table.isSettable(_blocks[i]))
-//							{
-//								isGameOver = false;
-//								break;
-//								
-////								// 데이터 업데이트
-////								DataManager.instance.updateBestScore();
-////								DataManager.instance.updateRank();
-////								
-////								// 종료 팝업 호출
-////								PopupManager.instance.showPopup(this, PopupName.GAME_OVER);
-//							}
-//						}
-//					}
-//					
-//					if (isGameOver)
-//					{
-//						// 데이터 업데이트
-//						DataManager.instance.updateBestScore();
-//						DataManager.instance.updateRank();
-//						
-//						// 종료 팝업 호출
-//						PopupManager.instance.showPopup(this, PopupName.GAME_OVER);
-//					}
+					// 남은 블록이 테이블에 세팅 가능한지 확인하고 불가능하면 게임 종료
 					isGameOver();
 					
+					// 블록 새로고침
 					refreshBlocks();
 				}
 					break;

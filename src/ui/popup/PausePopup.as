@@ -92,6 +92,7 @@ package ui.popup
 		{
 			var touch:Touch = event.getTouch(this, TouchPhase.ENDED);
 			
+			// 타이틀 씬으로 전환
 			if (touch)
 			{
 				SceneManager.switchScene(SceneName.TITLE);

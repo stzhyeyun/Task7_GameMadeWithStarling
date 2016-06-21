@@ -133,7 +133,6 @@ package user
 			loader.removeEventListener(Event.COMPLETE, onCompleteLoad);
 			
 			var plainText:Object = JSON.parse(AesCrypto.decrypt(loader.data, "ahundrendblocksbybamkie"));
-//			var plainText:Object = JSON.parse(loader.data);
 			
 			_userId = plainText.userId;
 			_userName = plainText.userName;

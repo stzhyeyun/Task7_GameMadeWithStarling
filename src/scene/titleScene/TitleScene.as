@@ -85,6 +85,7 @@ package scene.titleScene
 		{
 			AttendanceManager.instance.removeEventListener(AttendanceManager.READY_TO_REWARD, onReadyToReward);
 			
+			// 데이터 출력
 			DataManager.instance.export();
 			UserManager.instance.export();
 		}
@@ -96,6 +97,7 @@ package scene.titleScene
 				return;
 			}
 			
+			// 종료 팝업 표시
 			if (event.keyCode == Keyboard.BACK)
 			{
 				event.preventDefault();

@@ -101,6 +101,14 @@ package scene.gameScene
 			UserManager.instance.addEventListener(UserManager.LOG_OUT, onLogOut);
 		}
 		
+		/**
+		 * 점수 UI를 세팅합니다.
+		 * @param stageWidth GameScene의 너비입니다.
+		 * @param stageHeight GameScene의 높이입니다.
+		 * @param bestScore 최고 점수입니다.
+		 * @param currentScore 현재 점수입니다.
+		 * 
+		 */
 		public function setScore(stageWidth:Number, stageHeight:Number, bestScore:int, currentScore:int):void
 		{
 			var headerHeight:Number = stageHeight * HEADER_HEIGHT_RATIO;
@@ -143,22 +151,24 @@ package scene.gameScene
 				return;
 			}
 			
+			// 일시정지 팝업 표시
 			PopupManager.instance.showPopup(this, PopupName.PAUSE);
 		}
 		
 		private function onUpdateCurrentScore(event:Event):void
 		{
+			// 현재 점수 UI 업데이트
 			_currentScore.update(String(event.data));
 		}
 		
 		private function onUserPictureReady(event:Event):void
 		{
+			// 유저 로그인 시 프로필 사진 설정
 			var eventTargetId:String = event.data as String;
 			var userId:String = UserManager.instance.userInfo.userId;
 			
 			if (eventTargetId && userId && eventTargetId == userId)
 			{
-				// test
 				var headerHeight:Number = Starling.current.nativeStage.stageHeight * HEADER_HEIGHT_RATIO;
 				_userPic.texture = Resources.instance.getCurrentUserPicture();
 				_userPic.height = headerHeight * 0.8;
@@ -167,14 +177,13 @@ package scene.gameScene
 				_userPic.pivotY = _userPic.height / 2;
 				_userPic.x = Starling.current.nativeStage.stageWidth * 0.1;
 				_userPic.y = headerHeight / 2;
-				//
 				_userPic.visible = true;
 			}
 		}
 		
 		private function onLogOut(event:Event):void
 		{
-			_userPic.texture = Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.IMG_ANONYMOUS);
+//			_userPic.texture = Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.IMG_ANONYMOUS);
 			_userPic.visible = false;
 		}
 	}

@@ -38,6 +38,11 @@ package system
 			return _isNotice;
 		}
 
+		/**
+		 * 공지 이미지의 이름 목록입니다. 
+		 * @return 
+		 * 
+		 */
 		public function get noticeList():Vector.<String>
 		{
 			return _noticeList;
@@ -69,7 +74,7 @@ package system
 			}
 			_noticeList = null;
 				
-			// Resource 제거
+			// 공지 이미지 제거
 			Resources.instance.removeNoticeImage();
 		}
 		
@@ -114,6 +119,7 @@ package system
 			var imageName:String = event.data as String;
 			var image:Texture = Resources.instance.getNoticeImage(imageName);
 			
+			// 출석 보상 팝업 생성
 			if (image)
 			{
 				var stageWidth:Number = Starling.current.nativeStage.stageWidth;

@@ -93,18 +93,7 @@ package user
 			_userInfo.addEventListener(Data.FAILED_READING, onFailedReadingUserInfo);
 			_userInfo.read();
 		}
-		
-		public function checkLogIn():void
-		{
-			if (!_facebookExtension)
-			{
-				_facebookExtension = new FacebookExtension();
-				_facebookExtension.initialize(onGotAccessTokenFromFB, onGotUserInfoFromFB);
-			}
-			
-			_facebookExtension.checkLogIn();
-		}
-		
+
 		public function logIn():void
 		{
 			if (!_facebookExtension)
@@ -136,6 +125,14 @@ package user
 			this.dispatchEvent(new starling.events.Event(LOG_OUT));
 		}
 		
+		/**
+		 * 유저의 아이템 데이터를 업데이트합니다. 
+		 * @param type UserManager.SET_ITEM, UserManager.ADD_ITEM 
+		 * @param itemId 업데이트할 아이템의 ID입니다.
+		 * @param numItem 해당 아이템의 변경된 개수입니다.
+		 * @param needToUpdateDB true : 로컬 데이터와 DB를 업데이트 / false : 로컬 데이터만 업데이트
+		 * 
+		 */
 		public function updateItemData(type:String, itemId:int, numItem:int, needToUpdateDB:Boolean = false):void
 		{
 			if (!_userInfo)
@@ -175,6 +172,10 @@ package user
 			}
 		}
 		
+		/**
+		 * 유저 정보를 로컬에 저장합니다. 
+		 * (로컬에 저장된 유저 정보의 유무로 다시 어플리케이션 실행 시 로그인 여부 판단)
+		 */
 		public function export():void
 		{
 			if (_accessToken)
@@ -202,9 +203,10 @@ package user
 		
 		private function onReadUserInfo(event:starling.events.Event):void
 		{
+			// 유저 프로필 사진 로드
 			Resources.instance.loadFromURL(Resources.USER_PICTURE, _userInfo.userId);
 			
-			// Update DB
+			// DB 업데이트
 			var url:String =
 				DatabaseURL.USER +
 				"addUser.php" +
@@ -253,10 +255,13 @@ package user
 		
 		private function onGotUserInfoFromFB(info:String):void
 		{
+			// 로컬 유저 정보 세팅
 			_userInfo.setData(info);
+			
+			// 유저 프로필 사진 로드
 			Resources.instance.loadFromURL(Resources.USER_PICTURE, _userInfo.userId);
 			
-			// Update DB
+			// DB 업데이트
 			var url:String =
 				DatabaseURL.USER +
 				"addUser.php" +
@@ -276,6 +281,7 @@ package user
 			var urlLoader:URLLoader = event.currentTarget as URLLoader;
 			urlLoader.removeEventListener(flash.events.Event.COMPLETE, onGotUserInfoFromDB);
 			
+			// 로컬 유저 정보 업데이트
 			if (urlLoader.data != "[]")
 			{
 				var data:Object = JSON.parse(urlLoader.data);

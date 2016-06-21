@@ -143,6 +143,12 @@ package ui.popup
 			this.dispatchEvent(new Event(Manager.INITIALIZED));
 		}
 		
+		/**
+		 * 팝업을 등록합니다. 
+		 * @param name 팝업의 이름입니다.
+		 * @param popup 등록할 팝업입니다.
+		 * 
+		 */
 		public function addPopup(name:String, popup:Popup):void
 		{
 			if (!name || !popup)
@@ -159,6 +165,11 @@ package ui.popup
 			_popups[name] = popup;
 		}
 		
+		/**
+		 * 등록된 팝업을 제거합니다. 
+		 * @param name 제거할 팝업의 이름입니다.
+		 * 
+		 */
 		public function removePopup(name:String):void
 		{
 			if (!name || !_popups || !_popups[name])
@@ -175,6 +186,12 @@ package ui.popup
 			delete _popups[name];
 		}
 		
+		/**
+		 * 지정한 팝업을 가져옵니다. 
+		 * @param name 얻고자 하는 팝업의 이름입니다.
+		 * @return 해당 이름의 팝업을 반환합니다. 업을 경우 null을 반환합니다.
+		 * 
+		 */
 		public function getPopup(name:String):Popup
 		{
 			if (!name || !_popups || !_popups[name])
@@ -188,6 +205,12 @@ package ui.popup
 			return _popups[name];
 		}
 		
+		/**
+		 * 팝업을 표시합니다. 
+		 * @param container 팝업을 Child로 가질 DisplayObjectContainer입니다.
+		 * @param name 표시할 팝업의 이름입니다.
+		 * 
+		 */
 		public function showPopup(container:DisplayObjectContainer, name:String):void
 		{
 			if (!container || !name || !_popups[name])
@@ -209,10 +232,12 @@ package ui.popup
 			
 			if (_stack.length > 0)
 			{
+				// 이미 표시된 팝업이 있을 경우 터치 비황성화
 				_stack[_stack.length - 1].touchable = false;
 			}
 			else
 			{
+				// 배경(반투명 레이어) 표시
 				_background.visible = true;
 				container.addChild(_background);
 			}
@@ -222,13 +247,21 @@ package ui.popup
 			popupToShow.y = Starling.current.nativeStage.stageHeight / 2;
 			popupToShow.show();
 			
+			// 팝업 표시
 			container.addChild(popupToShow);
 
+			// 팝업 히스트리화
 			_stack.push(_popups[name]);
 			
+			// 팝업 표시 이벤트 dispatch
 			this.dispatchEvent(new Event(SHOW));
 		}
 		
+		/**
+		 * 지정한 팝업을 닫습니다. 
+		 * @param name 닫을 팝업의 이름입니다.
+		 * 
+		 */
 		public function closePopup(name:String):void
 		{
 			if (!name || !_popups[name])
@@ -246,6 +279,7 @@ package ui.popup
 				return;
 			}
 			
+			// 지정한 팝업 이후에 열린 팝업도 모두 닫음
 			for (var i:int = _stack.length - 1; i >= index; i--)
 			{
 				_stack[_stack.length - 1].close();
@@ -253,6 +287,7 @@ package ui.popup
 				_stack.pop();
 			}
 			
+			// 닫힌 팝업 바로 이전 팝업 터치 활성화
 			if (index - 1 >= 0)
 			{
 				_stack[index - 1].touchable = true;
@@ -262,9 +297,14 @@ package ui.popup
 				_background.visible = false;
 			}
 			
+			// 팝업 닫힘 이벤트 dispatch
 			this.dispatchEvent(new Event(CLOSE));
 		}
 		
+		/**
+		 * 표시된 팝업 중 가장 위에 있는 팝업을 답습니다. 
+		 * 
+		 */
 		private function closeLastPopup():void
 		{
 			_stack[_stack.length - 1].close();

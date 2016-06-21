@@ -54,7 +54,7 @@ package ui.popup
 			title.pivotY = title.height / 2;
 			title.x = _panelWidth / 2;
 			
-			// Daily reward notice
+			// 출석 보상 내용
 			var day1:Image = new Image(
 				Resources.instance.getTexture(TextureAtlasName.MAIN, TextureName.IMG_REWARD_DAY1));
 			var scale:Number = _panelWidth * 0.7 / day1.width;
@@ -152,6 +152,11 @@ package ui.popup
 			_toaster.toast("You've got REWARDS for Day " + _day.toString() + "!");
 		}
 		
+		/**
+		 * 유저의 출석 일수 기준으로 팝업을 세팅합니다. 
+		 * @param day 연속 출석한 일수입니다.
+		 * 
+		 */
 		public function setDay(day:int):void
 		{
 			_day = day;
@@ -191,6 +196,7 @@ package ui.popup
 		
 		private function onEnterFrame(event:EnterFrameEvent):void
 		{
+			// 체크 표시 애니메이션
 			var index:int = _day - 1;
 			if (index < 0 || index >= _days.length)
 			{

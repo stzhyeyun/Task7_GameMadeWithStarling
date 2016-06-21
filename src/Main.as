@@ -27,6 +27,7 @@ package
 		{
 			_current = this;
 			
+			// 리소스 로드
 			Resources.instance.addEventListener(Resources.COMPLETE_LOAD, onCompleteLoad);
 			Resources.instance.loadFromDisk(File.applicationDirectory.resolvePath("resources/res/first"));
 		}
@@ -38,20 +39,27 @@ package
 			super.dispose();
 		}
 		
+		/**
+		 * 리소스 로드가 완료되면 로딩 씬을 생성하고 시작합니다. 
+		 * 
+		 */
 		private function onCompleteLoad():void
 		{
 			Resources.instance.removeEventListener(Resources.COMPLETE_LOAD, onCompleteLoad);
 			
+			// 로딩 씬 생성
 			var loadingScene:LoadingScene = new LoadingScene();
 			loadingScene.initialize();
 			SceneManager.addScene(SceneName.LOADING, loadingScene);
 			
+			// 사운드 세팅
 			var sound:Sound = Resources.instance.getSound(SoundName.MAIN_THEME);
 			if (sound)
 			{
 				sound.loops = Sound.INFINITE;
 			}
 			
+			// 로딩 씬 시작
 			SceneManager.switchScene(SceneName.LOADING);
 		}
 	}

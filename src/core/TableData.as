@@ -58,6 +58,12 @@ package core
 			}
 		}
 		
+		/**
+		 * 해당 Block을 Table에 놓을 수 있는지 검사합니다.
+		 * @param blockData 검사 대상 Block의 BlockData입니다.
+		 * @return 세팅 가능 여부입니다.
+		 * 
+		 */
 		public function isSettable(blockData:BlockData):Boolean
 		{
 			var blockTiles:Vector.<TileData> = blockData.data;
@@ -107,6 +113,16 @@ package core
 			return false;	
 		}
 
+		/**
+		 * Table에 Block을 세팅할 수 있는지 검사하여 가능하다면 세팅합니다. 세팅 여부를 반환합니다. 
+		 * @param pivotCol 기준 Tile의 열입니다.
+		 * @param pivotRow 기준 Tile의 행입니다.
+		 * @param blockData Table에 놓고자 하는 Block의 BlockData입니다.
+		 * @param makeHistory TableData와 세팅한 Block을 저장하는 함수입니다.
+		 * @param onUpdated TableData의 변경 내용을 Table에 적용하는 함수입니다.
+		 * @return 세팅 여부입니다.
+		 * 
+		 */
 		public function setBlock(pivotCol:int, pivotRow:int, blockData:BlockData, makeHistory:Function, onUpdated:Function):Boolean
 		{
 			var destTilesIndices:Vector.<Index2D> = new Vector.<Index2D>();
@@ -117,7 +133,7 @@ package core
 			var diffCol:int = 0;
 			var diffRow:int = 0;
 			
-			// Check
+			// 세팅 가능 여부 확인
 			for (var i:int = 0; i < blockTiles.length; i++)
 			{
 				diffCol = blockTiles[i].col - prevBlockTileCol;
@@ -140,13 +156,13 @@ package core
 				prevBlockTileRow = blockTiles[i].row;
 			}
 			
-			// Save current data
+			// 현재 데이터 히스토리화
 			if (makeHistory)
 			{
 				makeHistory(false, clone(), destTilesIndices.length);
 			}
 			
-			// Update data
+			// TableData 업데이트
 			for (i = 0; i < blockTiles.length; i++)
 			{
 				_data[destTilesIndices[i].col][destTilesIndices[i].row].textureName = blockTiles[i].textureName;
@@ -154,18 +170,25 @@ package core
 			DataManager.instance.playData.tableData = this;
 			SoundManager.play(Resources.instance.getSound(SoundName.SET));
 
-			// Update view
+			// Table(Tile) 업데이트
 			if (onUpdated)
 			{
 				onUpdated(destTilesIndices);
 			}
 			
-			// Clear line
+			// 라인 클리어 여부 검사
 			clear(destTilesIndices, makeHistory, onUpdated);
 			
 			return true;
 		}
 
+		/**
+		 * 라인 클리어가 가능한지 확인하고 가능하다면 클리어합니다. 
+		 * @param updatedTilesIndices 변경된 TableData의 인덱스입니다.
+		 * @param makeHistory TableData와 세팅한 Block을 저장하는 함수입니다.
+		 * @param onUpdated TableData의 변경 내용을 Table에 적용하는 함수입니다.
+		 * 
+		 */
 		public function clear(updatedTilesIndices:Vector.<Index2D>, makeHistory:Function, onUpdated:Function):void
 		{
 			var totalClearTilesIndices:Vector.<Index2D> = new Vector.<Index2D>();
@@ -177,9 +200,10 @@ package core
 			var up:Boolean;
 			var left:Boolean;
 			
+			// 클리어 가능 여부 확인
 			for (var i:int = 0; i < updatedTilesIndices.length; i++)
 			{
-				// Up
+				// 변경된 타일 기준 위쪽 검사
 				pivotCol = updatedTilesIndices[i].col;
 				pivotRow = updatedTilesIndices[i].row;
 				up = true;
@@ -195,7 +219,7 @@ package core
 					pivotRow--;
 				}
 				
-				// Down
+				// 아래쪽 검사
 				if (up)
 				{
 					pivotRow = updatedTilesIndices[i].row;
@@ -211,7 +235,7 @@ package core
 					}
 				}
 				
-				// Left
+				// 왼쪽 검사
 				pivotCol = updatedTilesIndices[i].col;
 				pivotRow = updatedTilesIndices[i].row;
 				left = true;
@@ -227,7 +251,7 @@ package core
 					pivotCol--;
 				}
 				
-				// Right
+				// 오른쪽 검사
 				if (left)
 				{
 					pivotCol = updatedTilesIndices[i].col;
@@ -262,10 +286,10 @@ package core
 				}
 			}
 			
-			// Clear
+			// 클리어 가능한 라인이 있다면 클리어 (TableData 변경)
 			if (totalClearTilesIndices.length > 0)
 			{
-				// Remove duplicates
+				// 중복값 삭제
 				var tempVec:Vector.<int> = new Vector.<int>();
 				for (i = 0; i < totalClearTilesIndices.length; i++)
 				{
@@ -278,13 +302,13 @@ package core
 					}
 				}
 			
-				// Save current data
+				// 현재 데이터 히스토리화
 				if (makeHistory)
 				{
 					makeHistory();
 				}
 				
-				// Update data
+				// TableData 업데이트
 				for (i = 0; i < totalClearTilesIndices.length; i++)
 				{
 					_data[totalClearTilesIndices[i].col][totalClearTilesIndices[i].row].textureName = TextureName.TILE_WHITE;
@@ -292,17 +316,18 @@ package core
 				DataManager.instance.playData.tableData = this;
 				SoundManager.play(Resources.instance.getSound(SoundName.CLEAR));
 				
-				// Update view
+				// Table(Tile) 업데이트
 				if (onUpdated)
 				{
 					onUpdated(totalClearTilesIndices);
 				}	
 				
-				// Update score
+				// 점수 업데이트
 				DataManager.instance.updateCurrentScore(updatedTilesIndices.length, totalClearTilesIndices.length);
 			}
 			else
 			{
+				// 점수 업데이트
 				DataManager.instance.updateCurrentScore(updatedTilesIndices.length);
 			}
 			

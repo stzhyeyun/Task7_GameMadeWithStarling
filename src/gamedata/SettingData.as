@@ -127,6 +127,11 @@ package gamedata
 			super.onCompleteLoad(event);
 		}
 		
+		/**
+		 * 오늘 다시 보지 않을 팝업을 등록합니다. 
+		 * @param name 팝업의 이릅입니다.
+		 * 
+		 */
 		public function addBannedPopup(name:String):void
 		{
 			if (!name)
@@ -135,6 +140,7 @@ package gamedata
 				return;
 			}
 			
+			// 현재 시간 저장
 			var today:Date = new Date();
 			var formatter:DateTimeFormatter = new DateTimeFormatter("date");
 			formatter.setDateTimePattern("yyyy-MM-dd");
@@ -146,6 +152,12 @@ package gamedata
 			_bannedPopups[name] = formatter.format(today);
 		}
 		
+		/**
+		 * 오늘 다시 보지 않도록 설정한 팝업인지 여부를 확인합니다. 
+		 * @param name 팝업의 이름입니다.
+		 * @return 
+		 * 
+		 */
 		public function isBannedPopup(name:String):Boolean
 		{
 			if (_bannedPopups && _bannedPopups[name])
@@ -160,6 +172,7 @@ package gamedata
 				
 				var today:Date = new Date();
 				
+				// 등록된 날짜가 오늘이면 true 아니면 false
 				if (today.getFullYear() == bannedYear &&
 					today.getMonth() + 1 == bannedMonth &&
 					today.getDate() == bannedDate)

@@ -43,6 +43,12 @@ package core
 			super.dispose();
 		}
 		
+		/**
+		 * Tile 간의 거리를 구하여 반환합니다. 
+		 * @param target 대상 Tile입니다.
+		 * @return 두 Tile 간의 거리입니다.
+		 * 
+		 */
 		public function getDistance(target:Tile):Number
 		{
 			var globalBoundA:Rectangle = this.getBounds(Main.current);

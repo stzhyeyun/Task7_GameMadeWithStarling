@@ -49,6 +49,11 @@ package ui
 			super.dispose();
 		}
 
+		/**
+		 * 숫자를 변경합니다. 
+		 * @param num 변경할 숫자입니다.
+		 * 
+		 */
 		public function update(num:String):void
 		{
 			_value = int(num);

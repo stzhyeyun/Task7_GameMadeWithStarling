@@ -17,8 +17,7 @@ package core
 		private var _data:BlockData;
 		private var _tiles:Vector.<Tile>;
 		
-		private var _originScale:Number;
-		private var _prevScale:Number;
+		private var _tileScale:Number;
 		
 		public function get data():BlockData
 		{
@@ -36,8 +35,7 @@ package core
 			_data = null;
 			_tiles = new Vector.<Tile>();
 			
-			_originScale = scale;
-			_prevScale = _originScale;
+			_tileScale = scale;
 		}
 		
 		public function initialize(blockData:BlockData):void
@@ -51,7 +49,7 @@ package core
 				return;
 			}
 			
-			// Create tiles
+			// 타일 생성
 			var data:Vector.<TileData> = _data.data;
 			var tileData:TileData;
 			var tile:Tile;
@@ -63,7 +61,7 @@ package core
 				if (i >= _tiles.length)
 				{
 					tile = new Tile(tileData);
-					tile.scale = _originScale;
+					tile.scale = _tileScale;
 					_tiles.push(tile);
 				}
 				else
@@ -98,6 +96,11 @@ package core
 			this.pivotY = this.height / 2;
 		}
 		
+		/**
+		 * 타일의 크기를 조정합니다.
+		 * @param scale 변경할 타일의 크기입니다.
+		 * 
+		 */		
 		public function setScale(scale:Number):void
 		{
 			var data:Vector.<TileData> = _data.data;
@@ -123,8 +126,6 @@ package core
 					_tiles[i].y -= _tiles[i].height / margin * tileData.row;
 				}
 			}
-			
-			_prevScale = scale;
 		}
 	}
 }

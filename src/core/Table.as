@@ -76,7 +76,7 @@ package core
 			
 			_data = tableData;
 			
-			// Create tiles
+			// 타일 생성
 			var data:Vector.<Vector.<TileData>> = _data.data;
 			var tileData:TileData;
 			var tile:Tile;
@@ -130,6 +130,7 @@ package core
 				{
 					for (var j:int = 0; j < data[i].length; j++)
 					{
+						// 변경된 테이블 데이터에 따라 타일 텍스처 변경
 						_tiles[i][j].texture = Resources.instance.getTexture(TextureAtlasName.MAIN, data[i][j].textureName);
 					}
 				}
@@ -149,14 +150,26 @@ package core
 			}
 		}
 		
+		/**
+		 * 해당 Block을 Table에 놓을 수 있는지 검사합니다. 
+		 * @param block 검사 대상 Block입니다.
+		 * @return 세팅 가능 여부입니다.
+		 * 
+		 */
 		public function isSettable(block:Block):Boolean
 		{
 			return _data.isSettable(block.data);
 		}
 		
+		/**
+		 * Table에 Block을 세팅할 수 있는지 검사하여 가능하다면 세팅합니다. 세팅 여부를 반환합니다.
+		 * @param block Table에 놓고자 하는 Block입니다.
+		 * @return 세팅 여부입니다.
+		 * 
+		 */
 		public function setBlock(block:Block):Boolean
 		{
-			// Determine pivot
+			// 블록과 가장 가까이 있는 기준 타일을 특정
 			var primaryTarget:Tile = block.tiles[0];
 			var closestDist:Number = 0;
 			var dist:Number = 0;
@@ -173,6 +186,7 @@ package core
 						closestDist = dist;
 					}
 					
+					// 가장 가까운 타일의 인덱스 저장
 					if (dist < closestDist)
 					{
 						closestDist = dist;
@@ -185,6 +199,11 @@ package core
 			return _data.setBlock(pivotCol, pivotRow, block.data, makeHistory, onUpdated);
 		}
 		
+		/**
+		 * 테이블을 직전 블록을 놓기 전으로 되돌립니다.
+		 * @return Undo 실행 여부입니다.
+		 * 
+		 */
 		public function undo():Boolean
 		{
 			if (!_tableHistory || _tableHistory.length <= 0)
@@ -194,15 +213,24 @@ package core
 				return false;
 			}
 
+			// 테이블 되돌리기
 			setTableData(_tableHistory.pop());
+			
+			// 점수 되돌리기
 			DataManager.instance.revertScore(_blockHistory.pop());
 			
 			return true;
 		}
 		
-		private function makeHistory(lineCleared:Boolean = true, tableData:TableData = null, numblock:int = 0):void
+		/**
+		 * 테이블과 세팅한 블록의 히스토리를 저장합니다. 
+		 * @param lineCleared 라인 클리어 여부입니다.
+		 * @param tableData 현재 TableData입니다.
+		 * @param numblock 세팅된 블록의 개수입니다.
+		 * 
+		 */
+		private function makeHistory(lineCleared:Boolean = true, tableData:TableData = null, numTiles:int = 0):void
 		{
-			// 테이블 히스토리화
 			if (lineCleared)
 			{
 				// 클리어 전으로는 Undo 불가능
@@ -211,7 +239,7 @@ package core
 			}
 			else
 			{
-				// 최대 5번 Undo 가능
+				// 정해진 횟수(5번)만큼 Undo 가능
 				if (_tableHistory.length == NUM_UNDO)
 				{
 					_tableHistory.shift();
@@ -221,14 +249,19 @@ package core
 				{
 					_blockHistory.shift();
 				}
+				
 				_tableHistory.push(tableData);
-				_blockHistory.push(numblock);
+				_blockHistory.push(numTiles);
 			}
 		}
 		
+		/**
+		 * TableData가 변경되었을 경우 그에 따라 Tile의 텍스처를 변경합니다. 
+		 * @param updatedDataIndices 변경된 TableData의 인덱스입니다.
+		 * 
+		 */
 		private function onUpdated(updatedDataIndices:Vector.<Index2D>):void
 		{
-			// 업데이트 된 타일 텍스처 변경
 			var tileData:Vector.<Vector.<TileData>> = _data.data;
 			var updatedCol:int;
 			var updatedRow:int;

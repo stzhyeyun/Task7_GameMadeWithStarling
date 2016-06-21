@@ -59,6 +59,11 @@ package ui.popup
 			super.initialize();
 		}
 		
+		/**
+		 * 공지 이미지를 설정합니다. 
+		 * @param content 설정할 공지 이미지(Texture)입니다.
+		 * 
+		 */
 		public function setContent(content:Texture):void
 		{
 			var contentImg:Image = new Image(content);
@@ -86,6 +91,7 @@ package ui.popup
 		{
 			var touch:Touch = event.getTouch(this, TouchPhase.ENDED);
 			
+			// 오늘 보지 않기 팝업 등록
 			if (touch)
 			{
 				DataManager.instance.settingData.addBannedPopup(this.name);

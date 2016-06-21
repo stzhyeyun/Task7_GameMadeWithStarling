@@ -22,7 +22,7 @@ package resources
 		[Embed(
 			source = "res/daumSemiBold.ttf",
 			fontName = "daumSemiBold",			
-			embedAsCFF="false",
+			embedAsCFF = "false",
 			advancedAntiAliasing = "true")]
 		public static const DaumSemiBold:Class;
 		
@@ -124,6 +124,11 @@ package resources
 			_noticeImageDic = null;
 		}
 		
+		/**
+		 * 로컬의 해당 경로에서 PNG, XML, MP3 파일을 로드합니다. 
+		 * @param path 파일 경로입니다.
+		 * Resources.COMPLETE_LOAD 이벤트를 수신하여 로드 완료 시점을 알 수 있습니다.
+		 */
 		public function loadFromDisk(path:File):void
 		{
 			if (!path.exists)
@@ -205,6 +210,12 @@ package resources
 			}
 		}
 		
+		/**
+		 * 지정된 URL에서 유저의 프로필 사진 또는 공지 이미지를 로드합니다.  
+		 * @param type 로드할 콘텐츠의 유형입니다. Resources.USER_PICTURE / Resources.NOTICE_IMAGE 
+		 * @param key 유저 ID 또는 공지 이미지의 파일명입니다.
+		 * Resources.READY_USER_PICTURE 또는 Resources.READY_NOTICE_IMAGE 이벤트를 수신하여 로드 완료 시점을 알 수 있습니다.
+		 */
 		public function loadFromURL(type:String, key:String):void
 		{
 			if (!type || !key)
@@ -214,8 +225,10 @@ package resources
 				return;
 			}
 			
+			// 로드한 적이 있는 유저 프로필 사진일 경우
 			if (type == USER_PICTURE && _userPictureDic && _userPictureDic[key])
 			{
+				// 로드 완료 이벤트 dispatch
 				this.dispatchEvent(
 						new starling.events.Event(Resources.READY_USER_PICTURE, false, key));
 				return;
@@ -225,6 +238,13 @@ package resources
 			loader.load(type, key);
 		}
 		
+		/**
+		 * Texture를 가져옵니다. 
+		 * @param textureAtlasName Texture가 속하는 TextureAtlas의 이름입니다.
+		 * @param textureName 얻고자 하는 Texture의 이름입니다.
+		 * @return 해당 이름의 Texture를 반환합니다. 없을 경우 null을 반환합니다.
+		 * 
+		 */
 		public function getTexture(textureAtlasName:String, textureName:String):Texture
 		{
 			if (!_textureAtlasDic || !_textureAtlasDic[textureAtlasName])
@@ -243,6 +263,12 @@ package resources
 			return texture;
 		}
 		
+		/**
+		 * Sound를 가져옵니다. 
+		 * @param name 얻고자 하는 Sound의 이름입니다.
+		 * @return 해당 이름의 Sound를 반환합니다. 없을 경우 null을 반환합니다.
+		 * 
+		 */
 		public function getSound(name:String):Sound
 		{
 			if (!_soundDic || !_soundDic[name])
@@ -255,6 +281,12 @@ package resources
 			return _soundDic[name];
 		}
 		
+		/**
+		 * 공지 이미지를 가져옵니다. 
+		 * @param name 얻고자 하는 공지 이미지의 이름입니다.
+		 * @return 해당 이름의 공지 이미지(Texture)를 반환합니다. 없을 경우 null을 반환합니다.
+		 * 
+		 */
 		public function getNoticeImage(name:String):Texture
 		{
 			if (name && _noticeImageDic[name])
@@ -267,6 +299,11 @@ package resources
 			}
 		}
 		
+		/**
+		 * 해당 기기에서 로그인 상태인 유저의 프로필 사진을 가져옵니다. 
+		 * @return 유저의 프로필 사진(Texture)을 반환합니다. 없을 경우 null을 반환합니다.
+		 * 
+		 */
 		public function getCurrentUserPicture():Texture
 		{
 			var userInfo:UserInfo = UserManager.instance.userInfo;
@@ -286,6 +323,12 @@ package resources
 			}
 		}
 		
+		/**
+		 * 지정한 ID를 가진 유저의 프로필 사진을 가져옵니다. 
+		 * @param userId 프로필 사진을 얻고자 하는 유저의 ID입니다.
+		 * @return 해당 ID를 가진 유저의 프로질 사진(Texture)입니다. 없을 경우 null을 반환합니다.
+		 * 
+		 */
 		public function getUserPicture(userId:String):Texture
 		{
 			if (userId && _userPictureDic[userId])
@@ -298,6 +341,10 @@ package resources
 			}
 		}
 		
+		/**
+		 * Resources에서 공지 이미지를 제거합니다. 
+		 * 
+		 */
 		public function removeNoticeImage():void
 		{
 			if (_noticeImageDic)

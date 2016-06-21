@@ -117,6 +117,10 @@ package user
 			}
 		}
 		
+		/**
+		 * AccessToken을 초기화합니다. 
+		 * 
+		 */
 		public function clean():void
 		{
 			_userId = null;

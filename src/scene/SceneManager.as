@@ -35,6 +35,12 @@ package scene
 			_currentSceneName = null;
 		}
 		
+		/**
+		 * Scene을 등록합니다. 
+		 * @param name Scene의 이름입니다.
+		 * @param scene 등록할 Scene입니다.
+		 * 
+		 */
 		public static function addScene(name:String, scene:Scene):void
 		{
 			if (!name || !scene)
@@ -51,6 +57,11 @@ package scene
 			_scenes[name] = scene;
 		}
 		
+		/**
+		 * Scene응 제거합니다. 
+		 * @param name 제거할 Scene의 이름입니다.
+		 * 
+		 */
 		public static function removeScene(name:String):void
 		{
 			if (!name || !_scenes || !_scenes[name])
@@ -68,6 +79,11 @@ package scene
 			delete _scenes[name];
 		}
 		
+		/**
+		 * Scene을 전환합니다. 
+		 * @param nextSceneName 다음 Scene의 이름입니다.
+		 * Scene.START_SCENE, Scene.END_SCENE 이벤트를 수신하여 Scene의 시작 및 종료 시점에 작업할 수 있습니다.
+		 */
 		public static function switchScene(nextSceneName:String):void
 		{
 			if (!nextSceneName || !_scenes || !_scenes[nextSceneName] || _currentSceneName == nextSceneName)
@@ -95,6 +111,10 @@ package scene
 			Main.current.addChild(currentScene);
 		}
 		
+		/**
+		 * 현재 Scene을 재시작합니다. 
+		 * 
+		 */
 		public static function restartScene():void
 		{
 			if (!_scenes || !_currentSceneName)

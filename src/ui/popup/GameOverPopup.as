@@ -92,6 +92,7 @@ package ui.popup
 		
 		public override function show():void
 		{
+			// 점수 세팅
 			_bestScore = new SpriteNumber(DataManager.instance.playData.bestScore.toString(), Color.RESULT);
 			_currentScore = new SpriteNumber(DataManager.instance.playData.currentScore.toString(), Color.RESULT);
 

@@ -20,20 +20,10 @@ package scene
 		{
 			return _nativeStageWidth;
 		}
-		
-		public function set nativeStageWidth(value:Number):void
-		{
-			_nativeStageWidth = value;
-		}
 
 		public function get nativeStageHeight():Number
 		{
 			return _nativeStageHeight;
-		}
-		
-		public function set nativeStageHeight(value:Number):void
-		{
-			_nativeStageHeight = value;
 		}
 		
 		

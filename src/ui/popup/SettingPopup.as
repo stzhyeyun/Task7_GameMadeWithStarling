@@ -23,6 +23,7 @@ package ui.popup
 		private var _banBgm:Image;
 		private var _banSound:Image;
 		
+		
 		public function SettingPopup()
 		{
 			

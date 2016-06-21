@@ -96,7 +96,6 @@ package system
 			_rewardData.push(day3);
 			_rewardData.push(day4);
 			_rewardData.push(day5);
-			//
 			
 			UserManager.instance.addEventListener(UserManager.LOG_OUT, onLogOut);
 			UserManager.instance.addEventListener(UserManager.GET_USER_DB, onGotAttendanceData);
@@ -110,6 +109,10 @@ package system
 			_instance = null;
 		}
 		
+		/**
+		 * 출석 보상을 지급합니다. 
+		 * 
+		 */
 		public function reward():void
 		{
 			var index:int = _attendance - 1;
@@ -201,6 +204,7 @@ package system
 					return;
 				}
 				
+				// 유저 아이템 정보 업데이트
 				for (var i:int = 0; i < _rewardData[index].length; i++)
 				{
 					UserManager.instance.updateItemData(

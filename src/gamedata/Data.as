@@ -51,6 +51,10 @@ package gamedata
 			_path = null;
 		}
 			
+		/**
+		 * 해당 경로의 파일을 읽습니다. 
+		 * 
+		 */
 		public function read():void
 		{
 			if (!_fileName || !_path)
@@ -58,10 +62,12 @@ package gamedata
 				if (!_fileName) trace(TAG + " read : No name.");
 				if (!_path) trace(TAG + " read : No path.");
 				
+				// 읽기 실패 이벤트 dispatch
 				this.dispatchEvent(new starling.events.Event(FAILED_READING));
 				return;
 			}
 			
+			// 파일이 존재하면 읽음
 			var file:File = _path.resolvePath(_fileName + ".json");
 			if (file.exists)
 			{
@@ -71,6 +77,7 @@ package gamedata
 			}
 			else
 			{
+				// 읽기 실패 이벤트 dispatch
 				this.dispatchEvent(new starling.events.Event(FAILED_READING));	
 			}
 		}
@@ -79,8 +86,12 @@ package gamedata
 		{
 			// empty
 		}
-
 		
+		/**
+		 * 파일 로드 완료 시 호출되는 함수입니다.
+		 * @param event Event.COMPLETE
+		 * 
+		 */
 		protected function onCompleteLoad(event:flash.events.Event):void
 		{
 			var loader:URLLoader = event.target as URLLoader;
@@ -89,6 +100,7 @@ package gamedata
 				loader.removeEventListener(flash.events.Event.COMPLETE, onCompleteLoad);
 			}
 			
+			// 읽기 성공 이벤트 dispatch
 			this.dispatchEvent(new starling.events.Event(SUCCEEDED_READING));
 		}
 	}

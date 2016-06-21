@@ -84,6 +84,12 @@ package gamedata
 			_rank = new Rank();
 		}
 		
+		/**
+		 * 현재 점수를 업데이트합니다. 
+		 * @param numBlockTiles 세팅된 Block의 Tile 개수입니다.
+		 * @param numClearTiles 클리어된 라인의 수입니다.
+		 * 
+		 */
 		public function updateCurrentScore(numBlockTiles:int, numClearTiles:int = 0):void
 		{
 			// 맞춘 블럭 타일당 1점
@@ -100,23 +106,34 @@ package gamedata
 			
 			_playData.currentScore += obtainedScore;
 			
+			// 점수 업데이트 이벤트 dispatch
 			this.dispatchEvent(new Event(UPDATE_CURRENT_SCORE, false, _playData.currentScore));	
 		}
 		
+		/**
+		 * 최고 점수를 업데이트합니다. 
+		 * 
+		 */
 		public function updateBestScore():void
 		{
 			if (_playData.currentScore > _playData.bestScore)
 			{
 				_playData.bestScore = _playData.currentScore;
 				
+				// 점수 업데이트 이벤트 dispatch
 				this.dispatchEvent(new Event(UPDATE_BEST_SCORE, false, _playData.bestScore));
 			}
 		}
 		
+		/**
+		 * 랭크를 업데이트합니다. 
+		 * 
+		 */
 		public function updateRank():void
 		{
 			var userInfo:UserInfo = UserManager.instance.userInfo;
 			
+			// 로그인한 유저가 있으면 랭크 업데이트
 			if (userInfo.userId)
 			{
 				userInfo.score = _playData.currentScore;
@@ -126,13 +143,23 @@ package gamedata
 			}
 		}
 		
-		public function revertScore(numBlock:int):void
+		/**
+		 * 정해진 Block(Tile 수)만큼 점수를 되돌립니다.  
+		 * @param numTile 되돌리고자 하는 Block의 Tile 수입니다.
+		 * 
+		 */
+		public function revertScore(numTile:int):void
 		{
-			_playData.currentScore -= numBlock;
+			_playData.currentScore -= numTile;
 			
+			// 점수 업데이트 이벤트 dispatch
 			this.dispatchEvent(new Event(UPDATE_CURRENT_SCORE, false, _playData.currentScore));	
 		}
 		
+		/**
+		 * 데이터를 로컬로 출력합니다. 
+		 * 
+		 */
 		public function export():void
 		{
 			if (_playData)
@@ -172,6 +199,10 @@ package gamedata
 			checkLoadingProgress();
 		}
 		
+		/**
+		 * 로딩 진행 정도를 체크하여 완료된 경우 이벤트를 dispatch합니다. 
+		 * 
+		 */
 		private function checkLoadingProgress():void
 		{
 			if (_numLoad == 0)
@@ -186,6 +217,10 @@ package gamedata
 			}
 		}
 		
+		/**
+		 * SettingData에 따라 BGM과 사운드 이펙트를 제어합니다. 
+		 * 
+		 */
 		private function preset():void
 		{
 			if (!_settingData.bgm)
@@ -201,13 +236,20 @@ package gamedata
 			}
 		}
 		
+		/**
+		 * 랭크 업데이트 완료 시 호출되는 함수입니다.
+		 * @param event Rank.ADD
+		 * 
+		 */
 		private function onUpdateRank(event:Event):void
 		{
 			_rank.removeEventListener(Rank.ADD, onUpdateRank);
 			
+			// 랭크가 정상적으로 업데이트 되었을 경우
 			var userRank:int = int(event.data);
 			if (userRank > 0)
 			{
+				// 랭크 업데이트 이벤트 dispatch 
 				this.dispatchEvent(new Event(UPDATE_RANK, false, userRank));
 			}
 		}

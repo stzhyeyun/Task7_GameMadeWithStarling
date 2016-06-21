@@ -50,6 +50,7 @@ package ui.popup
 		{
 			var touch:Touch = event.getTouch(this, TouchPhase.ENDED);
 			
+			// 어플리케이션 종료
 			if (touch)
 			{
 				NativeApplication.nativeApplication.dispatchEvent(new Event(Event.EXITING));

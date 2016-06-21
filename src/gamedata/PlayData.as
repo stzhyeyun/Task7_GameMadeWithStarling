@@ -128,7 +128,6 @@ package gamedata
 			}
 			
 			var plainText:Object = JSON.parse(AesCrypto.decrypt(loader.data, "ahundrendblocksbybamkie"));
-//			var plainText:Object = JSON.parse(loader.data);
 			
 			_bestScore = plainText.bestScore;
 			_currentScore = plainText.currentScore;
@@ -191,6 +190,12 @@ package gamedata
 			super.onCompleteLoad(event);
 		}
 		
+		/**
+		 * BlockData를 저장합니다. 
+		 * @param index Block의 인덱스입니다.
+		 * @param data 저장할 BlockData입니다.
+		 * 
+		 */
 		public function setBlockData(index:int, data:BlockData = null):void
 		{
 			if (index < 0)
@@ -206,6 +211,10 @@ package gamedata
 			_blocksData[index] = data;
 		}
 		
+		/**
+		 * 데이터를 초기화합니다. 
+		 * 
+		 */
 		public function clean():void
 		{
 			_currentScore = 0;

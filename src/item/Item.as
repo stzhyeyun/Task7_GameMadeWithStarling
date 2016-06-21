@@ -20,6 +20,12 @@ package item
 		protected var _quantity:SpriteNumber;
 		protected var _onUse:Function;
 		
+		/**
+		 * Item을 생성합니다. 
+		 * @param data ItemData입니다.
+		 * @param onUse Item 기능이 구현된 함수입니다. Item 사용(클릭) 시 호출됩니다.
+		 * 
+		 */
 		public function Item(data:ItemData, onUse:Function)
 		{
 			_data = data;
@@ -33,7 +39,7 @@ package item
 				this.touchable = false;
 			}
 			
-			// Quantity indicator
+			// 수량 표시
 			_quantity = new SpriteNumber(_data.num.toString(), Color.ITEM);
 			var scale:Number = this.height * 0.3 / _quantity.height;
 			_quantity.width *= scale;
@@ -56,6 +62,11 @@ package item
 			super.dispose();
 		}
 		
+		/**
+		 * Item의 개수를 조절하고 남은 개수에 따라 버튼 활성화 여부를 제어합니다. 
+		 * @param quantity Item의 개수입니다.
+		 * 
+		 */
 		public function setQuantity(quantity:int):void
 		{
 			if (quantity < 0)
@@ -79,7 +90,7 @@ package item
 			_quantity.update(_data.num.toString());
 			_quantity.x = (this.width / 2);
 			
-			// Update UserInfo & DB
+			// UserInfo & DB 업데이트
 			UserManager.instance.updateItemData(UserManager.SET_ITEM, _data.id, _data.num, true);
 		}
 		
